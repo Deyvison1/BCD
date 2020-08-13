@@ -11,6 +11,7 @@ namespace BCD.WebApi.Dtos
         public string Nome { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         public int CPF { get; set; }
+        public List<ContaDto> Contas { get; set; }
         public List<EnderecoDto> Enderecos { get; set; }
     }
 }

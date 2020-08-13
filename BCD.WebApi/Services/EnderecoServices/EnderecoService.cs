@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCD.Domain.Entities;
 using BCD.Repository.EntitiesRepository.EnderecoRepository;
+using BCD.Repository.EntitiesRepository.EnderecosPessoasRepository;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.Exception;
 
@@ -13,10 +14,12 @@ namespace BCD.WebApi.Services.EnderecoServices
     {
         private IMapper _map { get; }
         private readonly IEnderecoRepository _repo;
-        public EnderecoService(IMapper map, IEnderecoRepository repo)
+        private readonly IEnderecosPessoasRepository _repoEnderecosPessoas;
+        public EnderecoService(IMapper map, IEnderecoRepository repo, IEnderecosPessoasRepository repoEnderecosPessoas)
         {
             _map = map;
             _repo = repo;
+            _repoEnderecosPessoas = repoEnderecosPessoas;
         }
         // DELETAR
         public async Task<EnderecoDto> Delete(int id)
@@ -49,21 +52,35 @@ namespace BCD.WebApi.Services.EnderecoServices
         // ADICIONAR
         public async Task<EnderecoDto> Add(EnderecoDto enderecoDto)
         {
+            // RETORNA TRUE SE TIVER ALGUM REGISTRO NA TABLEA COM ESSE CEP
             bool existeCep = await _repo.ExisteCep(enderecoDto.CEP);
-            
-            /*
+            // SE RETORNA TRUE LANCO UMA EXCECAO
             if(existeCep) 
             {
                 throw new NotFoundException("Ja existe esse CEP cadastrado!");
             }
-            */
             var endereco = _map.Map<Endereco>(enderecoDto);
 
             _repo.Add(endereco);
 
             if(await _repo.SaveAsync())
             {
-                return _map.Map<EnderecoDto>(endereco);
+                // PREENCHENDO OS CAMPOS DA TABLE QUE GUARDA O ID DE PESSOA E ENDERECO
+                EnderecosPessoasDto enderecosPessoasDto = new EnderecosPessoasDto
+                {
+                    DataAtualizacao = DateTime.Now,
+                    EnderecoId = endereco.Id,
+                    PessoaId = 1
+                };
+                // MAPEAMENTO DE DTO PRA ENTIDADE PARA REALIZAR O INSERT
+                var enderecoPessoas = _map.Map<EnderecosPessoas>(enderecosPessoasDto);
+
+                _repoEnderecosPessoas.Add(enderecoPessoas);
+
+                if(await _repoEnderecosPessoas.SaveAsync())
+                {
+                    return _map.Map<EnderecoDto>(endereco);
+                }
             }
             throw new ArgumentException("Erro ao persistir no banco!");
         }

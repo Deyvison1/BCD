@@ -42,8 +42,8 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
             var getAll = _context.Pessoas.OrderByDescending(
                 x => x.Id
             ).Include(x => x.Enderecos).ThenInclude(
-                x => x.Pessoa
-            )
+                x => x.Endereco
+            ).Include(x => x.Contas)
             .ToArrayAsync();
             return await getAll;
         }

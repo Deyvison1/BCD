@@ -6,6 +6,7 @@ using AutoMapper;
 using BCD.Repository.Data;
 using BCD.Repository.EntitiesRepository.ContaRepository;
 using BCD.Repository.EntitiesRepository.EnderecoRepository;
+using BCD.Repository.EntitiesRepository.EnderecosPessoasRepository;
 using BCD.Repository.EntitiesRepository.HistoricoRepository;
 using BCD.Repository.EntitiesRepository.PessoaRepository;
 using BCD.WebApi.Services.ContaServices;
@@ -40,6 +41,7 @@ namespace BCD.WebApi
             services.AddScoped<ContaService>();
             services.AddScoped<HistoricoService>();
             services.AddScoped<EnderecoService>();
+            services.AddScoped<IEnderecosPessoasRepository, EnderecosPessoasRepository>();
             services.AddScoped<IPessoaRepository, PessoaRepository>();
             services.AddScoped<IHistoricoRepository, HistoricoRepository>();
             services.AddScoped<IContaRepository, ContaRepository>();
