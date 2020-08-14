@@ -20,7 +20,6 @@ namespace BCD.WebApi.Dtos
         public float Saldo { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         public int PessoaId { get; set; }
-        public PessoaDto Pessoa { get; set; }
         public List<HistoricoDto> Extrato { get; set; }
     }
 }

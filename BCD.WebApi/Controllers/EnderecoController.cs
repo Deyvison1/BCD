@@ -25,7 +25,7 @@ namespace BCD.WebApi.Controllers
             {
                 var addEndereco = await _service.Add(enderecoDto);
                 
-                return Ok(addEndereco);
+                return Created($"/api/endereco/{addEndereco.Id}", addEndereco);
             }
             catch(ArgumentException e)
             {

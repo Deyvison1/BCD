@@ -10,6 +10,9 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         void Delete(Conta contaEntites);
         void DeleteRange(Conta[] contaEntites);
         Task<bool> SaveAsync();
+        Task<bool> ExisteContaPoupanca(int idPessoa);
+        Task<bool> ExisteContaCorrente(int idPessoa);
+        Task<Conta[]> ListGetByIdPessoaAsync(int idPessoa);
         Task<Conta> GetByIdPessoaAsync(int idPessoa);
         Task<Conta[]> GetByAgenciaAndConta(int agencia, int conta);
         Task<Conta[]> GetAllAsync();

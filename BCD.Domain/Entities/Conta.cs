@@ -10,7 +10,7 @@ namespace BCD.Domain.Entities
         public int DigitosAgencia { get; private set; }
         public EnumTipoConta TipoConta { get; private set; }
         public string NomeConta { get; set; }
-        public float Saldo { get; private set; }
+        public float Saldo { get;  set; }
         public int PessoaId { get; private set; }
         public Pessoa Pessoa { get; set; }
         public List<HistoricosContas> Extrato { get; private set; }

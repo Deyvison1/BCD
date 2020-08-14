@@ -24,7 +24,7 @@ namespace BCD.WebApi.Controllers
             try {
                 var pessoaAdd = await _service.Add(pessoaDto);
 
-                return Created($"/api/pessoa/{pessoaAdd.Id}", pessoaDto);
+                return Created($"/api/pessoa/{pessoaAdd.Id}", pessoaAdd);
             }catch(ArgumentException e) {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }

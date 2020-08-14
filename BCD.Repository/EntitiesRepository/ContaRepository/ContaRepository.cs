@@ -61,13 +61,21 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
             ).ToArrayAsync();
             return await getBySearch;
         }
-        // OBTER PELO ID DA PESSOA
+        // OBTER LISTA PELO ID DA PESSOA
+        public async Task<Conta[]> ListGetByIdPessoaAsync(int idPessoa)
+        {
+            var conta = _context.Contas.Where(
+                x => x.PessoaId.Equals(idPessoa)
+            ).ToArrayAsync();
+            return await conta;
+        }
+        // OBTER PELO ID PESSOA
         public async Task<Conta> GetByIdPessoaAsync(int idPessoa)
         {
-            var getByIdPessoa = _context.Contas.FirstOrDefaultAsync(
+            var conta = _context.Contas.FirstOrDefaultAsync(
                 x => x.PessoaId.Equals(idPessoa)
             );
-            return await getByIdPessoa;
+            return await conta;
         }
         // OBTER POR PESQUISA, AGENCIA E CONTA
         public async Task<Conta[]> GetByAgenciaAndConta(int agencia, int conta)
@@ -76,6 +84,20 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
                 x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta) 
             ).ToArrayAsync();
             return await getByAgenciaAndConta; 
+        }
+
+        public async Task<bool> ExisteContaCorrente(int idPessoa)
+        {
+            return await _context.Contas.AnyAsync(
+                x => x.PessoaId == idPessoa && x.TipoConta == 0
+            );
+        }
+
+        public async Task<bool> ExisteContaPoupanca(int idPessoa)
+        {
+            return await _context.Contas.AnyAsync(
+                x => x.PessoaId == idPessoa && x.TipoConta != 0
+            );
         }
     }
 }

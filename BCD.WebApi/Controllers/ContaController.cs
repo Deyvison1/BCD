@@ -18,13 +18,32 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
+        // REALIZAR SAQUE
+        [HttpPut("saque")]
+        public async Task<IActionResult> Saque(HelperContaDto contaSaque)
+        {
+            try
+            {
+                var saqueConta = await _service.Saque(contaSaque);
+
+                return Ok(saqueConta);
+            }
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
         // ADICIONAR
         [HttpPost]
         public async Task<IActionResult> Add(ContaDto contaDto) {
             try {
                 var contaAdd = await _service.Add(contaDto);
 
-                return Ok(contaAdd);
+                return Created($"/api/conta/{contaAdd.Id}", contaAdd);
             }catch(ArgumentException e) {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }

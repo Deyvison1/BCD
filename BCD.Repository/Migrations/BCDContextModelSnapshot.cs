@@ -14,8 +14,7 @@ namespace BCD.Repository.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("BCD.Domain.Entities.Conta", b =>
                 {
@@ -89,7 +88,7 @@ namespace BCD.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ContaId");
+                    b.Property<DateTime>("DataTransacao");
 
                     b.Property<string>("DescricaoTransacao");
 
@@ -101,13 +100,11 @@ namespace BCD.Repository.Migrations
 
                     b.Property<int>("DigitosContaDestino");
 
-                    b.Property<int>("TipoConta");
+                    b.Property<string>("TipoConta");
 
                     b.Property<float>("Valor");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContaId");
 
                     b.ToTable("Historicos");
                 });
@@ -144,7 +141,7 @@ namespace BCD.Repository.Migrations
             modelBuilder.Entity("BCD.Domain.Entities.Conta", b =>
                 {
                     b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
-                        .WithMany()
+                        .WithMany("Contas")
                         .HasForeignKey("PessoaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -159,14 +156,6 @@ namespace BCD.Repository.Migrations
                     b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
                         .WithMany("Enderecos")
                         .HasForeignKey("PessoaId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BCD.Domain.Entities.Historico", b =>
-                {
-                    b.HasOne("BCD.Domain.Entities.Conta", "Conta")
-                        .WithMany()
-                        .HasForeignKey("ContaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

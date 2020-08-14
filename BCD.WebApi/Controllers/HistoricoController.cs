@@ -25,7 +25,7 @@ namespace BCD.WebApi.Controllers
             {
                 var addHistorico = await _service.Add(historicoDto);
 
-                return Ok(addHistorico);
+                return Created($"/api/historico/{addHistorico.Id}", addHistorico);
             }
             catch(ArgumentException e)
             {

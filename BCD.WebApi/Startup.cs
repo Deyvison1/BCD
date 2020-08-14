@@ -8,6 +8,7 @@ using BCD.Repository.EntitiesRepository.ContaRepository;
 using BCD.Repository.EntitiesRepository.EnderecoRepository;
 using BCD.Repository.EntitiesRepository.EnderecosPessoasRepository;
 using BCD.Repository.EntitiesRepository.HistoricoRepository;
+using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.Repository.EntitiesRepository.PessoaRepository;
 using BCD.WebApi.Services.ContaServices;
 using BCD.WebApi.Services.EnderecoServices;
@@ -41,13 +42,14 @@ namespace BCD.WebApi
             services.AddScoped<ContaService>();
             services.AddScoped<HistoricoService>();
             services.AddScoped<EnderecoService>();
+            services.AddScoped<IHistoricosContasRepository, HistoricosContasRepository>();
             services.AddScoped<IEnderecosPessoasRepository, EnderecosPessoasRepository>();
             services.AddScoped<IPessoaRepository, PessoaRepository>();
             services.AddScoped<IHistoricoRepository, HistoricoRepository>();
             services.AddScoped<IContaRepository, ContaRepository>();
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 
-            services.AddDbContext<BCDContext>(x => x.UseMySql(Configuration.GetConnectionString("Connection")));
+            services.AddDbContext<BCDContext>(x => x.UseSqlite(Configuration.GetConnectionString("Connection")));
             services.AddMvc().AddJsonOptions(
                 x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             ).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

@@ -43,8 +43,7 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
         {
             var getAll = _context.Enderecos.OrderByDescending(
                 x => x.Id
-            ).Include(x => x.Pessoas).ThenInclude(x => x.Pessoa)
-            .ToArrayAsync();
+            ).ToArrayAsync();
             return await getAll;
         }
         // OBTER PELO ID

@@ -1,7 +1,9 @@
 using System.Linq;
 using AutoMapper;
 using BCD.Domain.Entities;
+using BCD.Domain.Entities.Enums;
 using BCD.WebApi.Dtos;
+using BCD.WebApi.Dtos.EnumsDto;
 
 namespace BCD.WebApi.Helpers
 {
@@ -18,21 +20,9 @@ namespace BCD.WebApi.Helpers
                 }
             ).ReverseMap();
             //
-            CreateMap<Endereco, EnderecoDto>().ForMember(
-                x => x.Pessoas, opt => {
-                    opt.MapFrom(src => src.Pessoas.Select(
-                        x => x.Pessoa
-                    ).ToList());
-                }
-            ).ReverseMap();
+            CreateMap<Endereco, EnderecoDto>().ReverseMap();
             //
-            CreateMap<Historico, HistoricoDto>().ForMember(
-                x => x.Contas, opt => {
-                    opt.MapFrom(src => src.Contas.Select(
-                        x => x.Conta
-                    ).ToList());
-                }
-            ).ReverseMap();
+            CreateMap<Historico, HistoricoDto>().ReverseMap();
             CreateMap<Conta, ContaDto>().ForMember(
                 x => x.Extrato, opt => {
                     opt.MapFrom(src => src.Extrato.Select(
@@ -40,6 +30,8 @@ namespace BCD.WebApi.Helpers
                     ).ToList());
                 }
             ).ReverseMap();
+            CreateMap<EnumUF, EnumUFDto>().ReverseMap();
+            CreateMap<EnumTipoContaDto, EnumTipoContaDto>().ReverseMap();
         }
     }
 }
