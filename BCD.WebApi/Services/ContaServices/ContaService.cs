@@ -148,27 +148,22 @@ namespace BCD.WebApi.Services.ContaServices
         // REALIZAR SAQUE
         public async Task<ContaDto> Saque(HelperContaDto contaSaque)
         {
-            // OBTER CONTAS DA PESSOA
-            var conta = await _repo.ListGetByIdPessoaAsync(contaSaque.PessoaId);
-            // OBTER CONTA CORRENTE
-            var contaCorrente = conta.FirstOrDefault(
-                x => x.TipoConta == 0
-            );
-            // SE NAO TIVER CONTA CORRENTE LANCO UMA EXCECAO
-            if (contaCorrente == null)
+            var conta = await _repo.GetByAgenciaAndContaCorrente(contaSaque.Agencia, contaSaque.Conta);
+            if (conta == null)
             {
                 throw new NotFoundException("Nenhumca conta corrente encontrada. Somente e possivel realizar saque de conta corrente!");
             }
-            contaCorrente.Saldo -= contaSaque.Quantia;
-            _repo.Update(contaCorrente);
+            conta.Saldo -= contaSaque.Quantia;
+
+            _repo.Update(conta);
             if (await _repo.SaveAsync())
             {
                 // INSERT NO HISTORICO
                 HistoricoDto historicoDto = new HistoricoDto
                 {
                     DescricaoTransacao = "SAQUE CONTA CORRENTE",
-                    DigitosConta = contaCorrente.DigitosConta,
-                    DigitosAgencia = contaCorrente.DigitosAgencia,
+                    DigitosConta = conta.DigitosConta,
+                    DigitosAgencia = conta.DigitosAgencia,
                     TipoConta = "Conta Corrente",
                     Valor = contaSaque.Quantia,
                     DataTransacao = DateTime.Now
@@ -179,19 +174,138 @@ namespace BCD.WebApi.Services.ContaServices
                 // INSERT EM HISTORICOCONTAS
                 HistoricosContasDto historicosContasDto = new HistoricosContasDto
                 {
-                    ContaId = contaCorrente.Id,
-                    HistoricoId = historicoAdd.Id
+                    ContaId = conta.Id,
+                    HistoricoId = historicoAdd.Id,
+                    DataCriacao = DateTime.Now
                 };
                 var addHistoricosContas = _map.Map<HistoricosContas>(historicosContasDto);
                 _repoHistoricosContas.Add(addHistoricosContas);
                 if(await _repoHistoricosContas.SaveAsync())
                 {
-                    return _map.Map<ContaDto>(contaCorrente);
+                    return _map.Map<ContaDto>(conta);
                 }
-                return _map.Map<ContaDto>(contaCorrente);
             }
             // SE SAIR DE TODOS IF E PQ DEU ERRO AO PERSISTIR DADOS
             throw new ArgumentException("Erro ao persitir dados no banco!");
+        }
+        // REALIZAR DEPOSITO
+        public async Task<ContaDto> Depositar(HelperContaDto contaDto)
+        {
+            // OBTER A CONTA CORRENTE
+            var conta = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
+            if (conta == null) throw new NotFoundException("Nehuma conta encontrada!!");
+
+            conta.Saldo += contaDto.Quantia;
+
+            _repo.Update(conta);
+            if(await _repo.SaveAsync())
+            {
+                HistoricoDto historicoDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    TipoConta = "Conta Corrente",
+                    DescricaoTransacao = "DEPOSITO EM CONTA CONRRENTE",
+                    DigitosAgencia = conta.DigitosAgencia,
+                    DigitosConta = conta.DigitosConta,
+                    Valor = contaDto.Quantia
+                };
+
+                var addHistorico = await _historicoServices.Add(historicoDto);
+
+                HistoricosContasDto historicosContasDto = new HistoricosContasDto
+                {
+                    ContaId = conta.Id,
+                    DataCriacao = DateTime.Now,
+                    HistoricoId = addHistorico.Id
+                };
+                var historicosContas = _map.Map<HistoricosContas>(historicosContasDto);
+                _repoHistoricosContas.Add(historicosContas);
+
+                if(await _repoHistoricosContas.SaveAsync())
+                {
+                    return _map.Map<ContaDto>(conta);
+                }
+            }
+            throw new ArgumentException("Erro ao persistir no banco");
+        }
+        public async Task<ContaDto> Transferencia(HelperContaDto contaDto)
+        {
+            // CONTA QUE IRA MANDAR A TRANSFERENCIA
+            var contaOrigin = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
+            // CONTA QUE IRA RECEBER A TRANSFERENCIA
+            var contaDestino = await _repo.GetByAgenciaAndContaCorrente(contaDto.AgenciaDestino, contaDto.ContaDestino);
+
+            // SE O REGISTRO RETORNA COMO NULL
+            if (contaOrigin == null && contaDestino == null)
+            {
+                throw new NotFoundException("Conta origin nao encontrada e/ou conta destino nao encontrada!");
+            }
+
+            contaOrigin.Saldo -= contaDto.Quantia;
+            contaDestino.Saldo += contaDto.Quantia;
+
+            List<Conta> contas = new List<Conta>();
+            contas.Add(contaOrigin);
+            contas.Add(contaDestino);
+            
+            _repo.UpdateRange(contas);
+            if (await _repo.SaveAsync())
+            {
+                HistoricoDto historicoOriginDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    DescricaoTransacao = "TRANSFERENCIA BANCARIA PARA CONTA CORRENTE",
+                    DigitosAgencia = contaOrigin.DigitosAgencia,
+                    DigitosConta = contaOrigin.DigitosConta,
+                    DigitosAgenciaDestino = contaDestino.DigitosAgencia,
+                    DigitosContaDestino = contaDestino.DigitosConta,
+                    TipoConta = "CONTA CORRENTE",
+                    Valor = contaDto.Quantia
+                };
+                var historicoAdd = await _historicoServices.Add(historicoOriginDto);
+
+                HistoricoDto historicoDestinoDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    DescricaoTransacao = "RECEBIMENTO DE TRANSFERENCIA BANCARIA",
+                    DigitosAgencia = contaOrigin.DigitosAgencia,
+                    DigitosConta = contaOrigin.DigitosConta,
+                    DigitosAgenciaDestino = contaDestino.DigitosAgencia,
+                    DigitosContaDestino = contaDestino.DigitosConta,
+                    TipoConta = "CONTA CORRENTE",
+                    Valor = contaDto.Quantia
+                };
+                var historicoDestinoAdd = await _historicoServices.Add(historicoDestinoDto);
+
+                HistoricosContasDto historicosContasDestinoDto = new HistoricosContasDto
+                {
+                    ContaId = contaDestino.Id,
+                    HistoricoId = historicoDestinoAdd.Id,
+                    DataCriacao = DateTime.Now
+                };
+
+                HistoricosContasDto historicosContasDto = new HistoricosContasDto
+                {
+                    ContaId = contaOrigin.Id,
+                    HistoricoId = historicoAdd.Id,
+                    DataCriacao = DateTime.Now
+                };
+                var historicosContas = _map.Map<HistoricosContas>(historicosContasDto);
+                var historicosContasDestino = _map.Map<HistoricosContas>(historicosContasDestinoDto);
+
+                IList<HistoricosContas> listHistoricosContas = new List<HistoricosContas>();
+
+                listHistoricosContas.Add(historicosContas);
+                listHistoricosContas.Add(historicosContasDestino);
+
+                _repoHistoricosContas.AddRange(listHistoricosContas);
+
+                if(await _repoHistoricosContas.SaveAsync()){
+                    return _map.Map<ContaDto>(contaOrigin);
+                }
+
+            }
+            throw new ArgumentException("Erro ao persistir no banco!");
         }
     }
 }

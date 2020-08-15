@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BCD.Domain.Entities;
@@ -13,6 +15,10 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         public ContaRepository(BCDContext context)
         {
             _context = context;
+        }
+        public void UpdateRange(List<Conta> contas)
+        {
+            _context.UpdateRange(contas);
         }
         public void Add(Conta contaEntitie)
         {
@@ -77,13 +83,23 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
             );
             return await conta;
         }
-        // OBTER POR PESQUISA, AGENCIA E CONTA
-        public async Task<Conta[]> GetByAgenciaAndConta(int agencia, int conta)
+        // OBTER POR AGENCIA E CONTA CORRENTE
+        public async Task<Conta> GetByAgenciaAndContaCorrente(int agencia, int conta)
         {
-            var getByAgenciaAndConta = _context.Contas.Where(
-                x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta) 
-            ).ToArrayAsync();
-            return await getByAgenciaAndConta; 
+            var getByAgenciaAndContaConrrente =await _context.Contas.FirstOrDefaultAsync(
+                x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
+                && x.TipoConta == 0
+            );
+            return getByAgenciaAndContaConrrente;
+        }
+        // OBTER POR AGENCIA E CONTA POUPANCA
+        public async Task<Conta> GetByAgenciaAndContaPoupanca(int agencia, int conta)
+        {
+            var getByAgenciaAndContaPoupanca = await _context.Contas.FirstOrDefaultAsync(
+                x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
+                && x.TipoConta != 0
+            );
+            return getByAgenciaAndContaPoupanca;
         }
 
         public async Task<bool> ExisteContaCorrente(int idPessoa)

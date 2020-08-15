@@ -6,6 +6,7 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
     public interface IHistoricoRepository
     {
         void Add(Historico historicoEntities);
+        void AddRange(Historico[] entidades);
         void Update(Historico historicoEntities);
         void Delete(Historico historicoEntities);
         void DeleteRange(Historico[] historicoEntities);

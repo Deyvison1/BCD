@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BCD.Domain.Entities;
@@ -18,7 +19,10 @@ namespace BCD.Repository.EntitiesRepository.HistoricosContasRepository
         {
             _context.Add(historicosContas);
         }
-        
+        public void AddRange(IList<HistoricosContas> historicosContas)
+        {
+            _context.AddRange(historicosContas);
+        }
         public async Task<bool> SaveAsync()
         {
             return (await _context.SaveChangesAsync()) > 0;

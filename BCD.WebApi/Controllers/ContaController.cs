@@ -18,6 +18,44 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
+        // REALIZAR TRANSFERENCIA
+        [HttpPut("transferencia")]
+        public async Task<IActionResult> Transferencia(HelperContaDto contaTransferencia)
+        {
+            try
+            {
+                var conta = await _service.Transferencia(contaTransferencia);
+
+                return Ok(conta);
+            }
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch (ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
+        // REALIZAR DEPOSITO EM CONTA CORRENTE
+        [HttpPut("deposito")]
+        public async Task<IActionResult> Depositar(HelperContaDto contaDeposito)
+        {
+            try
+            {
+                var conta = await _service.Depositar(contaDeposito);
+
+                return Ok(conta);
+            }
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch (ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
         // REALIZAR SAQUE
         [HttpPut("saque")]
         public async Task<IActionResult> Saque(HelperContaDto contaSaque)

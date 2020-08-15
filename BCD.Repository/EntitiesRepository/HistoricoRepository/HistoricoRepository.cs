@@ -18,7 +18,10 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
         {
             _context.Add(historicoEntities);
         }
-
+        public void AddRange(Historico[] entidades)
+        {
+            _context.AddRange(entidades);
+        }
         public void Delete(Historico historicoEntities)
         {
             _context.Remove(historicoEntities);
