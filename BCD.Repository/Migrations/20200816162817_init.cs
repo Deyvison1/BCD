@@ -38,6 +38,7 @@ namespace BCD.Repository.Migrations
                     Valor = table.Column<float>(nullable: false),
                     DescricaoTransacao = table.Column<string>(nullable: true),
                     TipoConta = table.Column<string>(nullable: true),
+                    NomeConta = table.Column<string>(nullable: true),
                     DigitosConta = table.Column<int>(nullable: false),
                     DigitosAgencia = table.Column<int>(nullable: false),
                     DigitosAgenciaDestino = table.Column<int>(nullable: false),

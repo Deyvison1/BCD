@@ -19,7 +19,7 @@ namespace BCD.Repository.EntitiesRepository.HistoricosContasRepository
         {
             _context.Add(historicosContas);
         }
-        public void AddRange(IList<HistoricosContas> historicosContas)
+        public void AddRange(List<HistoricosContas> historicosContas)
         {
             _context.AddRange(historicosContas);
         }

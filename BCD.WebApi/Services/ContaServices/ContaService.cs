@@ -166,7 +166,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosAgencia = conta.DigitosAgencia,
                     TipoConta = "Conta Corrente",
                     Valor = contaSaque.Quantia,
-                    DataTransacao = DateTime.Now
+                    DataTransacao = DateTime.Now,
+                    NomeConta = conta.NomeConta
                 };
                 // SERVICE ADD DO HISTORICO
                 var historicoAdd = await _historicoServices.Add(historicoDto);
@@ -207,7 +208,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DescricaoTransacao = "DEPOSITO EM CONTA CONRRENTE",
                     DigitosAgencia = conta.DigitosAgencia,
                     DigitosConta = conta.DigitosConta,
-                    Valor = contaDto.Quantia
+                    Valor = contaDto.Quantia,
+                    NomeConta = conta.NomeConta
                 };
 
                 var addHistorico = await _historicoServices.Add(historicoDto);
@@ -236,7 +238,7 @@ namespace BCD.WebApi.Services.ContaServices
             var contaDestino = await _repo.GetByAgenciaAndContaCorrente(contaDto.AgenciaDestino, contaDto.ContaDestino);
 
             // SE O REGISTRO RETORNA COMO NULL
-            if (contaOrigin == null && contaDestino == null)
+            if (contaOrigin == null || contaDestino == null)
             {
                 throw new NotFoundException("Conta origin nao encontrada e/ou conta destino nao encontrada!");
             }
@@ -260,7 +262,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosAgenciaDestino = contaDestino.DigitosAgencia,
                     DigitosContaDestino = contaDestino.DigitosConta,
                     TipoConta = "CONTA CORRENTE",
-                    Valor = contaDto.Quantia
+                    Valor = contaDto.Quantia,
+                    NomeConta = contaOrigin.NomeConta
                 };
                 var historicoAdd = await _historicoServices.Add(historicoOriginDto);
 
@@ -273,7 +276,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosAgenciaDestino = contaDestino.DigitosAgencia,
                     DigitosContaDestino = contaDestino.DigitosConta,
                     TipoConta = "CONTA CORRENTE",
-                    Valor = contaDto.Quantia
+                    Valor = contaDto.Quantia,
+                    NomeConta = contaDestino.NomeConta
                 };
                 var historicoDestinoAdd = await _historicoServices.Add(historicoDestinoDto);
 
@@ -293,7 +297,7 @@ namespace BCD.WebApi.Services.ContaServices
                 var historicosContas = _map.Map<HistoricosContas>(historicosContasDto);
                 var historicosContasDestino = _map.Map<HistoricosContas>(historicosContasDestinoDto);
 
-                IList<HistoricosContas> listHistoricosContas = new List<HistoricosContas>();
+                List<HistoricosContas> listHistoricosContas = new List<HistoricosContas>();
 
                 listHistoricosContas.Add(historicosContas);
                 listHistoricosContas.Add(historicosContasDestino);
@@ -306,6 +310,166 @@ namespace BCD.WebApi.Services.ContaServices
 
             }
             throw new ArgumentException("Erro ao persistir no banco!");
+        }
+        // REALIZAR APLICACAO NA POUPANCA
+        public async Task<ContaDto> AplicarPoupanca(HelperContaDto contaDto)
+        {
+            // CONTA CORRENTE
+            var contaCorrente = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
+            // CONTA POUPANCA
+            var contaPoupanca = await _repo.GetByAgenciaAndContaPoupanca(contaDto.Agencia, contaDto.Conta);
+
+            if(contaCorrente == null && contaPoupanca == null) 
+            {
+                throw new NotFoundException("Conta corrente e/ou Conta Poupanca não encontrada!");
+            }
+
+            contaCorrente.Saldo -= contaDto.Quantia;
+            contaPoupanca.Saldo += contaDto.Quantia;
+            
+            List<Conta> contas = new List<Conta>();
+            contas.Add(contaCorrente);
+            contas.Add(contaPoupanca);
+
+            _repo.UpdateRange(contas);
+            if(await _repo.SaveAsync())
+            {
+                HistoricoDto historicoCorrenteDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    DescricaoTransacao = "APLICACAO DE VALOR NA CONTA POUPANCA",
+                    DigitosAgencia = contaCorrente.DigitosAgencia,
+                    DigitosConta = contaCorrente.DigitosConta,
+                    DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
+                    DigitosContaDestino = contaPoupanca.DigitosConta,
+                    TipoConta = "CONTA CORRENTE",
+                    Valor = contaDto.Quantia,
+                    NomeConta = contaCorrente.NomeConta
+                };
+                var historicoContaCorrenteAdd = await _historicoServices.Add(historicoCorrenteDto);
+
+                HistoricoDto historicoPoupancaDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    DescricaoTransacao = "RECEBIMENTO DE APLICACAO NA POUPANCA",
+                    DigitosAgencia = contaCorrente.DigitosAgencia,
+                    DigitosConta = contaCorrente.DigitosConta,
+                    DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
+                    DigitosContaDestino = contaPoupanca.DigitosConta,
+                    TipoConta = "CONTA POUPANCA",
+                    Valor = contaDto.Quantia,
+                    NomeConta = contaPoupanca.NomeConta
+                };
+                var historicoContaPoupancaAdd = await _historicoServices.Add(historicoPoupancaDto);
+
+                HistoricosContasDto historicosContasCorrenteDto = new HistoricosContasDto
+                {
+                    HistoricoId = historicoContaCorrenteAdd.Id,
+                    ContaId = contaCorrente.Id,
+                    DataCriacao = DateTime.Now
+                };
+
+                HistoricosContasDto historicosContasPoupancaDto = new HistoricosContasDto
+                {
+                    HistoricoId = historicoContaPoupancaAdd.Id,
+                    ContaId = contaPoupanca.Id,
+                    DataCriacao = DateTime.Now
+                };
+                var historicosContasCorrente = _map.Map<HistoricosContas>(historicosContasCorrenteDto);
+                var historicosContasPoupanca = _map.Map<HistoricosContas>(historicosContasPoupancaDto);
+
+                List<HistoricosContas> listHistoricosContas = new List<HistoricosContas>();
+
+                listHistoricosContas.Add(historicosContasCorrente);
+                listHistoricosContas.Add(historicosContasPoupanca);
+
+                _repoHistoricosContas.AddRange(listHistoricosContas);
+                if(await _repoHistoricosContas.SaveAsync())
+                {
+                    return _map.Map<ContaDto>(contaCorrente);
+                }
+            } 
+            throw new ArgumentException("Erro ao persistir no banco de dados!");
+        }
+        // REALIZAR APLICACAO NA POUPANCA
+        public async Task<ContaDto> ResgatarPoupanca(HelperContaDto contaDto)
+        {
+            // CONTA CORRENTE
+            var contaCorrente = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
+            // CONTA POUPANCA
+            var contaPoupanca = await _repo.GetByAgenciaAndContaPoupanca(contaDto.Agencia, contaDto.Conta);
+
+            if(contaCorrente == null && contaPoupanca == null) 
+            {
+                throw new NotFoundException("Conta corrente e/ou Conta Poupanca não encontrada!");
+            }
+
+            contaCorrente.Saldo += contaDto.Quantia;
+            contaPoupanca.Saldo -= contaDto.Quantia;
+            
+            List<Conta> contas = new List<Conta>();
+            contas.Add(contaCorrente);
+            contas.Add(contaPoupanca);
+
+            _repo.UpdateRange(contas);
+            if(await _repo.SaveAsync())
+            {
+                 HistoricoDto historicoCorrenteDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    DescricaoTransacao = "RECEBIMENTO DE RESGATE DA POUPANCA",
+                    DigitosAgencia = contaCorrente.DigitosAgencia,
+                    DigitosConta = contaCorrente.DigitosConta,
+                    DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
+                    DigitosContaDestino = contaPoupanca.DigitosConta,
+                    TipoConta = "CONTA CORRENTE",
+                    Valor = contaDto.Quantia,
+                    NomeConta = contaCorrente.NomeConta
+                };
+                var historicoContaCorrenteAdd = await _historicoServices.Add(historicoCorrenteDto);
+
+                HistoricoDto historicoPoupancaDto = new HistoricoDto
+                {
+                    DataTransacao = DateTime.Now,
+                    DescricaoTransacao = "RESGATE DE VALOR DA CONTA POUPANCA",
+                    DigitosAgencia = contaCorrente.DigitosAgencia,
+                    DigitosConta = contaCorrente.DigitosConta,
+                    DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
+                    DigitosContaDestino = contaPoupanca.DigitosConta,
+                    TipoConta = "CONTA POUPANCA",
+                    Valor = contaDto.Quantia,
+                    NomeConta = contaPoupanca.NomeConta
+                };
+                var historicoContaPoupancaAdd = await _historicoServices.Add(historicoPoupancaDto);
+
+                HistoricosContasDto historicosContasCorrenteDto = new HistoricosContasDto
+                {
+                    HistoricoId = historicoContaCorrenteAdd.Id,
+                    ContaId = contaCorrente.Id,
+                    DataCriacao = DateTime.Now
+                };
+
+                HistoricosContasDto historicosContasPoupancaDto = new HistoricosContasDto
+                {
+                    HistoricoId = historicoContaPoupancaAdd.Id,
+                    ContaId = contaPoupanca.Id,
+                    DataCriacao = DateTime.Now
+                };
+                var historicosContasCorrente = _map.Map<HistoricosContas>(historicosContasCorrenteDto);
+                var historicosContasPoupanca = _map.Map<HistoricosContas>(historicosContasPoupancaDto);
+
+                List<HistoricosContas> listHistoricosContas = new List<HistoricosContas>();
+
+                listHistoricosContas.Add(historicosContasCorrente);
+                listHistoricosContas.Add(historicosContasPoupanca);
+
+                _repoHistoricosContas.AddRange(listHistoricosContas);
+                if(await _repoHistoricosContas.SaveAsync())
+                {
+                    return _map.Map<ContaDto>(contaCorrente);
+                }
+            } 
+            throw new ArgumentException("Erro ao persistir no banco de dados!");
         }
     }
 }

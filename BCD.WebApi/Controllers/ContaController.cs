@@ -18,6 +18,44 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
+        // APLICAR VALOR POUPANCA
+        [HttpPut("aplicarPoupanca")]
+        public async Task<IActionResult> AplicarPoupanca(HelperContaDto contaResgatar)
+        {
+            try
+            {
+                var conta = await _service.AplicarPoupanca(contaResgatar);
+
+                return Ok(conta);
+            }
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
+        // RESGATAR VALOR POUPANCA
+        [HttpPut("resgatarPoupanca")]
+        public async Task<IActionResult> ResgatarPoupanca(HelperContaDto contaResgatar)
+        {
+            try
+            {
+                var conta = await _service.ResgatarPoupanca(contaResgatar);
+
+                return Ok(conta);
+            }
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
         // REALIZAR TRANSFERENCIA
         [HttpPut("transferencia")]
         public async Task<IActionResult> Transferencia(HelperContaDto contaTransferencia)

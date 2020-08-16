@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BCD.Repository.Migrations
 {
     [DbContext(typeof(BCDContext))]
-    [Migration("20200814154624_init")]
+    [Migration("20200816162817_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,6 +101,8 @@ namespace BCD.Repository.Migrations
                     b.Property<int>("DigitosConta");
 
                     b.Property<int>("DigitosContaDestino");
+
+                    b.Property<string>("NomeConta");
 
                     b.Property<string>("TipoConta");
 

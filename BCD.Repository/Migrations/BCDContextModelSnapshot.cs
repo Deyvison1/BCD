@@ -100,6 +100,8 @@ namespace BCD.Repository.Migrations
 
                     b.Property<int>("DigitosContaDestino");
 
+                    b.Property<string>("NomeConta");
+
                     b.Property<string>("TipoConta");
 
                     b.Property<float>("Valor");
