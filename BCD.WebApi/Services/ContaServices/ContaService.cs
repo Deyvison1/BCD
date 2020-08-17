@@ -149,9 +149,9 @@ namespace BCD.WebApi.Services.ContaServices
         public async Task<ContaDto> Saque(HelperContaDto contaSaque)
         {
             var conta = await _repo.GetByAgenciaAndContaCorrente(contaSaque.Agencia, contaSaque.Conta);
-            if (conta == null)
+            if (conta == null || conta.Saldo <= 0)
             {
-                throw new NotFoundException("Nenhumca conta corrente encontrada. Somente e possivel realizar saque de conta corrente!");
+                throw new NotFoundException("Nenhumca conta encontrada e/ou saldo insuficiente!");
             }
             conta.Saldo -= contaSaque.Quantia;
 
@@ -164,7 +164,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DescricaoTransacao = "SAQUE CONTA CORRENTE",
                     DigitosConta = conta.DigitosConta,
                     DigitosAgencia = conta.DigitosAgencia,
-                    TipoConta = "Conta Corrente",
+                    TipoConta = "CONTA CORRENTE",
                     Valor = contaSaque.Quantia,
                     DataTransacao = DateTime.Now,
                     NomeConta = conta.NomeConta
@@ -204,7 +204,7 @@ namespace BCD.WebApi.Services.ContaServices
                 HistoricoDto historicoDto = new HistoricoDto
                 {
                     DataTransacao = DateTime.Now,
-                    TipoConta = "Conta Corrente",
+                    TipoConta = "CONTA CORRENTE",
                     DescricaoTransacao = "DEPOSITO EM CONTA CONRRENTE",
                     DigitosAgencia = conta.DigitosAgencia,
                     DigitosConta = conta.DigitosConta,

@@ -63,9 +63,11 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
             return await getBySearch;
         }
 
-        public async Task<bool> ExisteCep(int cep)
+        public async Task<Endereco> GetByCep(int cep)
         {
-            return (await _context.Enderecos.AnyAsync(x => x.CEP.Equals(cep)));
+            return await _context.Enderecos.FirstOrDefaultAsync(
+                x => x.CEP.Equals(cep)
+            );
         }
     }
 }

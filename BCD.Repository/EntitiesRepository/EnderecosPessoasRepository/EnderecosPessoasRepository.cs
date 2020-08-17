@@ -39,5 +39,12 @@ namespace BCD.Repository.EntitiesRepository.EnderecosPessoasRepository
         {
             return (await _context.SaveChangesAsync()) > 0;
         }
+
+        public async Task<bool> ExisteEndereco(int idEndereco, int pessoaId)
+        {
+            return await _context.EnderecosPessoas.AnyAsync(
+                x => x.PessoaId.Equals(pessoaId) && x.EnderecoId.Equals(idEndereco)
+            );
+        }
     }
 }

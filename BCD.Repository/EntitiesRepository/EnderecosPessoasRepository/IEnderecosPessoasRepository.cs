@@ -8,6 +8,7 @@ namespace BCD.Repository.EntitiesRepository.EnderecosPessoasRepository
     {
         void Add(EnderecosPessoas enderecosPessoas);
         Task<bool> SaveAsync();
+        Task<bool> ExisteEndereco(int idEndereco, int pessoaId);
         Task<EnderecosPessoas[]> GetAll();
         Task<EnderecosPessoas[]> GetByEnderecoIdOrPessoaId(int id);
     }

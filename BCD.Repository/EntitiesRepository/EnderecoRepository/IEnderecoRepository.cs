@@ -10,7 +10,7 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
         void Delete(Endereco enderecoEntities);
         void DeleteRange(Endereco[] enderecoEntities);
         Task<bool> SaveAsync();
-        Task<bool> ExisteCep(int cep);
+        Task<Endereco> GetByCep(int cep);
         Task<Endereco[]> GetAllAsync();
         Task<Endereco> GetByIdAsync(int id);
         Task<Endereco[]> GetBySearchAsync(string search);
