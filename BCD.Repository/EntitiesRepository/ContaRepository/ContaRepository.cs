@@ -76,10 +76,10 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
             return await conta;
         }
         // OBTER PELO ID PESSOA
-        public async Task<Conta> GetByIdPessoaAsync(int idPessoa)
+        public async Task<Conta> GetByIdPessoaCorrenteAsync(int idPessoa)
         {
             var conta = _context.Contas.FirstOrDefaultAsync(
-                x => x.PessoaId.Equals(idPessoa)
+                x => x.PessoaId.Equals(idPessoa) && x.TipoConta == 0
             );
             return await conta;
         }
@@ -115,5 +115,24 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
                 x => x.PessoaId == idPessoa && x.TipoConta != 0
             );
         }
+
+        public async Task<Conta> GetByIdPessoaAsync(int idPessoa)
+        {
+            return await _context.Contas.FirstOrDefaultAsync(
+                x => x.PessoaId.Equals(idPessoa)
+            );
+        }
+
+        public async Task<Conta[]> GetByIdAsyncList(int id)
+        {
+            return await _context.Contas.Where(
+                x => x.Id.Equals(id)
+            ).Include(
+                x => x.Extrato
+            ).ThenInclude(
+                x => x.Historico
+            ).ToArrayAsync();
+        }
+
     }
 }

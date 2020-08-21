@@ -123,6 +123,16 @@ namespace BCD.WebApi.Services.ContaServices
             var conta = await _repo.GetAllAsync();
 
             var contaDto = _map.Map<ContaDto[]>(conta);
+            
+            return contaDto.ToArray();
+        }
+        // LISTAR POR ID COM EXTRATO
+        public async Task<ContaDto[]> GetByIdList(int id)
+        {
+            var conta = await _repo.GetByIdAsyncList(id);
+            if (conta == null) throw new NotFoundException("Nenhum registro encontrado com esse id");
+
+            var contaDto = _map.Map<ContaDto[]>(conta);
 
             return contaDto.ToArray();
         }
@@ -135,6 +145,12 @@ namespace BCD.WebApi.Services.ContaServices
             var contaDto = _map.Map<ContaDto>(conta);
 
             return contaDto;
+        }
+        public async Task<double> ValorTotal(int idPessoa)
+        {
+            var conta = await _repo.GetByIdPessoaCorrenteAsync(idPessoa);
+
+            return conta.Saldo;
         }
         // LISTAR PESQUISA, AGENCIA E CONTA
         public async Task<ContaDto> GetBySearch(string search)
@@ -319,7 +335,7 @@ namespace BCD.WebApi.Services.ContaServices
             // CONTA POUPANCA
             var contaPoupanca = await _repo.GetByAgenciaAndContaPoupanca(contaDto.Agencia, contaDto.Conta);
 
-            if(contaCorrente == null && contaPoupanca == null) 
+            if(contaCorrente == null || contaPoupanca == null) 
             {
                 throw new NotFoundException("Conta corrente e/ou Conta Poupanca não encontrada!");
             }

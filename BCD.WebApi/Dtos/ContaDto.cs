@@ -8,8 +8,10 @@ namespace BCD.WebApi.Dtos
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
+        [Range(10000000, 99999999)]
         public int DigitosConta { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
+        [Range(10000, 99999)]
         public int DigitosAgencia { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         [Range(0, 1)]
@@ -21,5 +23,6 @@ namespace BCD.WebApi.Dtos
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         public int PessoaId { get; set; }
         public List<HistoricoDto> Extrato { get; set; }
+        public float ValorTotal { get; set; }
     }
 }

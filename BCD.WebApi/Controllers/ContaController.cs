@@ -196,5 +196,19 @@ namespace BCD.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }
         }
+        // LISTAR POR ID COM EXTRATO
+        [HttpGet("listar/{id}")]
+        public async Task<IActionResult> GetByIdExtratp(int id) {
+            try {
+                var conta = await _service.GetByIdList(id);
+                return Ok(conta);
+            }
+            catch(NotFoundException e) {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
     }
 }

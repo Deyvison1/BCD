@@ -47,6 +47,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
             .ToArrayAsync();
             return await getAll;
         }
+        
         // OBTER POR ID
         public async Task<Pessoa> GetByIdAsync(int id)
         {
@@ -67,6 +68,14 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         public async Task<bool> ExisteCPF(int cpf)
         {
             return (await _context.Pessoas.AnyAsync( x => x.CPF.Equals(cpf)));
+        }
+
+        public async Task<Pessoa[]> GetAllPessoaById(int idPessoa)
+        {
+            var pessoas = _context.Pessoas.Where(
+                x => x.Id.Equals(idPessoa)
+            ).Include(x => x.Enderecos).ThenInclude(x => x.Endereco).Include(x => x.Contas).ToArrayAsync();
+            return await pessoas;
         }
     }
 }

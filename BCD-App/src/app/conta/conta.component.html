@@ -1,0 +1,250 @@
+<div class="container">
+  <div class="row">
+    <div style="border-radius: 4px;" class="col-8 border">
+      <div style="padding-top: 12px; padding-bottom: 10px;" class="row">
+        <div class="col-3">
+          <a (click)="abrirModalExtrato(modalExtrato)" class="btn btn-outline-info btn-block text-center btn-lg" href="#"
+            >Extrato</a
+          >
+        </div>
+        <div class="col-5">
+          <h3
+            style="padding-right: 30px; font-family: Verdana; margin-top: 05px;"
+            class="text-center"
+          >
+            Conta Corrente
+          </h3>
+        </div>
+        <div class="col-4">
+          <div class="border border-primary" style="border-radius: 4px;">
+            <h4 style="margin-top: 05px;" class="text-center">
+              <strong>
+                Saldo
+              </strong>
+              {{ valorTotalCorrente | currency: "R$: " }}
+            </h4>
+          </div>
+        </div>
+      </div>
+
+      <table class="table table-striped text-center" style="height: 100px;">
+        <thead>
+          <tr>
+            <th>Nome Conta</th>
+            <th>Tipo Conta</th>
+            <th>Saldo</th>
+            <th>Conta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let conta of contas">
+            <td>{{ conta.nomeConta }}</td>
+            <td *ngIf="conta.tipoConta == 0">Corrente</td>
+            <td *ngIf="conta.tipoConta == 1">Poupanca</td>
+            <td>{{ conta.saldo | currency: "R$: " }}</td>
+            <td>{{ conta.digitosConta }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col border bg-danger">
+      <h3 style="font-family: Verdana; margin-top: 8px;" class="text-center">
+        Conta Poupanca
+      </h3>
+      <hr />
+      <div style="height: 105px;" class="row text-center">
+        <div class="col">
+          <p class="h4">Valor Em Conta</p>
+          <h4 style="margin-top: 20px;">
+            {{ valorTotalPoupanca | currency: "R$: " }}
+          </h4>
+        </div>
+      </div>
+      <div style="height: 155px;" class="row bg-secondary text-center">
+        <div style="margin-top: 25px;" class="col divAgora">
+          <p class="h5">Valor Guardado</p>
+          <h4 style="margin-top: 20px;">R$: 2000</h4>
+        </div>
+        <div class="col btnDetails">
+          <a style="margin-top: 35px;" class="btn btn-info btn-block btn-lg"
+            >Detalhes</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div style="margin-top: 30px;" class="row">
+    <div class="col-8">
+      <div class="row">
+        <div class="col">
+          <a  tooltip="Deposito" class="btn btn-outline-success btn-lg" href="#">Depositar</a>
+        </div>
+        <div class="col">
+          <a class="btn btn-outline-danger btn-lg" href="#">Pagamento</a>
+        </div>
+        <div class="col">
+          <a (click)="abrirModalTransferencia(modalTransferencia, historico)" class="btn btn-outline-info btn-lg" href="#">Transferencia</a>
+        </div>
+      </div>
+    </div>
+    <div class="col text-center">
+      <a href="#" class="btn btn-outline-secondary btn-lg">Resgatar Valor</a>
+    </div>
+  </div>
+</div>
+
+<div bsModal #modalExtrato="bs-modal" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Large modal</h4>
+        <button type="button" class="close pull-right" (click)="modalExtrato.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		
+		<tabset>
+			<tab heading="Janeiro" id="tab1">
+				<div>
+					<h2>Janeiro</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+			<tab heading="Fevereiro" id="tab2">modalTransferencia
+				<div>
+					<h2>Fevereiro</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+			<tab heading="Marco" id="tab3">
+				<div>
+					<h2>Marco</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+			<tab heading="Abril" id="tab4">
+				<div>
+					<h2>Abril</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+			<tab heading="Maio" id="tab5">
+				<div>
+					<h2>Maio</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+			<tab heading="Junho" id="tab6">
+				<div>
+					<h2>Junho</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+			<tab heading="Julho" id="tab7">
+				<div>
+					<h2>Julho</h2>
+					<p>Extrato</p>
+				</div>
+			</tab>
+		</tabset>	
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div bsModal #modalTransferencia="bs-modal" class="modal fade" tabindex="-1"
+     role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Large modal</h4>
+        <button type="button" class="close pull-right" (click)="modalTransferencia.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		
+		<tabset>
+			<tab heading="Contas Cadastradas" id="tab1">
+				<div style="width: 470px; margin: auto;">
+					<accordion *ngFor="let historico of historicos">
+						<accordion-group  heading="{{ historico.nomeConta }}">
+              <strong>Agencia </strong> {{ historico.digitosAgencia  }}&nbsp; &nbsp; &nbsp; &nbsp;
+              <strong>Conta </strong> {{ historico.digitosConta  }}
+							<br>
+							<input style="margin-top: 10px;" type="text" class="form-control text-center" placeholder="Valor Deposito">
+							<button style="margin-top: 10px;" class="btn btn-danger btn-block">Depositar</button>
+						  </accordion-group>
+					</accordion>
+				</div>
+			</tab>
+			<tab heading="Novo Deposito" id="tab1">
+				<form [formGroup]="formNewDeposito" class="form-group">
+					<div style="width: 280px; margin: auto; margin-top: 05px;">
+            <input maxlength="5" formControlName="agencia" type="text" class="form-control text-center" placeholder="Agencia"
+            [ngClass]="{
+              'is-invalid':
+                formNewDeposito.get('agencia').errors &&
+                formNewDeposito.get('agencia').touched
+            }"
+            >
+            
+            <div *ngIf="
+            formNewDeposito.get('agencia').hasError('required') &&
+            formNewDeposito.get('agencia').touched
+          " class="invalid-feedback">
+            Agencia e Obrigatória!
+            </div>
+					</div>
+          <p></p>
+          <div style="width: 490px; margin: auto; margin-top: 05px;">
+            <input maxlength="8" formControlName="conta" type="text" class="form-control text-center" placeholder="Conta"
+            [ngClass]="{
+              'is-invalid':
+                formNewDeposito.get('conta').errors &&
+                formNewDeposito.get('conta').touched
+            }"
+            >
+              <div *ngIf="
+                    formNewDeposito.get('conta').hasError('required') &&
+                    formNewDeposito.get('conta').touched
+                  " class="invalid-feedback">
+                  Conta e Obrigatória!
+              </div>
+          </div>
+          <p></p>
+					<div style="margin-top: 05px;">
+            <input maxlength="27" formControlName="nomeConta" type="text" class="form-control text-center" placeholder="Nome Conta"
+            [ngClass]="{
+              'is-invalid':
+                formNewDeposito.get('nomeConta').errors &&
+                formNewDeposito.get('nomeConta').touched
+            }"
+            >
+            
+            <div *ngIf="
+            formNewDeposito.get('nomeConta').hasError('maxlength') &&
+            formNewDeposito.get('nomeConta').touched
+          " class="invalid-feedback">
+              Nome deve ter maximo de 25 caracteres
+        </div>
+            <div *ngIf="
+            formNewDeposito.get('nomeConta').hasError('required') &&
+            formNewDeposito.get('nomeConta').touched
+          " class="invalid-feedback">
+            Data é obrigatória.
+            </div>
+					</div>
+					<input style="margin-top: 10px;" type="submit" tooltip="Cadastrar" class="btn btn-info btn-block" value="Cadastrar" >
+				</form>
+			</tab>
+		</tabset>	
+      </div>
+    </div>
+  </div>
+</div>

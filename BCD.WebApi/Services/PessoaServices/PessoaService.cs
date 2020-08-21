@@ -76,6 +76,14 @@ namespace BCD.WebApi.Services.PessoaServices
 
             return pessoaDto.ToArray();
         }
+        // LISTAR POR ID PESSOA
+        public async Task<PessoaDto[]> GetAllByIdPessoa(int idPessoa)
+        {
+            var pessoa = await _repo.GetAllPessoaById(idPessoa);
+            var pessoaDto = _map.Map<PessoaDto[]>(pessoa);
+
+            return pessoaDto;
+        }
         // LISTAR POR ID
         public async Task<PessoaDto> GetById(int id)
         {
