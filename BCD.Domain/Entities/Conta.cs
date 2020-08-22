@@ -11,6 +11,7 @@ namespace BCD.Domain.Entities
         public EnumTipoConta TipoConta { get; private set; }
         public string NomeConta { get; set; }
         public float Saldo { get; set; }
+        public string Senha { get; private set; }
         public int PessoaId { get; private set; }
         public Pessoa Pessoa { get; set; }
         public List<HistoricosContas> Extrato { get; private set; }

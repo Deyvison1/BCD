@@ -7,7 +7,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxMaskModule, IConfig } from 'ngx-mask'
 
 import { AppRoutingModule } from './app-routing.module';
@@ -36,7 +36,8 @@ import { PessoaComponent } from './pessoa/pessoa.component';
     AccordionModule.forRoot(),
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    NgxMaskModule.forRoot()
+    NgxMaskModule.forRoot(),
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

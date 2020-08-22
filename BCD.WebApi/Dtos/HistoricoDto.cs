@@ -11,6 +11,8 @@ namespace BCD.WebApi.Dtos
         public float Valor { get; set; }
         public string DescricaoTransacao { get; set; }
         public string TipoConta { get; set; }
+        public int Operacao { get; set; }
+        public string NomeContaDestino { get; set; }
         public string NomeConta { get; set; }
         public int DigitosConta { get; set; }
         public int DigitosAgencia { get; set; }

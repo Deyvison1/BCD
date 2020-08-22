@@ -86,7 +86,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         // OBTER POR AGENCIA E CONTA CORRENTE
         public async Task<Conta> GetByAgenciaAndContaCorrente(int agencia, int conta)
         {
-            var getByAgenciaAndContaConrrente =await _context.Contas.FirstOrDefaultAsync(
+            var getByAgenciaAndContaConrrente = await _context.Contas.FirstOrDefaultAsync(
                 x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
                 && x.TipoConta == 0
             );

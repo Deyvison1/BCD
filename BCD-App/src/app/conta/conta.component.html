@@ -114,7 +114,7 @@
 					<p>Extrato</p>
 				</div>
 			</tab>
-			<tab heading="Fevereiro" id="tab2">modalTransferencia
+			<tab heading="Fevereiro" id="tab2">
 				<div>
 					<h2>Fevereiro</h2>
 					<p>Extrato</p>
@@ -162,7 +162,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Large modal</h4>
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Transferencia</h4>
         <button type="button" class="close pull-right" (click)="modalTransferencia.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -171,18 +171,24 @@
 		
 		<tabset>
 			<tab heading="Contas Cadastradas" id="tab1">
-				<div style="width: 470px; margin: auto;">
-					<accordion *ngFor="let historico of historicos">
+				<div style="width: 470px; margin: auto; margin-top: 10px;">
+          <form #formDeposito="ngForm" (ngSubmit)="depositar(modalTransferencia, formDeposito)">
+            <accordion *ngFor="let historico of historicos">
 						<accordion-group  heading="{{ historico.nomeConta }}">
-              <strong>Agencia </strong> {{ historico.digitosAgencia  }}&nbsp; &nbsp; &nbsp; &nbsp;
-              <strong>Conta </strong> {{ historico.digitosConta  }}
+              <strong>Agencia </strong> {{ historico.digitosAgenciaDestino  }}&nbsp; &nbsp; &nbsp; &nbsp;
+              <strong>Conta </strong> {{ historico.digitosContaDestino  }}
 							<br>
-							<input style="margin-top: 10px;" type="text" class="form-control text-center" placeholder="Valor Deposito">
-							<button style="margin-top: 10px;" class="btn btn-danger btn-block">Depositar</button>
+              <input style="margin-top: 10px;" name="valorDeposito" [(ngModel)]="model.valorDeposito" required type="text" class="form-control text-center" placeholder="Valor Deposito">
+              <br>
+              <accordion-group heading="Depositar">
+                <input type="text" class="text-center form-control" name="senha" [(ngModel)]="model.senha" required placeholder="Senha">
+                <button [disabled]="!formDeposito.valid" style="margin-top: 10px;" class="btn btn-danger btn-block">Depositar</button>
+              </accordion-group>
 						  </accordion-group>
-					</accordion>
+          </accordion>
+        </form>          
 				</div>
-			</tab>
+      </tab>
 			<tab heading="Novo Deposito" id="tab1">
 				<form [formGroup]="formNewDeposito" class="form-group">
 					<div style="width: 280px; margin: auto; margin-top: 05px;">
@@ -244,6 +250,24 @@
 				</form>
 			</tab>
 		</tabset>	
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ 
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name2">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Small modal</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="template.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
       </div>
     </div>
   </div>

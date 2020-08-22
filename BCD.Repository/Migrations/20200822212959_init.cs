@@ -38,6 +38,8 @@ namespace BCD.Repository.Migrations
                     Valor = table.Column<float>(nullable: false),
                     DescricaoTransacao = table.Column<string>(nullable: true),
                     TipoConta = table.Column<string>(nullable: true),
+                    NomeContaDestino = table.Column<string>(nullable: true),
+                    Operacao = table.Column<int>(nullable: false),
                     NomeConta = table.Column<string>(nullable: true),
                     DigitosConta = table.Column<int>(nullable: false),
                     DigitosAgencia = table.Column<int>(nullable: false),
@@ -74,6 +76,7 @@ namespace BCD.Repository.Migrations
                     TipoConta = table.Column<int>(nullable: false),
                     NomeConta = table.Column<string>(nullable: true),
                     Saldo = table.Column<float>(nullable: false),
+                    Senha = table.Column<string>(nullable: true),
                     PessoaId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

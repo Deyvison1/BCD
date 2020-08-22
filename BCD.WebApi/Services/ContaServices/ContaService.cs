@@ -9,6 +9,7 @@ using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.Exception;
 using BCD.WebApi.Services.HistoricoServices;
+using CryptSharp;
 
 namespace BCD.WebApi.Services.ContaServices
 {
@@ -28,6 +29,16 @@ namespace BCD.WebApi.Services.ContaServices
             _repo = repo;
             _map = map;
         }
+        // ENCRIPTOGRAFAR SENHA
+        public string MD5(string senha)
+        {
+            return Crypter.MD5.Crypt(senha);
+        }
+        // COMPARAR SENHA
+        public bool CompareSenha(string senhaInput, string senha)
+        {
+            return Crypter.CheckPassword(senhaInput, senha);
+        }
         // GERAR NUMEROS ALEATORIOS PARA CONTA E AGENCIA
         public async Task<HelperContaDto> GerarContaAndAgencia(int idPessoa)
         {
@@ -37,8 +48,8 @@ namespace BCD.WebApi.Services.ContaServices
             if (contaByIdPessoa == null)
             {
                 Random random = new Random();
-                int agencia = random.Next(10000, 80000);
-                int conta = random.Next(10000000, 80000000);
+                int agencia = random.Next(10000, 99999);
+                int conta = random.Next(10000000, 99999999);
                 helperContaDto = new HelperContaDto
                 {
                     Conta = conta,
@@ -60,6 +71,7 @@ namespace BCD.WebApi.Services.ContaServices
             var helperConta = await GerarContaAndAgencia(contaDto.PessoaId);
             contaDto.DigitosConta = helperConta.Conta;
             contaDto.DigitosAgencia = helperConta.Agencia;
+            contaDto.Senha = MD5(contaDto.Senha);
             
             if(contaDto.TipoConta == 0)
             {
@@ -183,7 +195,8 @@ namespace BCD.WebApi.Services.ContaServices
                     TipoConta = "CONTA CORRENTE",
                     Valor = contaSaque.Quantia,
                     DataTransacao = DateTime.Now,
-                    NomeConta = conta.NomeConta
+                    NomeConta = conta.NomeConta,
+                    Operacao = 0,
                 };
                 // SERVICE ADD DO HISTORICO
                 var historicoAdd = await _historicoServices.Add(historicoDto);
@@ -225,7 +238,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosAgencia = conta.DigitosAgencia,
                     DigitosConta = conta.DigitosConta,
                     Valor = contaDto.Quantia,
-                    NomeConta = conta.NomeConta
+                    NomeConta = conta.NomeConta,
+                    Operacao = 1
                 };
 
                 var addHistorico = await _historicoServices.Add(historicoDto);
@@ -279,7 +293,9 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosContaDestino = contaDestino.DigitosConta,
                     TipoConta = "CONTA CORRENTE",
                     Valor = contaDto.Quantia,
-                    NomeConta = contaOrigin.NomeConta
+                    NomeConta = contaOrigin.NomeConta,
+                    NomeContaDestino = contaDestino.NomeConta,
+                    Operacao = 4
                 };
                 var historicoAdd = await _historicoServices.Add(historicoOriginDto);
 
@@ -293,7 +309,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosContaDestino = contaDestino.DigitosConta,
                     TipoConta = "CONTA CORRENTE",
                     Valor = contaDto.Quantia,
-                    NomeConta = contaDestino.NomeConta
+                    NomeConta = contaOrigin.NomeConta,
+                    NomeContaDestino = contaDestino.NomeConta,
                 };
                 var historicoDestinoAdd = await _historicoServices.Add(historicoDestinoDto);
 
@@ -360,7 +377,8 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosContaDestino = contaPoupanca.DigitosConta,
                     TipoConta = "CONTA CORRENTE",
                     Valor = contaDto.Quantia,
-                    NomeConta = contaCorrente.NomeConta
+                    NomeConta = contaCorrente.NomeConta,
+                    Operacao = 2
                 };
                 var historicoContaCorrenteAdd = await _historicoServices.Add(historicoCorrenteDto);
 

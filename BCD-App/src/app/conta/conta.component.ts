@@ -18,10 +18,13 @@ export class ContaComponent implements OnInit {
   // VARIAVEIS TIPOS PRIMITIVOS
   valorTotalCorrente: number;
   valorTotalPoupanca: number;
+  
 
   // VARIAVEIS TIPO CLASS
   formNewDeposito: FormGroup;
-
+  formDeposito: FormGroup;
+  model: any = {};
+  
   // VARIAVEIS DE INSTANCIAS
   conta: Conta = new Conta();
   contas: Conta[] = [];
@@ -44,6 +47,7 @@ export class ContaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.validationValorDeposito();
     this.getAllByIdPessoa();
     this.validationHelperConta();
   }
@@ -62,9 +66,20 @@ export class ContaComponent implements OnInit {
 
   abrirModalTransferencia(template: any) {
     this.abrirModal(template);
+      // COLOCAR UM INT PARA IDENTIFICAR A ACAO.
+    //this.historicos = this.historicos.filter(x => x.descricaoTransacao == 'TRANSFERENCIA BANCARIA PARA CONTA CORRENTE');
+  }
 
-    this.historicos
-}
+  depositar(template: any, form: any) {
+    if(this.model.senha == '2552') {
+      console.log('E isso');
+    }
+    else {
+      console.log('nao passou');
+    }
+    template.hide();
+    form.reset();
+  }
 
   newDeposito(helperConta: HelperConta) {
 
@@ -81,6 +96,8 @@ export class ContaComponent implements OnInit {
             (conta: Conta[]) => {
               conta.forEach(x => {
                 this.historicos = x.extrato;
+                this.valorTotalCorrente =  (x.tipoConta == 0)? x.saldo : 0 ;
+                this.valorTotalPoupanca =  (x.tipoConta == 1)? x.saldo : 0 ;
               });
             }, error => {
               console.log(error);
@@ -102,6 +119,11 @@ export class ContaComponent implements OnInit {
         nomeConta: ['', [Validators.required, Validators.maxLength(25)]]
       }
     );
-
+  }
+  validationValorDeposito() {
+    this.formDeposito = this.fb.group({
+      valorDeposito: ['', Validators.required],
+      senha: ['']
+    });
   }
 }

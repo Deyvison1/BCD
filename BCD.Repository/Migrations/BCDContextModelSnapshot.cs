@@ -31,6 +31,8 @@ namespace BCD.Repository.Migrations
 
                     b.Property<float>("Saldo");
 
+                    b.Property<string>("Senha");
+
                     b.Property<int>("TipoConta");
 
                     b.HasKey("Id");
@@ -101,6 +103,10 @@ namespace BCD.Repository.Migrations
                     b.Property<int>("DigitosContaDestino");
 
                     b.Property<string>("NomeConta");
+
+                    b.Property<string>("NomeContaDestino");
+
+                    b.Property<int>("Operacao");
 
                     b.Property<string>("TipoConta");
 

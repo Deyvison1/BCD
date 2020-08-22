@@ -11,6 +11,8 @@ namespace BCD.Domain.Entities
         public float Valor { get; private set; }
         public string DescricaoTransacao { get; private set; }
         public string TipoConta { get; set; }
+        public string NomeContaDestino { get; private set; }
+        public int Operacao { get; private set; }
         public string NomeConta { get; private set; }
         public int DigitosConta { get; private set; }
         public int DigitosAgencia { get; private set; }
