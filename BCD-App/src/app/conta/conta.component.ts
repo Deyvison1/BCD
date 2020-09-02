@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ContaService } from '../Services/ContaServices/conta.service';
 import { Conta } from '../Models/Conta';
 import { Historico } from '../Models/Historico';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HelperConta } from '../Models/HelperConta';
 import { PessoaService } from '../Services/PessoaServices/pessoa.service';
 import { Pessoa } from '../Models/Pessoa';
@@ -21,9 +21,8 @@ export class ContaComponent implements OnInit {
   
 
   // VARIAVEIS TIPO CLASS
-  formNewDeposito: FormGroup;
+  formNewTransferencia: FormGroup;
   formDeposito: FormGroup;
-  model: any = {};
   
   // VARIAVEIS DE INSTANCIAS
   conta: Conta = new Conta();
@@ -35,9 +34,7 @@ export class ContaComponent implements OnInit {
 
   // VARIAVEIS DE LISTAS
   historicos: Historico[] = [];
-  historicoTransferencia: Historico[] = [];
   contaTransferencia: Conta[] = [];
-
 
 
   constructor(
@@ -66,23 +63,23 @@ export class ContaComponent implements OnInit {
 
   abrirModalTransferencia(template: any) {
     this.abrirModal(template);
-      // COLOCAR UM INT PARA IDENTIFICAR A ACAO.
-    //this.historicos = this.historicos.filter(x => x.descricaoTransacao == 'TRANSFERENCIA BANCARIA PARA CONTA CORRENTE');
+
+    this.historicos = this.historicos.filter(x => x.operacao == 4);
   }
 
-  depositar(template: any, form: any) {
-    if(this.model.senha == '2552') {
-      console.log('E isso');
+  transferencia(template: any, form: any, historico: Historico) {
+    
+    if(historico != null) 
+    {
+      this.helperConta.agenciaDestino = historico.digitosAgenciaDestino;
+      this.helperConta.contaDestino = historico.digitosContaDestino;
+      this.helperConta.agencia = historico.digitosAgencia;
+      this.helperConta.conta = historico.digitosConta;
     }
-    else {
-      console.log('nao passou');
-    }
-    template.hide();
-    form.reset();
   }
 
-  newDeposito(helperConta: HelperConta) {
-
+  deposito(modalDeposito: any) {
+    modalDeposito.show();
   }
   getAllByIdPessoa() {
     return this.pessoaService.getAllByIdPessoa(1).subscribe(
@@ -104,7 +101,6 @@ export class ContaComponent implements OnInit {
             }
           );
         });
-        console.log(pessoas);
       }, error => {
         console.log(error);
       }
@@ -112,18 +108,19 @@ export class ContaComponent implements OnInit {
   }
 
   validationHelperConta() {
-    this.formNewDeposito = this.fb.group(
+    this.formNewTransferencia = this.fb.group(
       {
         conta: ['', [Validators.required, Validators.max(99999999), Validators.min(10000000)]],
         agencia: ['', [Validators.required, Validators.max(99999), Validators.min(10000)]],
-        nomeConta: ['', [Validators.required, Validators.maxLength(25)]]
+        nomeConta: ['', [Validators.required, Validators.maxLength(25)]],
+        valor: ['',]
       }
     );
   }
   validationValorDeposito() {
     this.formDeposito = this.fb.group({
       valorDeposito: ['', Validators.required],
-      senha: ['']
+      senha: ['', Validators.required]
     });
   }
 }

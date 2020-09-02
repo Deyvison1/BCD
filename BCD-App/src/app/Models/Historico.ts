@@ -11,5 +11,7 @@ export class Historico {
         digitosAgencia: number;
         digitosAgenciaDestino: number;
         digitosContaDestino: number;
+        operacao: number;
+        nomeContaDestino: string;
         contas: Conta[];
 }

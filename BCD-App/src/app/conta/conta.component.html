@@ -3,7 +3,10 @@
     <div style="border-radius: 4px;" class="col-8 border">
       <div style="padding-top: 12px; padding-bottom: 10px;" class="row">
         <div class="col-3">
-          <a (click)="abrirModalExtrato(modalExtrato)" class="btn btn-outline-info btn-block text-center btn-lg" href="#"
+          <a
+            (click)="abrirModalExtrato(modalExtrato)"
+            class="btn btn-outline-info btn-block text-center btn-lg"
+            href="#"
             >Extrato</a
           >
         </div>
@@ -42,7 +45,7 @@
             <td *ngIf="conta.tipoConta == 0">Corrente</td>
             <td *ngIf="conta.tipoConta == 1">Poupanca</td>
             <td>{{ conta.saldo | currency: "R$: " }}</td>
-            <td>{{ conta.digitosConta }}</td>
+            <td>{{ conta.digitosConta | mask: "00.0000-0" }}</td>
           </tr>
         </tbody>
       </table>
@@ -74,18 +77,24 @@
     </div>
   </div>
 
-
   <div style="margin-top: 30px;" class="row">
     <div class="col-8">
       <div class="row">
         <div class="col">
-          <a  tooltip="Deposito" class="btn btn-outline-success btn-lg" href="#">Depositar</a>
+          <a tooltip="Deposito" class="btn btn-outline-success btn-lg" (click)="deposito(modalDeposito)"
+            >Depositar</a
+          >
         </div>
         <div class="col">
           <a class="btn btn-outline-danger btn-lg" href="#">Pagamento</a>
         </div>
         <div class="col">
-          <a (click)="abrirModalTransferencia(modalTransferencia, historico)" class="btn btn-outline-info btn-lg" href="#">Transferencia</a>
+          <a
+            (click)="abrirModalTransferencia(modalTransferencia, historico)"
+            class="btn btn-outline-info btn-lg"
+            href="#"
+            >Transferencia</a
+          >
         </div>
       </div>
     </div>
@@ -95,180 +104,330 @@
   </div>
 </div>
 
-<div bsModal #modalExtrato="bs-modal" class="modal fade" tabindex="-1"
-     role="dialog" aria-labelledby="dialog-sizes-name1">
+<div
+  bsModal
+  #modalExtrato="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Large modal</h4>
-        <button type="button" class="close pull-right" (click)="modalExtrato.hide()" aria-label="Close">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Large modal
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="modalExtrato.hide()"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-		
-		<tabset>
-			<tab heading="Janeiro" id="tab1">
-				<div>
-					<h2>Janeiro</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-			<tab heading="Fevereiro" id="tab2">
-				<div>
-					<h2>Fevereiro</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-			<tab heading="Marco" id="tab3">
-				<div>
-					<h2>Marco</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-			<tab heading="Abril" id="tab4">
-				<div>
-					<h2>Abril</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-			<tab heading="Maio" id="tab5">
-				<div>
-					<h2>Maio</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-			<tab heading="Junho" id="tab6">
-				<div>
-					<h2>Junho</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-			<tab heading="Julho" id="tab7">
-				<div>
-					<h2>Julho</h2>
-					<p>Extrato</p>
-				</div>
-			</tab>
-		</tabset>	
+        <tabset>
+          <tab heading="Janeiro" id="tab1">
+            <div>
+              <h2>Janeiro</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+          <tab heading="Fevereiro" id="tab2">
+            <div>
+              <h2>Fevereiro</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+          <tab heading="Marco" id="tab3">
+            <div>
+              <h2>Marco</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+          <tab heading="Abril" id="tab4">
+            <div>
+              <h2>Abril</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+          <tab heading="Maio" id="tab5">
+            <div>
+              <h2>Maio</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+          <tab heading="Junho" id="tab6">
+            <div>
+              <h2>Junho</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+          <tab heading="Julho" id="tab7">
+            <div>
+              <h2>Julho</h2>
+              <p>Extrato</p>
+            </div>
+          </tab>
+        </tabset>
       </div>
     </div>
   </div>
 </div>
 
-
-<div bsModal #modalTransferencia="bs-modal" class="modal fade" tabindex="-1"
-     role="dialog" aria-labelledby="dialog-sizes-name1">
+<div
+  bsModal
+  #modalTransferencia="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Transferencia</h4>
-        <button type="button" class="close pull-right" (click)="modalTransferencia.hide()" aria-label="Close">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Transferencia
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="modalTransferencia.hide()"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-		
-		<tabset>
-			<tab heading="Contas Cadastradas" id="tab1">
-				<div style="width: 470px; margin: auto; margin-top: 10px;">
-          <form #formDeposito="ngForm" (ngSubmit)="depositar(modalTransferencia, formDeposito)">
-            <accordion *ngFor="let historico of historicos">
-						<accordion-group  heading="{{ historico.nomeConta }}">
-              <strong>Agencia </strong> {{ historico.digitosAgenciaDestino  }}&nbsp; &nbsp; &nbsp; &nbsp;
-              <strong>Conta </strong> {{ historico.digitosContaDestino  }}
-							<br>
-              <input style="margin-top: 10px;" name="valorDeposito" [(ngModel)]="model.valorDeposito" required type="text" class="form-control text-center" placeholder="Valor Deposito">
-              <br>
-              <accordion-group heading="Depositar">
-                <input type="text" class="text-center form-control" name="senha" [(ngModel)]="model.senha" required placeholder="Senha">
-                <button [disabled]="!formDeposito.valid" style="margin-top: 10px;" class="btn btn-danger btn-block">Depositar</button>
-              </accordion-group>
-						  </accordion-group>
-          </accordion>
-        </form>          
-				</div>
-      </tab>
-			<tab heading="Novo Deposito" id="tab1">
-				<form [formGroup]="formNewDeposito" class="form-group">
-					<div style="width: 280px; margin: auto; margin-top: 05px;">
-            <input maxlength="5" formControlName="agencia" type="text" class="form-control text-center" placeholder="Agencia"
-            [ngClass]="{
-              'is-invalid':
-                formNewDeposito.get('agencia').errors &&
-                formNewDeposito.get('agencia').touched
-            }"
-            >
-            
-            <div *ngIf="
-            formNewDeposito.get('agencia').hasError('required') &&
-            formNewDeposito.get('agencia').touched
-          " class="invalid-feedback">
-            Agencia e Obrigatória!
+        <tabset>
+          <tab heading="Contas Cadastradas" id="tab1">
+            <div style="width: 470px; margin: auto; margin-top: 10px;">
+              <form #formTransferencia="ngForm">
+                <accordion *ngFor="let historico of historicos">
+                  <accordion-group heading="{{ historico.nomeContaDestino }}">
+                    <strong>Agencia </strong>
+                    {{ historico.digitosAgenciaDestino }}&nbsp; &nbsp; &nbsp;
+                    &nbsp; <strong>Conta </strong>
+                    {{ historico.digitosContaDestino }}
+                    <br />
+                    <input
+                      style="margin-top: 10px;"
+                      name="valorDeposito"
+                      [(ngModel)]="helperConta.quantia"
+                      required
+                      type="text"
+                      class="form-control text-center"
+                      placeholder="Valor Transferencia"
+                    />
+                    <br />
+                    <accordion-group heading="Transferencia">
+                      <input
+                        type="text"
+                        class="text-center form-control"
+                        name="senha"
+                        [(ngModel)]="helperConta.senha"
+                        required
+                        placeholder="Senha"
+                      />
+                      <button
+                        [disabled]="!formTransferencia.valid"
+                        style="margin-top: 10px;"
+                        (click)="
+                          transferencia(
+                            modalTransferencia,
+                            formTransferencia,
+                            historico
+                          )
+                        "
+                        class="btn btn-danger btn-block"
+                      >
+                        Transferir
+                      </button>
+                    </accordion-group>
+                  </accordion-group>
+                </accordion>
+              </form>
             </div>
-					</div>
-          <p></p>
-          <div style="width: 490px; margin: auto; margin-top: 05px;">
-            <input maxlength="8" formControlName="conta" type="text" class="form-control text-center" placeholder="Conta"
-            [ngClass]="{
-              'is-invalid':
-                formNewDeposito.get('conta').errors &&
-                formNewDeposito.get('conta').touched
-            }"
-            >
-              <div *ngIf="
-                    formNewDeposito.get('conta').hasError('required') &&
-                    formNewDeposito.get('conta').touched
-                  " class="invalid-feedback">
-                  Conta e Obrigatória!
+          </tab>
+          <tab heading="Cadastrar Nova Conta" id="tab1">
+            <form [formGroup]="formNewTransferencia" class="form-group">
+              <div style="width: 280px; margin: auto; margin-top: 05px;">
+                <input
+                  maxlength="5"
+                  formControlName="agencia"
+                  type="text"
+                  class="form-control text-center"
+                  placeholder="Agencia"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('agencia').errors &&
+                      formNewTransferencia.get('agencia').touched
+                  }"
+                />
+
+                <div
+                  *ngIf="
+                    formNewTransferencia.get('agencia').hasError('required') &&
+                    formNewTransferencia.get('agencia').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Agencia e Obrigatória!
+                </div>
               </div>
-          </div>
-          <p></p>
-					<div style="margin-top: 05px;">
-            <input maxlength="27" formControlName="nomeConta" type="text" class="form-control text-center" placeholder="Nome Conta"
-            [ngClass]="{
-              'is-invalid':
-                formNewDeposito.get('nomeConta').errors &&
-                formNewDeposito.get('nomeConta').touched
-            }"
-            >
-            
-            <div *ngIf="
-            formNewDeposito.get('nomeConta').hasError('maxlength') &&
-            formNewDeposito.get('nomeConta').touched
-          " class="invalid-feedback">
-              Nome deve ter maximo de 25 caracteres
-        </div>
-            <div *ngIf="
-            formNewDeposito.get('nomeConta').hasError('required') &&
-            formNewDeposito.get('nomeConta').touched
-          " class="invalid-feedback">
-            Data é obrigatória.
-            </div>
-					</div>
-					<input style="margin-top: 10px;" type="submit" tooltip="Cadastrar" class="btn btn-info btn-block" value="Cadastrar" >
-				</form>
-			</tab>
-		</tabset>	
+              <p></p>
+              <div style="width: 490px; margin: auto; margin-top: 05px;">
+                <input
+                  maxlength="8"
+                  formControlName="conta"
+                  type="text"
+                  class="form-control text-center"
+                  placeholder="Conta"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('conta').errors &&
+                      formNewTransferencia.get('conta').touched
+                  }"
+                />
+                <div
+                  *ngIf="
+                    formNewTransferencia.get('conta').hasError('required') &&
+                    formNewTransferencia.get('conta').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Conta e Obrigatória!
+                </div>
+              </div>
+              <p></p>
+              <div style="margin-top: 05px;">
+                <input
+                  maxlength="27"
+                  formControlName="nomeConta"
+                  type="text"
+                  class="form-control text-center"
+                  placeholder="Nome Conta"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('nomeConta').errors &&
+                      formNewTransferencia.get('nomeConta').touched
+                  }"
+                />
+
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('nomeConta')
+                      .hasError('maxlength') &&
+                    formNewTransferencia.get('nomeConta').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Nome deve ter maximo de 25 caracteres
+                </div>
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('nomeConta')
+                      .hasError('required') &&
+                    formNewTransferencia.get('nomeConta').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Nome da Conta e Obrigatorio!
+                </div>
+              </div>
+              <div style="margin-top: 05px;">
+                <input
+                  formControlName="valor"
+                  type="text"
+                  class="form-control text-center"
+                  placeholder="Valor"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('valor').errors &&
+                      formNewTransferencia.get('valor').touched
+                  }"
+                />
+
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('nomeConta')
+                      .hasError('required') &&
+                    formNewTransferencia.get('valor').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Valor deve ser obrigatorio!
+                </div>
+                </div>
+              <input
+                style="margin-top: 10px;"
+                type="submit"
+                tooltip="Cadastrar"
+                class="btn btn-info btn-block"
+                value="Transferir"
+                (click)="transferencia(modalTransferencia, formTransferencia)"
+              />
+            </form>
+          </tab>
+        </tabset>
       </div>
     </div>
   </div>
 </div>
 
 
- 
-<div bsModal #template="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name2">
+
+<!-- MODAL DEPOSITAR -->
+<div bsModal #modalDeposito="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name2">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Small modal</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="template.hide()">
+        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Deposito</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalDeposito.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        
+        <accordion>
+          <accordion-group heading="Deposito">
+            
+            <div class="form-group">
+              <div>
+                <input type="text" placeholder="Valor" class="form-control text-center">
+              </div>
+              <input style="margin-top: 10px;" type="submit" value="Depositar" class="btn btn-success btn-sm btn-block">
+            </div>
+
+          </accordion-group>
+          <accordion-group heading="Deposito TED">
+            <div class="form-group">
+              <div>
+                <select *ngIf="!historico" class="form-control">
+                  <option *ngFor="let historico of conta.extrato">{{ historico.nomeConta | titlecase }}</option>
+                </select>
+              </div>
+              <div>
+                <input type="text" placeholder="Conta" class="form-control text-center">
+              </div>
+              <div style="margin-top: 10px;">
+                <input type="text" placeholder="Agencia" class="form-control text-center">
+              </div>
+              <div style="margin-top: 10px;">
+                <input type="text" placeholder="Valor" class="form-control text-center">
+              </div>
+              <input style="margin-top: 10px;" type="submit" value="Depositar" class="btn btn-success btn-sm btn-block">
+            </div>
+          </accordion-group>
+        </accordion>
+
       </div>
     </div>
   </div>
 </div>
+

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Conta } from 'src/app/Models/Conta';
+import { HelperConta } from 'src/app/Models/HelperConta';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,11 @@ export class ContaService {
   // DELETE
   delete(id: number) {
     return this.http.delete(`${this.baseUrl}${id}`);
+  }
+
+  // DEPOSITO
+  transferencia(helperConta: HelperConta) {
+    return this.http.put(`${this.baseUrl}transferencia`, helperConta);
   }
 
   // POST

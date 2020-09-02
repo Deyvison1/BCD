@@ -140,7 +140,7 @@ namespace BCD.WebApi.Controllers
             }
         }
         // DELETAR
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id) {
             try {
                 var contaDelete = await _service.Delete(id);

@@ -181,6 +181,10 @@ namespace BCD.WebApi.Services.ContaServices
             {
                 throw new NotFoundException("Nenhumca conta encontrada e/ou saldo insuficiente!");
             }
+
+            bool senhaConfere = CompareSenha(contaSaque.Senha , conta.Senha);
+            if(!senhaConfere) throw new ArgumentException("Senha incorreta!");
+
             conta.Saldo -= contaSaque.Quantia;
 
             _repo.Update(conta);
@@ -224,6 +228,9 @@ namespace BCD.WebApi.Services.ContaServices
             // OBTER A CONTA CORRENTE
             var conta = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
             if (conta == null) throw new NotFoundException("Nehuma conta encontrada!!");
+
+            bool senhaConfere = CompareSenha(contaDto.Senha , conta.Senha);
+            if(!senhaConfere) throw new ArgumentException("Senha incorreta!");
 
             conta.Saldo += contaDto.Quantia;
 
@@ -272,6 +279,9 @@ namespace BCD.WebApi.Services.ContaServices
             {
                 throw new NotFoundException("Conta origin nao encontrada e/ou conta destino nao encontrada!");
             }
+
+            bool senhaConfere = CompareSenha(contaDto.Senha , contaOrigin.Senha);
+            if(!senhaConfere) throw new ArgumentException("Senha incorreta!");
 
             contaOrigin.Saldo -= contaDto.Quantia;
             contaDestino.Saldo += contaDto.Quantia;
