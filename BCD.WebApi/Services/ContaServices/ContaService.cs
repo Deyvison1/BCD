@@ -468,6 +468,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosContaDestino = contaPoupanca.DigitosConta,
                     TipoConta = "CONTA CORRENTE",
                     Valor = contaDto.Quantia,
+                    Operacao = 3,
                     NomeConta = contaCorrente.NomeConta
                 };
                 var historicoContaCorrenteAdd = await _historicoServices.Add(historicoCorrenteDto);
@@ -482,6 +483,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosContaDestino = contaPoupanca.DigitosConta,
                     TipoConta = "CONTA POUPANCA",
                     Valor = contaDto.Quantia,
+                    Operacao = 3,
                     NomeConta = contaPoupanca.NomeConta
                 };
                 var historicoContaPoupancaAdd = await _historicoServices.Add(historicoPoupancaDto);

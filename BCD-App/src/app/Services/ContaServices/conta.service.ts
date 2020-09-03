@@ -33,6 +33,11 @@ export class ContaService {
   }
 
   // DEPOSITO
+  deposito(helperConta: HelperConta) {
+    return this.http.put(`${this.baseUrl}deposito`, helperConta);
+  }
+
+  // TRANSFERENCIA
   transferencia(helperConta: HelperConta) {
     return this.http.put(`${this.baseUrl}transferencia`, helperConta);
   }

@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HelperConta } from '../Models/HelperConta';
 import { PessoaService } from '../Services/PessoaServices/pessoa.service';
 import { Pessoa } from '../Models/Pessoa';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -17,8 +18,8 @@ export class ContaComponent implements OnInit {
 
   // VARIAVEIS TIPOS PRIMITIVOS
   valorTotalCorrente: number;
-  valorTotalPoupanca: number;
-  
+  valorTotalPoupanca: number;  
+  data: Date;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
@@ -40,7 +41,8 @@ export class ContaComponent implements OnInit {
   constructor(
     private contaService: ContaService,
     private fb: FormBuilder,
-    private pessoaService: PessoaService
+    private pessoaService: PessoaService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -53,8 +55,10 @@ export class ContaComponent implements OnInit {
     template.show();
   }
 
-  abrirModalExtrato(template: any, _historicos: Historico[]) {
+  abrirModalExtrato(template: any) {
     this.abrirModal(template);
+    
+    this.historicos.filter(x => x.dataTransacao.toString() === Date.now.toString());
   }
 
   abrirModalDeposito(template: any) {
@@ -67,6 +71,29 @@ export class ContaComponent implements OnInit {
     this.historicos = this.historicos.filter(x => x.operacao == 4);
   }
 
+  // DEPOSITO
+  deposito(modal: any) {
+    this.contas.forEach(
+      x => {
+        this.helperConta.conta = x.digitosConta;
+        this.helperConta.agencia = x.digitosAgencia;
+      }
+    );
+
+    this.contaService.deposito(this.helperConta).subscribe(
+      (data: Conta) => {
+        this.getAllByIdPessoa();
+        modal.hide();
+        this.helperConta.senha = '';
+        this.helperConta.quantia = null;
+        this.toastr.success('Sucesso no deposito!');
+      }, error => {
+        this.toastr.error(error);
+      }  
+    );
+  }
+
+  // TRANSFERENCIA
   transferencia(template: any, form: any, historico: Historico) {
     
     if(historico != null) 
@@ -78,9 +105,7 @@ export class ContaComponent implements OnInit {
     }
   }
 
-  deposito(modalDeposito: any) {
-    modalDeposito.show();
-  }
+  
   getAllByIdPessoa() {
     return this.pessoaService.getAllByIdPessoa(1).subscribe(
       (pessoas: Pessoa[]) => {
@@ -96,6 +121,7 @@ export class ContaComponent implements OnInit {
                 this.valorTotalCorrente =  (x.tipoConta == 0)? x.saldo : 0 ;
                 this.valorTotalPoupanca =  (x.tipoConta == 1)? x.saldo : 0 ;
               });
+              console.log(this.contas);
             }, error => {
               console.log(error);
             }

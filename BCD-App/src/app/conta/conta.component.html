@@ -20,12 +20,12 @@
         </div>
         <div class="col-4">
           <div class="border border-primary" style="border-radius: 4px;">
-            <h4 style="margin-top: 05px;" class="text-center">
+            <h5 style="margin-top: 05px;" class="text-center">
               <strong>
                 Saldo
               </strong>
               {{ valorTotalCorrente | currency: "R$: " }}
-            </h4>
+            </h5>
           </div>
         </div>
       </div>
@@ -81,7 +81,7 @@
     <div class="col-8">
       <div class="row">
         <div class="col">
-          <a tooltip="Deposito" class="btn btn-outline-success btn-lg" (click)="deposito(modalDeposito)"
+          <a tooltip="Deposito" class="btn btn-outline-success btn-lg" (click)="abrirModalDeposito(modalDeposito)"
             >Depositar</a
           >
         </div>
@@ -129,46 +129,30 @@
       </div>
       <div class="modal-body">
         <tabset>
-          <tab heading="Janeiro" id="tab1">
+          <tab heading="Julho" id="tab">
             <div>
-              <h2>Janeiro</h2>
-              <p>Extrato</p>
-            </div>
-          </tab>
-          <tab heading="Fevereiro" id="tab2">
-            <div>
-              <h2>Fevereiro</h2>
-              <p>Extrato</p>
-            </div>
-          </tab>
-          <tab heading="Marco" id="tab3">
-            <div>
-              <h2>Marco</h2>
-              <p>Extrato</p>
-            </div>
-          </tab>
-          <tab heading="Abril" id="tab4">
-            <div>
-              <h2>Abril</h2>
-              <p>Extrato</p>
-            </div>
-          </tab>
-          <tab heading="Maio" id="tab5">
-            <div>
-              <h2>Maio</h2>
-              <p>Extrato</p>
-            </div>
-          </tab>
-          <tab heading="Junho" id="tab6">
-            <div>
-              <h2>Junho</h2>
-              <p>Extrato</p>
-            </div>
-          </tab>
-          <tab heading="Julho" id="tab7">
-            <div>
-              <h2>Julho</h2>
-              <p>Extrato</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Data Transacao</th>
+                    <th>Valor Transacao</th>
+                    <th>Descricao Transacao</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let historico of historicos">
+                    <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ historico.valor | currency: 'R$: ' }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-danger" *ngIf="historico.operacao == 0">Saque</button>
+                      <button class="btn btn-sm btn-secondary" *ngIf="historico.operacao == 1">Deposito</button>
+                      <button class="btn btn-sm btn-success" *ngIf="historico.operacao == 2">Apliacao Poupanca</button>
+                      <button class="btn btn-sm btn-dark" *ngIf="historico.operacao == 3">Resgate Poupanca</button>
+                      <button class="btn btn-sm btn-info" *ngIf="historico.operacao == 4">Transferencia</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </tab>
         </tabset>
@@ -399,9 +383,12 @@
             
             <div class="form-group">
               <div>
-                <input type="text" placeholder="Valor" class="form-control text-center">
+                <input type="text" placeholder="Valor"  [(ngModel)]="helperConta.quantia" class="form-control text-center">
               </div>
-              <input style="margin-top: 10px;" type="submit" value="Depositar" class="btn btn-success btn-sm btn-block">
+              <div style="margin-top: 10px;">
+                <input type="password" placeholder="Senha"  [(ngModel)]="helperConta.senha" class="form-control text-center border border-danger">
+              </div>
+              <input style="margin-top: 10px;" (click)="deposito(modalDeposito)" type="submit" value="Depositar" class="btn btn-success btn-sm btn-block">
             </div>
 
           </accordion-group>
@@ -411,6 +398,7 @@
                 <select *ngIf="!historico" class="form-control">
                   <option *ngFor="let historico of conta.extrato">{{ historico.nomeConta | titlecase }}</option>
                 </select>
+                
               </div>
               <div>
                 <input type="text" placeholder="Conta" class="form-control text-center">
@@ -421,9 +409,34 @@
               <div style="margin-top: 10px;">
                 <input type="text" placeholder="Valor" class="form-control text-center">
               </div>
-              <input style="margin-top: 10px;" type="submit" value="Depositar" class="btn btn-success btn-sm btn-block">
             </div>
+            
+          <accordion-group heading="Depositar">
+            <input
+              type="text"
+              class="text-center form-control"
+              name="senha"
+              [(ngModel)]="helperConta.senha"
+              required
+              placeholder="Senha"
+            />
+            <button
+              [disabled]="!formTransferencia.valid"
+              style="margin-top: 10px;"
+              (click)="
+                transferencia(
+                  modalTransferencia,
+                  formTransferencia,
+                  historico
+                )
+              "
+              class="btn btn-danger btn-block"
+            >
+              Transferir
+            </button>
           </accordion-group>
+          </accordion-group>
+          
         </accordion>
 
       </div>
