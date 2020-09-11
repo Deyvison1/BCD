@@ -4,7 +4,7 @@ import { Conta } from './Conta'
 export class Pessoa {
         id: number;
         nome: string;
-        cpf: number;
+        cpf: string;
         contas: Conta[];
         enderecos: Endereco[];
 }

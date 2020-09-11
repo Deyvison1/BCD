@@ -21,6 +21,8 @@ namespace BCD.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("CPF");
+
                     b.Property<int>("DigitosAgencia");
 
                     b.Property<int>("DigitosConta");
@@ -137,7 +139,7 @@ namespace BCD.Repository.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CPF");
+                    b.Property<string>("CPF");
 
                     b.Property<string>("Nome");
 

@@ -9,5 +9,6 @@ namespace BCD.WebApi.Dtos
         public int ContaDestino { get; set; }
         public int AgenciaDestino { get; set; }
         public string Senha { get; set; }
+        public int CPF { get; set; }
     }
 }

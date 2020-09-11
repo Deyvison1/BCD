@@ -24,5 +24,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         Task<Conta[]> GetByIdAsyncList(int id);
         Task<Conta> GetByIdAsync(int id);
         Task<Conta[]> GetBySearchAsync(string search);
+        Task<bool> ExistContaFindByCpf(int cpf, int agencia, int conta);
+
     }
 }

@@ -22,7 +22,7 @@ namespace BCD.WebApi.Services.PessoaServices
             _map = map;
             _enderecoService = enderecoService; 
         }
-        public async Task<bool> ExisteCPF(int cpf){
+        public async Task<bool> ExisteCPF(string cpf){
             bool existe = await _repo.ExisteCPF(cpf);
             if(existe) {
                 throw new ArgumentException("Ja existe uma pessoa com esse cpf cadastrado!");

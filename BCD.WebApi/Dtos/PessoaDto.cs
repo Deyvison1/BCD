@@ -10,7 +10,7 @@ namespace BCD.WebApi.Dtos
         [StringLength(100, ErrorMessage = "{0} deve ter no maximo 100 caracteres!")]
         public string Nome { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
-        public int CPF { get; set; }
+        public string CPF { get; set; }
         public List<ContaDto> Contas { get; set; }
         public List<EnderecoDto> Enderecos { get; set; }
     }

@@ -129,6 +129,16 @@ namespace BCD.WebApi.Services.ContaServices
             }
             throw new ArgumentException("Erro ao persistir dados");
         }
+        public async Task<ContaDto[]> GetAllDeleteNomeCurrency(string nomeConta) 
+        {
+            var todasCcontas = await _repo.GetAllAsync();
+
+            var contasDeleteNomeCurrency = todasCcontas.Where(
+                x => x.NomeConta.ToLower() != nomeConta.ToLower()
+            );
+
+            return _map.Map<ContaDto[]>(contasDeleteNomeCurrency);
+        }
         // LISTAR TODAS
         public async Task<ContaDto[]> GetAll()
         {
@@ -172,6 +182,17 @@ namespace BCD.WebApi.Services.ContaServices
             var contaDto = _map.Map<ContaDto>(conta);
 
             return contaDto;
+        }
+        // VERIFICAR SE EXISTE CONTA COM O CPF INFORMADO
+        public async Task<bool> ExistContaFindByCPF(HelperContaDto helperContaDto)
+        {
+            bool existe = await _repo.ExistContaFindByCpf(helperContaDto.CPF, helperContaDto.Agencia, helperContaDto.Conta);
+
+            if(!existe) 
+            {
+                throw new NotFoundException("Nenhuma conta com esse CPF");
+            }
+            return existe;
         }
         // REALIZAR SAQUE
         public async Task<ContaDto> Saque(HelperContaDto contaSaque)
@@ -269,10 +290,13 @@ namespace BCD.WebApi.Services.ContaServices
         }
         public async Task<ContaDto> Transferencia(HelperContaDto contaDto)
         {
+
             // CONTA QUE IRA MANDAR A TRANSFERENCIA
             var contaOrigin = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
             // CONTA QUE IRA RECEBER A TRANSFERENCIA
             var contaDestino = await _repo.GetByAgenciaAndContaCorrente(contaDto.AgenciaDestino, contaDto.ContaDestino);
+            
+            await ExistContaFindByCPF(contaDto);
 
             // SE O REGISTRO RETORNA COMO NULL
             if (contaOrigin == null || contaDestino == null)

@@ -65,7 +65,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
             return await getBySearch;
         }
 
-        public async Task<bool> ExisteCPF(int cpf)
+        public async Task<bool> ExisteCPF(string cpf)
         {
             return (await _context.Pessoas.AnyAsync( x => x.CPF.Equals(cpf)));
         }

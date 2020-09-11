@@ -6,4 +6,5 @@ export class HelperConta {
         contaDestino:number;
         agenciaDestino:number;
         senha: string;
+        cpf: string;
 }

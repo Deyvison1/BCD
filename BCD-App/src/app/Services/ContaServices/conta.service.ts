@@ -18,6 +18,10 @@ export class ContaService {
   getAll(): Observable<Conta[]> {
     return this.http.get<Conta[]>(this.baseUrl);
   }
+
+  getAllDeleteNomeCurrency(nomeConta: string): Observable<Conta[]> {
+    return this.http.get<Conta[]>(`${this.baseUrl}nomeConta/${nomeConta}`);
+  }
   getById(id: number): Observable<Conta> {
     return this.http.get<Conta>(`${this.baseUrl}${id}`);
   }

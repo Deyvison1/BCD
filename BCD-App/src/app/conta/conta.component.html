@@ -221,7 +221,6 @@
                         (click)="
                           transferencia(
                             modalTransferencia,
-                            formTransferencia,
                             historico
                           )
                         "
@@ -237,10 +236,11 @@
           </tab>
           <tab heading="Cadastrar Nova Conta" id="tab1">
             <form [formGroup]="formNewTransferencia" class="form-group">
-              <div style="width: 280px; margin: auto; margin-top: 05px;">
+              <div style=" margin: auto; margin-top: 05px;">
                 <input
                   maxlength="5"
                   formControlName="agencia"
+                  [(ngModel)]="helperConta.agenciaDestino"
                   type="text"
                   class="form-control text-center"
                   placeholder="Agencia"
@@ -262,10 +262,11 @@
                 </div>
               </div>
               <p></p>
-              <div style="width: 490px; margin: auto; margin-top: 05px;">
+              <div style=" margin: auto; margin-top: 05px;">
                 <input
                   maxlength="8"
                   formControlName="conta"
+                  [(ngModel)]="helperConta.contaDestino"
                   type="text"
                   class="form-control text-center"
                   placeholder="Conta"
@@ -287,45 +288,27 @@
               </div>
               <p></p>
               <div style="margin-top: 05px;">
-                <input
-                  maxlength="27"
-                  formControlName="nomeConta"
-                  type="text"
-                  class="form-control text-center"
-                  placeholder="Nome Conta"
-                  [ngClass]="{
-                    'is-invalid':
-                      formNewTransferencia.get('nomeConta').errors &&
-                      formNewTransferencia.get('nomeConta').touched
-                  }"
-                />
-
-                <div
-                  *ngIf="
-                    formNewTransferencia
-                      .get('nomeConta')
-                      .hasError('maxlength') &&
-                    formNewTransferencia.get('nomeConta').touched
-                  "
-                  class="invalid-feedback"
-                >
-                  Nome deve ter maximo de 25 caracteres
-                </div>
-                <div
-                  *ngIf="
-                    formNewTransferencia
-                      .get('nomeConta')
-                      .hasError('required') &&
-                    formNewTransferencia.get('nomeConta').touched
-                  "
-                  class="invalid-feedback"
-                >
-                  Nome da Conta e Obrigatorio!
-                </div>
+                <div style="margin-top: 05px;">
+                  <input
+                    mask="000.000.000-00"
+                    formControlName="cpf"
+                    [(ngModel)]="helperConta.cpf"
+                    type="text"
+                    class="form-control text-center"
+                    placeholder="CPF"
+                    [ngClass]="{
+                      'is-invalid':
+                        formNewTransferencia.get('cpf').errors &&
+                        formNewTransferencia.get('cpf').touched
+                    }"
+                  />
+                  </div>
+                  <p></p>
               </div>
               <div style="margin-top: 05px;">
                 <input
                   formControlName="valor"
+                  [(ngModel)]="helperConta.quantia"
                   type="text"
                   class="form-control text-center"
                   placeholder="Valor"
@@ -339,7 +322,7 @@
                 <div
                   *ngIf="
                     formNewTransferencia
-                      .get('nomeConta')
+                      .get('valor')
                       .hasError('required') &&
                     formNewTransferencia.get('valor').touched
                   "
@@ -348,13 +331,42 @@
                   Valor deve ser obrigatorio!
                 </div>
                 </div>
+                <p></p>
+              <div style="margin-top: 05px;">
+                <input
+                  formControlName="senha"
+                  [(ngModel)]="helperConta.senha"
+                  type="password"
+                  class="form-control text-center"
+                  placeholder="Senha"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('senha').errors &&
+                      formNewTransferencia.get('senha').touched
+                  }"
+                />
+
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('senha')
+                      .hasError('required') &&
+                    formNewTransferencia.get('senha').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Senha deve ser obrigatorio!
+                </div>
+                <p></p>
+                </div>
               <input
+                [disabled]="!formNewTransferencia.valid"
                 style="margin-top: 10px;"
                 type="submit"
                 tooltip="Cadastrar"
                 class="btn btn-info btn-block"
                 value="Transferir"
-                (click)="transferencia(modalTransferencia, formTransferencia)"
+                (click)="newTransferencia(modalTransferencia, formNewTransferencia)"
               />
             </form>
           </tab>
@@ -410,31 +422,11 @@
                 <input type="text" placeholder="Valor" class="form-control text-center">
               </div>
             </div>
-            
-          <accordion-group heading="Depositar">
-            <input
-              type="text"
-              class="text-center form-control"
-              name="senha"
-              [(ngModel)]="helperConta.senha"
-              required
-              placeholder="Senha"
-            />
-            <button
-              [disabled]="!formTransferencia.valid"
-              style="margin-top: 10px;"
-              (click)="
-                transferencia(
-                  modalTransferencia,
-                  formTransferencia,
-                  historico
-                )
-              "
-              class="btn btn-danger btn-block"
-            >
-              Transferir
-            </button>
-          </accordion-group>
+            <div style="margin-top: 10px;">
+              <input type="password" placeholder="Senha" class="form-control text-center">
+            </div>
+            <p></p>
+            <input type="submit" class="btn btn-success btn-block" value="Depositar" (click)="newDeposito(modalDeposito, historico)">
           </accordion-group>
           
         </accordion>

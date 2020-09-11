@@ -9,4 +9,5 @@ export class Conta {
     saldo: number;
     pessoaId: number; 
     extrato: Historico[];
+    cpf: string;
 }

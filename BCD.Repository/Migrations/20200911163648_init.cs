@@ -58,7 +58,7 @@ namespace BCD.Repository.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Nome = table.Column<string>(nullable: true),
-                    CPF = table.Column<int>(nullable: false)
+                    CPF = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,6 +76,7 @@ namespace BCD.Repository.Migrations
                     TipoConta = table.Column<int>(nullable: false),
                     NomeConta = table.Column<string>(nullable: true),
                     Saldo = table.Column<float>(nullable: false),
+                    CPF = table.Column<string>(nullable: true),
                     Senha = table.Column<string>(nullable: true),
                     PessoaId = table.Column<int>(nullable: false)
                 },

@@ -134,5 +134,12 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
             ).ToArrayAsync();
         }
 
+        public async Task<bool> ExistContaFindByCpf(int cpf, int agencia, int conta)
+        {
+            return (await _context.Contas.AnyAsync(
+                x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
+                && x.CPF.Equals(cpf)
+            ));
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         void Delete(Pessoa pessoaEntities);
         void DeleteRange(Pessoa[] pessoaEntities);
         Task<bool> SaveAsync();
-        Task<bool> ExisteCPF(int cpf);
+        Task<bool> ExisteCPF(string cpf);
         Task<Pessoa[]> GetAllPessoaById(int idPessoa);
         Task<Pessoa[]> GetAllAsync();
         Task<Pessoa> GetByIdAsync(int id);

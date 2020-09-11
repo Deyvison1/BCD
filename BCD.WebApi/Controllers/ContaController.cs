@@ -210,5 +210,15 @@ namespace BCD.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }
         }
+        [HttpGet("nomeConta/{nomeConta}")]
+        public async Task<IActionResult> GetAllDeleteNomeCurrency(string nomeConta) {
+            try {
+                var contas = await _service.GetAllDeleteNomeCurrency(nomeConta);
+
+                return Ok(contas);
+            }catch(ArgumentException e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e}");
+            }
+        }
     }
 }
