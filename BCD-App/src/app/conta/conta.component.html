@@ -86,7 +86,7 @@
           >
         </div>
         <div class="col">
-          <a class="btn btn-outline-danger btn-lg" href="#">Pagamento</a>
+          <a class="btn btn-outline-danger btn-lg" (click)="abrirModalAplicar(modalAplicar)">Aplicar Valor</a>
         </div>
         <div class="col">
           <a
@@ -99,7 +99,7 @@
       </div>
     </div>
     <div class="col text-center">
-      <a href="#" class="btn btn-outline-secondary btn-lg">Resgatar Valor</a>
+      <a href="#" class="btn btn-outline-secondary btn-lg" (click)="abrirModalResgatarValor(modalResgatar)">Resgatar Valor</a>
     </div>
   </div>
 </div>
@@ -140,20 +140,27 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let historico of historicos">
+                  <tr *ngFor="let historico of historicos | paginate: { id: 'foo',
+                  itemsPerPage: 5,
+                  currentPage: pageAtual } ">
                     <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ historico.valor | currency: 'R$: ' }}</td>
                     <td>
-                      <button class="btn btn-sm btn-danger" *ngIf="historico.operacao == 0">Saque</button>
-                      <button class="btn btn-sm btn-secondary" *ngIf="historico.operacao == 1">Deposito</button>
-                      <button class="btn btn-sm btn-success" *ngIf="historico.operacao == 2">Apliacao Poupanca</button>
-                      <button class="btn btn-sm btn-dark" *ngIf="historico.operacao == 3">Resgate Poupanca</button>
-                      <button class="btn btn-sm btn-info" *ngIf="historico.operacao == 4">Transferencia</button>
+                      <button class="btn btn-sm btn-danger btn-block" *ngIf="historico.operacao == 0">Saque</button>
+                      <button class="btn btn-sm btn-secondary btn-block" *ngIf="historico.operacao == 1">Deposito</button>
+                      <button class="btn btn-sm btn-success btn-block" *ngIf="historico.operacao == 2">Apliacao Poupanca</button>
+                      <button class="btn btn-sm btn-dark btn-block" *ngIf="historico.operacao == 3">Resgate Poupanca</button>
+                      <button class="btn btn-sm btn-info btn-block" *ngIf="historico.operacao == 4">Transferencia</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+              <pagination-controls
+              (pageChange)="pageAtual = $event"
+              previousLabel="Anterior"
+              nextLabel="Proximo"
+            ></pagination-controls>
           </tab>
         </tabset>
       </div>
@@ -189,7 +196,7 @@
           <tab heading="Contas Cadastradas" id="tab1">
             <div style="width: 470px; margin: auto; margin-top: 10px;">
               <form #formTransferencia="ngForm">
-                <accordion *ngFor="let historico of historicos">
+                <accordion *ngFor="let historico of historicos | paginate:  { itemsPerPage: 4, currentPage: pageAtual }">
                   <accordion-group heading="{{ historico.nomeContaDestino }}">
                     <strong>Agencia </strong>
                     {{ historico.digitosAgenciaDestino }}&nbsp; &nbsp; &nbsp;
@@ -231,6 +238,14 @@
                     </accordion-group>
                   </accordion-group>
                 </accordion>
+<br>
+            <div class="text-right">
+              <pagination-controls
+              (pageChange)="pageAtual = $event"
+              previousLabel="Anterior"
+              nextLabel="Proximo"
+            ></pagination-controls>
+            </div>
               </form>
             </div>
           </tab>
@@ -244,22 +259,10 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Agencia"
-                  [ngClass]="{
-                    'is-invalid':
-                      formNewTransferencia.get('agencia').errors &&
-                      formNewTransferencia.get('agencia').touched
-                  }"
+                  
                 />
 
-                <div
-                  *ngIf="
-                    formNewTransferencia.get('agencia').hasError('required') &&
-                    formNewTransferencia.get('agencia').touched
-                  "
-                  class="invalid-feedback"
-                >
-                  Agencia e Obrigatória!
-                </div>
+                
               </div>
               <p></p>
               <div style=" margin: auto; margin-top: 05px;">
@@ -270,21 +273,7 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Conta"
-                  [ngClass]="{
-                    'is-invalid':
-                      formNewTransferencia.get('conta').errors &&
-                      formNewTransferencia.get('conta').touched
-                  }"
                 />
-                <div
-                  *ngIf="
-                    formNewTransferencia.get('conta').hasError('required') &&
-                    formNewTransferencia.get('conta').touched
-                  "
-                  class="invalid-feedback"
-                >
-                  Conta e Obrigatória!
-                </div>
               </div>
               <p></p>
               <div style="margin-top: 05px;">
@@ -296,11 +285,6 @@
                     type="text"
                     class="form-control text-center"
                     placeholder="CPF"
-                    [ngClass]="{
-                      'is-invalid':
-                        formNewTransferencia.get('cpf').errors &&
-                        formNewTransferencia.get('cpf').touched
-                    }"
                   />
                   </div>
                   <p></p>
@@ -312,11 +296,6 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Valor"
-                  [ngClass]="{
-                    'is-invalid':
-                      formNewTransferencia.get('valor').errors &&
-                      formNewTransferencia.get('valor').touched
-                  }"
                 />
 
                 <div
@@ -334,29 +313,14 @@
                 <p></p>
               <div style="margin-top: 05px;">
                 <input
-                  formControlName="senha"
-                  [(ngModel)]="helperConta.senha"
-                  type="password"
-                  class="form-control text-center"
-                  placeholder="Senha"
-                  [ngClass]="{
-                    'is-invalid':
-                      formNewTransferencia.get('senha').errors &&
-                      formNewTransferencia.get('senha').touched
-                  }"
-                />
-
-                <div
-                  *ngIf="
-                    formNewTransferencia
-                      .get('senha')
-                      .hasError('required') &&
-                    formNewTransferencia.get('senha').touched
-                  "
-                  class="invalid-feedback"
-                >
-                  Senha deve ser obrigatorio!
-                </div>
+                        type="text"
+                        class="text-center form-control"
+                        name="senha"
+                        formControlName="senha"
+                        [(ngModel)]="helperConta.senha"
+                        required
+                        placeholder="Senha"
+                      />
                 <p></p>
                 </div>
               <input
@@ -366,7 +330,7 @@
                 tooltip="Cadastrar"
                 class="btn btn-info btn-block"
                 value="Transferir"
-                (click)="newTransferencia(modalTransferencia, formNewTransferencia)"
+                (click)="newTransferencia(modalTransferencia)"
               />
             </form>
           </tab>
@@ -400,35 +364,10 @@
               <div style="margin-top: 10px;">
                 <input type="password" placeholder="Senha"  [(ngModel)]="helperConta.senha" class="form-control text-center border border-danger">
               </div>
-              <input style="margin-top: 10px;" (click)="deposito(modalDeposito)" type="submit" value="Depositar" class="btn btn-success btn-sm btn-block">
+              <input style="margin-top: 10px;" (click)="deposito(modalDeposito)" type="submit" value="Depositar" class="btn btn-success btn-block">
             </div>
 
           </accordion-group>
-          <accordion-group heading="Deposito TED">
-            <div class="form-group">
-              <div>
-                <select *ngIf="!historico" class="form-control">
-                  <option *ngFor="let historico of conta.extrato">{{ historico.nomeConta | titlecase }}</option>
-                </select>
-                
-              </div>
-              <div>
-                <input type="text" placeholder="Conta" class="form-control text-center">
-              </div>
-              <div style="margin-top: 10px;">
-                <input type="text" placeholder="Agencia" class="form-control text-center">
-              </div>
-              <div style="margin-top: 10px;">
-                <input type="text" placeholder="Valor" class="form-control text-center">
-              </div>
-            </div>
-            <div style="margin-top: 10px;">
-              <input type="password" placeholder="Senha" class="form-control text-center">
-            </div>
-            <p></p>
-            <input type="submit" class="btn btn-success btn-block" value="Depositar" (click)="newDeposito(modalDeposito, historico)">
-          </accordion-group>
-          
         </accordion>
 
       </div>
@@ -436,3 +375,135 @@
   </div>
 </div>
 
+<!-- MODAL RESGATAR -->
+<div bsModal #modalResgatar="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name2">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Deposito</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalResgatar.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <accordion>
+          <accordion-group heading="Aplicar Poupanca">
+            <form [formGroup]="formAplicacao">
+            <div class="form-group">
+              <div>
+                <input type="text" placeholder="Valor" formControlName="quantia" class="form-control text-center"
+                [ngClass]="{
+                  'is-invalid':
+                    formAplicacao.get('quantia').errors && formAplicacao.get('quantia').touched
+                }"
+                >
+                <div
+                  *ngIf="
+                    formAplicacao
+                      .get('quantia')
+                      .hasError('required') &&
+                    formAplicacao.get('quantia').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Valor deve ser obrigatorio!
+                </div>
+              </div>
+              <div style="margin-top: 10px;">
+                <input type="password" placeholder="Senha" formControlName="senha"  class="form-control text-center"
+                [ngClass]="{
+                  'is-invalid':
+                    formAplicacao.get('senha').errors && formAplicacao.get('senha').touched
+                }"
+                >
+                <div
+                  *ngIf="
+                    formAplicacao
+                      .get('senha')
+                      .hasError('required') &&
+                    formAplicacao.get('senha').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Senha deve ser obrigatorio!
+                </div>
+              </div>
+              <input style="margin-top: 10px;" [disabled]="!formAplicacao.valid" (click)="resgatarValor(modalResgatar)" type="submit" value="Aplicar Poupanca" class="btn btn-success btn-block">
+            </div>
+            </form>
+          </accordion-group>
+        </accordion>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- MODAL APLICAR -->
+<div bsModal #modalAplicar="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name2">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Aplicacao Poupanca</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalAplicar.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <accordion>
+          <accordion-group heading="Aplicar Poupanca">
+            <form [formGroup]="formAplicacao">
+            <div class="form-group">
+              <div>
+                <input 
+                type="text" placeholder="Valor" formControlName="quantia" class="form-control text-center"
+                [ngClass]="{
+                  'is-invalid':
+                    formAplicacao.get('quantia').errors && formAplicacao.get('quantia').touched
+                }"
+                >
+                <div
+                  *ngIf="
+                    formAplicacao
+                      .get('quantia')
+                      .hasError('required') &&
+                    formAplicacao.get('quantia').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Valor deve ser obrigatorio!
+                </div>
+              </div>
+              <div style="margin-top: 10px;">
+                <input type="password" placeholder="Senha" formControlName="senha"  class="form-control text-center"
+                [ngClass]="{
+                  'is-invalid':
+                    formAplicacao.get('senha').errors && formAplicacao.get('senha').touched
+                }"
+                >
+                <div
+                  *ngIf="
+                    formAplicacao
+                      .get('senha')
+                      .hasError('required') &&
+                    formAplicacao.get('senha').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Senha deve ser obrigatorio!
+                </div>
+              </div>
+              <input style="margin-top: 10px;" [disabled]="!formAplicacao.valid" type="submit" (click)="aplicarPoupanca(modalAplicar)" value="Aplicar Poupanca" class="btn btn-success btn-block">
+            </div>
+            </form>
+          </accordion-group>
+        </accordion>
+
+      </div>
+    </div>
+  </div>
+</div>

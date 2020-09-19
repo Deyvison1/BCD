@@ -7,4 +7,5 @@ export class HelperConta {
         agenciaDestino:number;
         senha: string;
         cpf: string;
+        tipoConta: number;
 }

@@ -72,27 +72,27 @@ namespace BCD.WebApi.Services.ContaServices
             contaDto.DigitosConta = helperConta.Conta;
             contaDto.DigitosAgencia = helperConta.Agencia;
             contaDto.Senha = MD5(contaDto.Senha);
-            
-            if(contaDto.TipoConta == 0)
+
+            if (contaDto.TipoConta == 0)
             {
                 bool existeContaCorrete = await _repo.ExisteContaCorrente(contaDto.PessoaId);
-                if(existeContaCorrete)
+                if (existeContaCorrete)
                 {
                     throw new ArgumentException("Ja existe uma conta corrente para essa pessoa");
                 }
             }
-            else if(contaDto.TipoConta != 0)
+            else if (contaDto.TipoConta != 0)
             {
                 bool existeContaPoupanca = await _repo.ExisteContaPoupanca(contaDto.PessoaId);
-                if(existeContaPoupanca)
+                if (existeContaPoupanca)
                 {
                     throw new ArgumentException("Ja existe uma conta poupanca para essa pessoa!");
                 }
 
             }
             var conta = _map.Map<Conta>(contaDto);
-            
-            
+
+
             _repo.Add(conta);
 
             if (await _repo.SaveAsync())
@@ -129,7 +129,7 @@ namespace BCD.WebApi.Services.ContaServices
             }
             throw new ArgumentException("Erro ao persistir dados");
         }
-        public async Task<ContaDto[]> GetAllDeleteNomeCurrency(string nomeConta) 
+        public async Task<ContaDto[]> GetAllDeleteNomeCurrency(string nomeConta)
         {
             var todasCcontas = await _repo.GetAllAsync();
 
@@ -145,7 +145,7 @@ namespace BCD.WebApi.Services.ContaServices
             var conta = await _repo.GetAllAsync();
 
             var contaDto = _map.Map<ContaDto[]>(conta);
-            
+
             return contaDto.ToArray();
         }
         // LISTAR POR ID COM EXTRATO
@@ -174,6 +174,19 @@ namespace BCD.WebApi.Services.ContaServices
 
             return conta.Saldo;
         }
+        // LISTAR POR CONTA E AGENCIA
+        public async Task<ContaDto> GetByContaAndAgencia(int conta, int agencia)
+        {
+            var contaByAgenciaAndConta = await _repo.GetByAgenciaAndContaCorrente(agencia, conta);
+
+            if(contaByAgenciaAndConta == null)
+            {
+                throw new NotFoundException("Nenhuma conta encontrada!");
+            }
+            var contaDto = _map.Map<ContaDto>(contaByAgenciaAndConta);
+
+            return contaDto;
+        }
         // LISTAR PESQUISA, AGENCIA E CONTA
         public async Task<ContaDto> GetBySearch(string search)
         {
@@ -186,13 +199,13 @@ namespace BCD.WebApi.Services.ContaServices
         // VERIFICAR SE EXISTE CONTA COM O CPF INFORMADO
         public async Task<bool> ExistContaFindByCPF(HelperContaDto helperContaDto)
         {
-            bool existe = await _repo.ExistContaFindByCpf(helperContaDto.CPF, helperContaDto.Agencia, helperContaDto.Conta);
+            bool existe = await _repo.ExistContaFindByCpf(helperContaDto.CPF, helperContaDto.AgenciaDestino, helperContaDto.ContaDestino);
 
-            if(!existe) 
+            if (existe)
             {
-                throw new NotFoundException("Nenhuma conta com esse CPF");
+                return existe;
             }
-            return existe;
+            throw new NotFoundException("Nenhuma conta com esse CPF");
         }
         // REALIZAR SAQUE
         public async Task<ContaDto> Saque(HelperContaDto contaSaque)
@@ -203,8 +216,8 @@ namespace BCD.WebApi.Services.ContaServices
                 throw new NotFoundException("Nenhumca conta encontrada e/ou saldo insuficiente!");
             }
 
-            bool senhaConfere = CompareSenha(contaSaque.Senha , conta.Senha);
-            if(!senhaConfere) throw new ArgumentException("Senha incorreta!");
+            bool senhaConfere = CompareSenha(contaSaque.Senha, conta.Senha);
+            if (!senhaConfere) throw new ArgumentException("Senha incorreta!");
 
             conta.Saldo -= contaSaque.Quantia;
 
@@ -235,7 +248,7 @@ namespace BCD.WebApi.Services.ContaServices
                 };
                 var addHistoricosContas = _map.Map<HistoricosContas>(historicosContasDto);
                 _repoHistoricosContas.Add(addHistoricosContas);
-                if(await _repoHistoricosContas.SaveAsync())
+                if (await _repoHistoricosContas.SaveAsync())
                 {
                     return _map.Map<ContaDto>(conta);
                 }
@@ -250,13 +263,13 @@ namespace BCD.WebApi.Services.ContaServices
             var conta = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
             if (conta == null) throw new NotFoundException("Nehuma conta encontrada!!");
 
-            bool senhaConfere = CompareSenha(contaDto.Senha , conta.Senha);
-            if(!senhaConfere) throw new ArgumentException("Senha incorreta!");
+            bool senhaConfere = CompareSenha(contaDto.Senha, conta.Senha);
+            if (!senhaConfere) throw new ArgumentException("Senha incorreta!");
 
             conta.Saldo += contaDto.Quantia;
 
             _repo.Update(conta);
-            if(await _repo.SaveAsync())
+            if (await _repo.SaveAsync())
             {
                 HistoricoDto historicoDto = new HistoricoDto
                 {
@@ -281,7 +294,7 @@ namespace BCD.WebApi.Services.ContaServices
                 var historicosContas = _map.Map<HistoricosContas>(historicosContasDto);
                 _repoHistoricosContas.Add(historicosContas);
 
-                if(await _repoHistoricosContas.SaveAsync())
+                if (await _repoHistoricosContas.SaveAsync())
                 {
                     return _map.Map<ContaDto>(conta);
                 }
@@ -295,7 +308,7 @@ namespace BCD.WebApi.Services.ContaServices
             var contaOrigin = await _repo.GetByAgenciaAndContaCorrente(contaDto.Agencia, contaDto.Conta);
             // CONTA QUE IRA RECEBER A TRANSFERENCIA
             var contaDestino = await _repo.GetByAgenciaAndContaCorrente(contaDto.AgenciaDestino, contaDto.ContaDestino);
-            
+
             await ExistContaFindByCPF(contaDto);
 
             // SE O REGISTRO RETORNA COMO NULL
@@ -304,8 +317,8 @@ namespace BCD.WebApi.Services.ContaServices
                 throw new NotFoundException("Conta origin nao encontrada e/ou conta destino nao encontrada!");
             }
 
-            bool senhaConfere = CompareSenha(contaDto.Senha , contaOrigin.Senha);
-            if(!senhaConfere) throw new ArgumentException("Senha incorreta!");
+            bool senhaConfere = CompareSenha(contaDto.Senha, contaOrigin.Senha);
+            if (!senhaConfere) throw new ArgumentException("Senha incorreta!");
 
             contaOrigin.Saldo -= contaDto.Quantia;
             contaDestino.Saldo += contaDto.Quantia;
@@ -313,7 +326,7 @@ namespace BCD.WebApi.Services.ContaServices
             List<Conta> contas = new List<Conta>();
             contas.Add(contaOrigin);
             contas.Add(contaDestino);
-            
+
             _repo.UpdateRange(contas);
             if (await _repo.SaveAsync())
             {
@@ -371,7 +384,8 @@ namespace BCD.WebApi.Services.ContaServices
 
                 _repoHistoricosContas.AddRange(listHistoricosContas);
 
-                if(await _repoHistoricosContas.SaveAsync()){
+                if (await _repoHistoricosContas.SaveAsync())
+                {
                     return _map.Map<ContaDto>(contaOrigin);
                 }
 
@@ -386,20 +400,24 @@ namespace BCD.WebApi.Services.ContaServices
             // CONTA POUPANCA
             var contaPoupanca = await _repo.GetByAgenciaAndContaPoupanca(contaDto.Agencia, contaDto.Conta);
 
-            if(contaCorrente == null || contaPoupanca == null) 
+            if (contaCorrente == null || contaPoupanca == null)
             {
                 throw new NotFoundException("Conta corrente e/ou Conta Poupanca não encontrada!");
+            }
+            else if(contaCorrente.Saldo < contaDto.Quantia) 
+            {
+                throw new NotFoundException("Saldo insuficiente!");
             }
 
             contaCorrente.Saldo -= contaDto.Quantia;
             contaPoupanca.Saldo += contaDto.Quantia;
-            
+
             List<Conta> contas = new List<Conta>();
             contas.Add(contaCorrente);
             contas.Add(contaPoupanca);
 
             _repo.UpdateRange(contas);
-            if(await _repo.SaveAsync())
+            if (await _repo.SaveAsync())
             {
                 HistoricoDto historicoCorrenteDto = new HistoricoDto
                 {
@@ -452,11 +470,11 @@ namespace BCD.WebApi.Services.ContaServices
                 listHistoricosContas.Add(historicosContasPoupanca);
 
                 _repoHistoricosContas.AddRange(listHistoricosContas);
-                if(await _repoHistoricosContas.SaveAsync())
+                if (await _repoHistoricosContas.SaveAsync())
                 {
                     return _map.Map<ContaDto>(contaCorrente);
                 }
-            } 
+            }
             throw new ArgumentException("Erro ao persistir no banco de dados!");
         }
         // REALIZAR APLICACAO NA POUPANCA
@@ -467,22 +485,26 @@ namespace BCD.WebApi.Services.ContaServices
             // CONTA POUPANCA
             var contaPoupanca = await _repo.GetByAgenciaAndContaPoupanca(contaDto.Agencia, contaDto.Conta);
 
-            if(contaCorrente == null && contaPoupanca == null) 
+            if (contaCorrente == null && contaPoupanca == null)
             {
                 throw new NotFoundException("Conta corrente e/ou Conta Poupanca não encontrada!");
+            }
+            else if(contaPoupanca.Saldo < contaDto.Quantia) 
+            {
+                throw new NotFoundException("Saldo insuficiente!");
             }
 
             contaCorrente.Saldo += contaDto.Quantia;
             contaPoupanca.Saldo -= contaDto.Quantia;
-            
+
             List<Conta> contas = new List<Conta>();
             contas.Add(contaCorrente);
             contas.Add(contaPoupanca);
 
             _repo.UpdateRange(contas);
-            if(await _repo.SaveAsync())
+            if (await _repo.SaveAsync())
             {
-                 HistoricoDto historicoCorrenteDto = new HistoricoDto
+                HistoricoDto historicoCorrenteDto = new HistoricoDto
                 {
                     DataTransacao = DateTime.Now,
                     DescricaoTransacao = "RECEBIMENTO DE RESGATE DA POUPANCA",
@@ -534,11 +556,11 @@ namespace BCD.WebApi.Services.ContaServices
                 listHistoricosContas.Add(historicosContasPoupanca);
 
                 _repoHistoricosContas.AddRange(listHistoricosContas);
-                if(await _repoHistoricosContas.SaveAsync())
+                if (await _repoHistoricosContas.SaveAsync())
                 {
                     return _map.Map<ContaDto>(contaCorrente);
                 }
-            } 
+            }
             throw new ArgumentException("Erro ao persistir no banco de dados!");
         }
     }

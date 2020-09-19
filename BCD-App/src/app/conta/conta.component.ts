@@ -18,12 +18,14 @@ export class ContaComponent implements OnInit {
 
   // VARIAVEIS TIPOS PRIMITIVOS
   valorTotalCorrente: number;
-  valorTotalPoupanca: number;  
+  valorTotalPoupanca: number;
   data: Date;
+  pageAtual: number = 1;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
   formDeposito: FormGroup;
+  formAplicacao: FormGroup;
   
   // VARIAVEIS DE INSTANCIAS
   conta: Conta = new Conta();
@@ -50,47 +52,102 @@ export class ContaComponent implements OnInit {
     this.validationValorDeposito();
     this.getAllByIdPessoa();
     this.validationHelperConta();
+    this.validationAplicacao();
   }
 
   abrirModal(template: any) {
     template.show();
   }
 
+  abrirModalResgatarValor(template: any) {
+    this.abrirModal(template);
+
+  }
+
   abrirModalExtrato(template: any) {
     this.abrirModal(template);
-      
-    this.historicos.filter(x => x.dataTransacao.toString() === Date.now.toString());
+
+    this.getAllByIdPessoa();
   }
 
   abrirModalDeposito(template: any) {
     this.abrirModal(template);
-  }
 
-  abrirModalTransferencia(template: any) {
-    this.abrirModal(template);
-
-    this.historicos = this.historicos.filter(x => x.operacao == 4);
-    this.getAll();
-
-  }
-
-  newDeposito(modalNewDeposito: any, historico: Historico) {
-    if(this.helperConta.senha !== null) {
-      console.log('opa');
-      return;
-    }
-    console.log('vix');
-  }
-
-  // DEPOSITO
-  deposito(modal: any) {
     this.contas.forEach(
       x => {
         this.helperConta.conta = x.digitosConta;
         this.helperConta.agencia = x.digitosAgencia;
       }
     );
+  }
 
+  abrirModalAplicar(template: any) {
+    this.abrirModal(template);
+
+    this.contas.forEach(
+      x => {
+        this.helperConta.conta = x.digitosConta;
+        this.helperConta.agencia = x.digitosAgencia;
+        this.helperConta.tipoConta = x.tipoConta;
+      }
+    );
+    this.formAplicacao.reset();
+  }
+
+
+  abrirModalTransferencia(template: any) {
+    this.abrirModal(template);
+
+    this.historicos = this.historicos.filter(x => x.operacao == 4);
+    this.getAllContas();
+  }
+
+  // RESGATAR VALOR
+  resgatarValor(template: any) {
+    this.helperConta = this.formAplicacao.value;
+
+
+    this.contas.forEach(x => {
+      this.helperConta.agencia = x.digitosAgencia;
+      this.helperConta.conta = x.digitosConta;
+    });
+
+    this.contaService.resgatarValor(this.helperConta).subscribe(
+      (conta: Conta) => {
+        template.hide();
+        this.formAplicacao.reset();
+        this.getAllByIdPessoa();
+        this.toastr.success('Sucesso ao Resgatar Valor!');
+      }, error => {
+        this.toastr.error(error.error);
+      }
+    );
+  }
+
+  // APLICACAO POUPANCA
+  aplicarPoupanca(template: any) {
+    this.helperConta =  this.formAplicacao.value;
+
+    this.contas.forEach(x => {
+      this.helperConta.agencia = x.digitosAgencia;
+      this.helperConta.conta = x.digitosConta;
+    });
+
+    this.contaService.aplicarPoupanca(this.helperConta).subscribe(
+      (conta: Conta) => {
+        this.getAllByIdPessoa();
+        template.hide();
+
+        this.toastr.success('Sucesso ao Aplicar Poupanca');
+      }, error => {
+        template.hide();
+        this.toastr.error('Erro ao Aplicar Poupanca!');
+      }
+    );
+  }
+
+  // DEPOSITO
+  deposito(modal: any) {
     this.contaService.deposito(this.helperConta).subscribe(
       (data: Conta) => {
         this.getAllByIdPessoa();
@@ -104,7 +161,8 @@ export class ContaComponent implements OnInit {
     );
   }
 
-  newTransferencia(modalNewTransferencia: any, form: FormGroup) {
+
+  newTransferencia(modalNewTransferencia: any) {
     this.pessoaService.getAllByIdPessoa(1).subscribe(
       (pessoa: Pessoa[]) => {
         pessoa.forEach(x => {
@@ -115,9 +173,17 @@ export class ContaComponent implements OnInit {
 
         this.helperConta.agencia = this.conta.digitosAgencia;
         this.helperConta.conta = this.conta.digitosConta;
+        
+        this.contaService.transferencia(this.helperConta).subscribe(
+          (response: Conta[]) => {
+            modalNewTransferencia.hide();
 
-
-        console.log(this.helperConta);
+            this.getAllByIdPessoa();
+            this.toastr.success('Sucesso na Transferencia!');
+          }, error => {
+            this.toastr.error(error);
+          }
+        );
       }, error => {
         console.log(error);
       }
@@ -125,34 +191,37 @@ export class ContaComponent implements OnInit {
   }
   // TRANSFERENCIA
   transferencia(template: any, historico: Historico) {
-    
-    if(historico != null) 
-    {
+  
       this.helperConta.agenciaDestino = historico.digitosAgenciaDestino;
       this.helperConta.contaDestino = historico.digitosContaDestino;
       this.helperConta.agencia = historico.digitosAgencia;
       this.helperConta.conta = historico.digitosConta;
+      
+      this.contaService.getByContaAndAgencia(this.helperConta.contaDestino, this.helperConta.agenciaDestino).subscribe(
+        (conta: Conta) => {
+          this.helperConta.cpf = (this.helperConta.cpf === null)? conta.cpf : this.helperConta.cpf;
 
-      this.contaService.transferencia(this.helperConta).subscribe(
-        (data: Conta) => {
-          this.getAllByIdPessoa();
+          this.helperConta.cpf = conta.cpf;
+          this.contaService.transferencia(this.helperConta).subscribe(
+            (conta: Conta[]) => {
+              template.hide();
 
-          this.helperConta.quantia = null;
-          this.helperConta.senha = '';
-          this.toastr.success('Sucesso!');
-          
-          template.hide();
+              this.getAllContas();
+              this.getAllByIdPessoa();
+              this.toastr.success('Sucesso!');
+            }, error => {
+              this.toastr.error(error);
+            }
+          );
         }, error => {
-          this.toastr.error(`Falhou, ${error}`);
+          this.toastr.error(error);
         }
       );
-    }
   }
 
-  getAll() {
+  getAllContas() {
     this.contaService.getAllDeleteNomeCurrency('Deyvison').subscribe(
       (contas: Conta[]) => {
-
         this.todasContas = contas;
       }, error => {
         this.toastr.error(error);
@@ -175,7 +244,6 @@ export class ContaComponent implements OnInit {
                 this.valorTotalCorrente =  (x.tipoConta == 0)? x.saldo : 0 ;
                 this.valorTotalPoupanca =  (x.tipoConta == 1)? x.saldo : 0 ;
               });
-              console.log(this.contas);
             }, error => {
               console.log(error);
             }
@@ -187,18 +255,24 @@ export class ContaComponent implements OnInit {
     );
   }
 
-
   validationHelperConta() {
     this.formNewTransferencia = this.fb.group(
       {
         conta: ['', [Validators.required, Validators.max(99999999), Validators.min(10000000) ] ],
-        agencia: ['', [Validators.required, Validators.max(99999), Validators.min(10000) ] ],
+        agencia: ['', [Validators.required, Validators.max(99999), Validators.min(10000), Validators.required ] ],
         cpf: ['', Validators.required ],
         nomeConta: [''],
         senha: ['', Validators.required ],
         valor: ['']
       }
     );
+  }
+
+  validationAplicacao() {
+    this.formAplicacao = this.fb.group({
+      quantia: ['', Validators.required ],
+      senha: ['', Validators.required ]
+    });
   }
 
   validationValorDeposito() {

@@ -9,6 +9,7 @@ import { AccordionModule } from "ngx-bootstrap/accordion";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { NgxMaskModule, IConfig } from "ngx-mask";
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -39,6 +40,7 @@ import { ToastrModule } from "ngx-toastr";
     ReactiveFormsModule,
     NgxMaskModule.forRoot(),
     FormsModule,
+    NgxPaginationModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: "toast-top-right",

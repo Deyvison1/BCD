@@ -19,6 +19,9 @@ export class ContaService {
     return this.http.get<Conta[]>(this.baseUrl);
   }
 
+  getByContaAndAgencia(conta: number, agencia: number): Observable<Conta> {
+    return this.http.get<Conta>(`${this.baseUrl}contaAndAgencia/${conta}/${agencia}`);
+  }
   getAllDeleteNomeCurrency(nomeConta: string): Observable<Conta[]> {
     return this.http.get<Conta[]>(`${this.baseUrl}nomeConta/${nomeConta}`);
   }
@@ -41,6 +44,14 @@ export class ContaService {
     return this.http.put(`${this.baseUrl}deposito`, helperConta);
   }
 
+  // RESGATAR VALOR
+  resgatarValor(helperConta: HelperConta) {
+    return this.http.put(`${this.baseUrl}resgatarPoupanca`, helperConta);
+  }
+  // APLICAR POUPANCA
+  aplicarPoupanca(helperConta: HelperConta) {
+    return this.http.put(`${this.baseUrl}aplicarPoupanca`, helperConta);
+  }
   // TRANSFERENCIA
   transferencia(helperConta: HelperConta) {
     return this.http.put(`${this.baseUrl}transferencia`, helperConta);

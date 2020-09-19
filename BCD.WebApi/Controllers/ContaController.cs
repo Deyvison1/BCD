@@ -181,6 +181,22 @@ namespace BCD.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }
         }
+        // LISTAR POR AGENCIA E CONTA
+        [HttpGet("contaAndAgencia/{conta}/{agencia}")]
+        public async Task<IActionResult> GetByAgenciaAndConta(int conta, int agencia) {
+            try 
+            {
+                var contaByAgenciaAndConta = await _service.GetByContaAndAgencia(conta, agencia);
+
+                return Ok(contaByAgenciaAndConta);
+            }
+            catch(NotFoundException e) {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
         // LISTAR PESQUISA, NOME OU CPF
         [HttpGet("buscar/{search}")]
         public async Task<IActionResult> GetBySearch(string search) {
