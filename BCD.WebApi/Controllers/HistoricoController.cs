@@ -17,6 +17,14 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
+        // LISTAR PELO MES
+        [HttpGet("listarPeloMes/{mes}")]
+        public async Task<IActionResult> GetByMes(int mes) 
+        {
+            var historicoByMes = await _service.GetByMes(mes);
+
+            return Ok(historicoByMes);    
+        }
         // ADICIONAR
         [HttpPost]
         public async Task<IActionResult> Add(HistoricoDto historicoDto) 

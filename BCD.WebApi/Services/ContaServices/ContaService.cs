@@ -29,6 +29,12 @@ namespace BCD.WebApi.Services.ContaServices
             _repo = repo;
             _map = map;
         }
+        // PEGAR MES ATUAL
+        public int PegarMesAtual() {
+            int mesAtual = DateTime.Now.Month;
+
+            return mesAtual;
+        }
         // ENCRIPTOGRAFAR SENHA
         public string MD5(string senha)
         {

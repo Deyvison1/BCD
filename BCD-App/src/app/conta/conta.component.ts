@@ -7,6 +7,7 @@ import { HelperConta } from '../Models/HelperConta';
 import { PessoaService } from '../Services/PessoaServices/pessoa.service';
 import { Pessoa } from '../Models/Pessoa';
 import { ToastrService } from 'ngx-toastr';
+import { HistoricoService } from '../Services/HistoricoServices/historico.service';
 
 
 @Component({
@@ -19,13 +20,15 @@ export class ContaComponent implements OnInit {
   // VARIAVEIS TIPOS PRIMITIVOS
   valorTotalCorrente: number;
   valorTotalPoupanca: number;
-  data: Date;
   pageAtual: number = 1;
+  mes: number;
+  qtdPages: number;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
   formDeposito: FormGroup;
-  
+  formExtrato: FormGroup;
+
   // VARIAVEIS DE INSTANCIAS
   conta: Conta = new Conta();
   contas: Conta[] = [];
@@ -38,21 +41,57 @@ export class ContaComponent implements OnInit {
   // VARIAVEIS DE LISTAS
   historicos: Historico[] = [];
   contaTransferencia: Conta[] = [];
+  historicoByMes: Historico[] = [];
 
+
+  object: any;
 
   constructor(
     private contaService: ContaService,
     private fb: FormBuilder,
     private pessoaService: PessoaService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private historicoService: HistoricoService
   ) { }
 
   ngOnInit() {
     this.validationDeposito();
     this.getAllByIdPessoa();
     this.validationFormNewTransferencia();
+    this.validationFormExtrato();
   }
 
+  saberQtdPages() {
+    this.qtdPages = (this.historicoByMes == null)? 1 : (this.historicoByMes.length);
+  }
+
+  getHistoricoByMes() {
+    this.contaService.mesAtual().subscribe(
+      (mesAtual: number) => {
+        this.mes = mesAtual;
+
+        this.historicoService.getByMes(this.mes).subscribe(
+          (historicos: Historico[]) => {
+            this.historicoByMes = historicos;
+          }, error => {
+            console.log(error);
+          }
+        );
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
+
+  enviarMes() {
+    this.historicoService.getByMes(this.mes).subscribe(
+      (historicos: Historico[]) => {
+        this.historicoByMes = historicos;
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
   abrirModal(template: any) {
     template.show();
   }
@@ -63,9 +102,23 @@ export class ContaComponent implements OnInit {
   }
 
   abrirModalExtrato(template: any) {
-    this.abrirModal(template);
 
     this.getAllByIdPessoa();
+    this.contaService.mesAtual().subscribe(
+      (mes: number) => {
+        this.mes = mes;
+        this.historicoService.getByMes(mes).subscribe(
+          (historicos: Historico[]) => {
+            this.historicoByMes = historicos;
+          }, error => {
+            console.log(error);
+          }
+        );
+      }, error => {
+        console.log(error);
+      }
+    );
+    this.abrirModal(template);
   }
 
   abrirModalDeposito(template: any) {
@@ -267,6 +320,12 @@ export class ContaComponent implements OnInit {
         quantia: ['']
       }
     );
+  }
+
+  validationFormExtrato() {
+    this.formExtrato = this.fb.group({
+      mes: ['']
+    });
   }
 
   validationDeposito() {

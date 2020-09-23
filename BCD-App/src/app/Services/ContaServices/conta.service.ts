@@ -14,6 +14,11 @@ export class ContaService {
     private http: HttpClient
   ) { }
 
+  // PEGAR MES ATUAL
+  mesAtual(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}mesAtual`);
+  }
+
   // GETS
   getAll(): Observable<Conta[]> {
     return this.http.get<Conta[]>(this.baseUrl);

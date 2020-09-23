@@ -18,6 +18,14 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
+        // PEGAR MES ATUAL
+        [HttpGet("mesAtual")]
+        public IActionResult PegarMesAtual()
+        {
+            int mesAtual = _service.PegarMesAtual();
+            
+            return Ok(mesAtual);
+        }
         // APLICAR VALOR POUPANCA
         [HttpPut("aplicarPoupanca")]
         public async Task<IActionResult> AplicarPoupanca(HelperContaDto contaResgatar)

@@ -66,5 +66,12 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
             ).ToArrayAsync();
             return await getBySearch;
         }
+
+        public async Task<Historico[]> GetByMesAsync(int mes)
+        {
+            return await _context.Historicos.Where(
+                x => x.DataTransacao.Month.Equals(mes)
+            ).ToArrayAsync();
+        }
     }
 }

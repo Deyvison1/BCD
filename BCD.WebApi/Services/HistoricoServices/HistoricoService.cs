@@ -18,6 +18,14 @@ namespace BCD.WebApi.Services.HistoricoServices
             _repo = repo;
             _map = map;
         }
+        // LISTAR PELO MES
+        public async Task<HistoricoDto[]> GetByMes(int mes)
+        {
+            var historicoByMes = await _repo.GetByMesAsync(mes);
+
+            var historicoByMesDto = _map.Map<HistoricoDto[]>(historicoByMes);
+            return historicoByMesDto.ToArray();
+        }
         // DELETAR
         public async Task<HistoricoDto> Delete(int id) 
         {
