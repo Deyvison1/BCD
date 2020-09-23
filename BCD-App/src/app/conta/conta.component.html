@@ -129,7 +129,7 @@
       </div>
       <div class="container">
         <div class="row">
-          <div class="col-8">
+          <div class="col-9">
         <select class="form-control text-center"  [(ngModel)]="mes" >
           <option value="1">JANEIRO</option>
           <option value="2">FEVEREIRO</option>
@@ -145,7 +145,7 @@
           <option value="12">DEZEMBRO</option>
         </select>
       </div>
-      <div class="col-4">
+      <div class="col-3">
       <input type="submit" class="btn btn-success btn-block" value="Pesquisar" (click)="enviarMes()">
     </div>  
     </div>
@@ -163,10 +163,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let historico of historicoByMes | paginate: { id: 'foo',
+                  <tr *ngFor="let historico of historicoByMes | paginate: { 
                   itemsPerPage: 10,
                   currentPage: pageAtual } ">
-                    <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy hh:mm' }}</td>
                     <td>{{ historico.valor | currency: 'R$: ' }}</td>
                     <td>
                       <button class="btn btn-sm btn-danger btn-block" *ngIf="historico.operacao == 0">Saque</button>
@@ -190,6 +190,7 @@
     </div>
   </div>
 </div>
+
 
 <div
   bsModal
@@ -219,7 +220,7 @@
           <tab heading="Contas Cadastradas" id="tab1">
             <div style="width: 470px; margin: auto; margin-top: 10px;">
               <form [formGroup]="formDeposito">
-                <accordion *ngFor="let historico of historicos | paginate:  { itemsPerPage: 4, currentPage: pageAtual }">
+                <accordion *ngFor="let historico of historicos">
                   <accordion-group heading="{{ historico.nomeContaDestino }}">
                     <strong>Agencia </strong>
                     {{ historico.digitosAgenciaDestino }}&nbsp; &nbsp; &nbsp;
@@ -302,6 +303,7 @@
                   </accordion-group>
                 </accordion>
 <br>
+<!--
             <div class="text-right">
               <pagination-controls
               (pageChange)="pageAtual = $event"
@@ -309,6 +311,7 @@
               nextLabel="Proximo"
             ></pagination-controls>
             </div>
+            -->
               </form>
             </div>
           </tab>

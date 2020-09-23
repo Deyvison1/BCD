@@ -61,26 +61,8 @@ export class ContaComponent implements OnInit {
     this.validationFormExtrato();
   }
 
-  saberQtdPages() {
-    this.qtdPages = (this.historicoByMes == null)? 1 : (this.historicoByMes.length);
-  }
-
   getHistoricoByMes() {
-    this.contaService.mesAtual().subscribe(
-      (mesAtual: number) => {
-        this.mes = mesAtual;
-
-        this.historicoService.getByMes(this.mes).subscribe(
-          (historicos: Historico[]) => {
-            this.historicoByMes = historicos;
-          }, error => {
-            console.log(error);
-          }
-        );
-      }, error => {
-        console.log(error);
-      }
-    );
+    
   }
 
   enviarMes() {
@@ -103,7 +85,6 @@ export class ContaComponent implements OnInit {
 
   abrirModalExtrato(template: any) {
 
-    this.getAllByIdPessoa();
     this.contaService.mesAtual().subscribe(
       (mes: number) => {
         this.mes = mes;
@@ -111,11 +92,11 @@ export class ContaComponent implements OnInit {
           (historicos: Historico[]) => {
             this.historicoByMes = historicos;
           }, error => {
-            console.log(error);
+            console.log(error.error);
           }
         );
       }, error => {
-        console.log(error);
+        console.log(error.error);
       }
     );
     this.abrirModal(template);
@@ -142,7 +123,7 @@ export class ContaComponent implements OnInit {
   abrirModalTransferencia(template: any) {
     this.abrirModal(template);
 
-    this.historicos = this.historicos.filter(x => x.operacao == 4);
+    this.historicos = this.historicos.filter(x => x.operacao === 4);
     this.getAllContas();
   }
 
@@ -163,6 +144,7 @@ export class ContaComponent implements OnInit {
         this.getAllByIdPessoa();
         this.toastr.success('Sucesso ao Resgatar Valor!');
       }, error => {
+        this.formDeposito.reset();
         this.toastr.error(error.error);
       }
     );
@@ -182,9 +164,10 @@ export class ContaComponent implements OnInit {
         this.getAllByIdPessoa();
         template.hide();
 
+        this.formDeposito.reset();
         this.toastr.success('Sucesso ao Aplicar Poupanca');
       }, error => {
-        template.hide();
+        this.formDeposito.reset();
         this.toastr.error('Erro ao Aplicar Poupanca!');
       }
     );
@@ -264,11 +247,13 @@ export class ContaComponent implements OnInit {
               this.getAllByIdPessoa();
               this.toastr.success('Sucesso!');
             }, error => {
-              this.toastr.error(error);
+              this.formDeposito.reset();
+              this.toastr.error(error.error);
             }
           );
         }, error => {
-          this.toastr.error(error);
+          template.hide();
+          this.toastr.error(error.error);
         }
       );
   }
@@ -278,7 +263,7 @@ export class ContaComponent implements OnInit {
       (contas: Conta[]) => {
         this.todasContas = contas;
       }, error => {
-        this.toastr.error(error);
+        this.toastr.error(error.error);
       }
     );
   }
