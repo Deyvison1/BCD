@@ -195,7 +195,7 @@
         <tabset>
           <tab heading="Contas Cadastradas" id="tab1">
             <div style="width: 470px; margin: auto; margin-top: 10px;">
-              <form #formTransferencia="ngForm">
+              <form [formGroup]="formDeposito">
                 <accordion *ngFor="let historico of historicos | paginate:  { itemsPerPage: 4, currentPage: pageAtual }">
                   <accordion-group heading="{{ historico.nomeContaDestino }}">
                     <strong>Agencia </strong>
@@ -203,27 +203,67 @@
                     &nbsp; <strong>Conta </strong>
                     {{ historico.digitosContaDestino }}
                     <br />
+                    <div>
                     <input
                       style="margin-top: 10px;"
-                      name="valorDeposito"
-                      [(ngModel)]="helperConta.quantia"
+                      formControlName="quantia"
                       required
                       type="text"
-                      class="form-control text-center"
-                      placeholder="Valor Transferencia"
+                      [ngClass]="{
+                        'is-invalid':
+                          formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
+                      }"
+                      class="text-center form-control"
+                      placeholder="Valor da Transferencia"
                     />
+                      
+                    <div
+                    *ngIf="formDeposito
+                        .get('quantia')
+                        .hasError('min') &&
+                      formDeposito.get('quantia').touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    Valor deve maior que 0! 
+                    </div>
+                    <div
+                      *ngIf="
+                        formDeposito
+                          .get('quantia')
+                          .hasError('required') &&
+                        formDeposito.get('quantia').touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      Valor deve ser obrigatorio!
+                    </div>
+                  </div>
                     <br />
                     <accordion-group heading="Transferencia">
                       <input
-                        type="text"
+                        type="password"
                         class="text-center form-control"
-                        name="senha"
-                        [(ngModel)]="helperConta.senha"
-                        required
+                        formControlName="senha"
                         placeholder="Senha"
+                        [ngClass]="{
+                          'is-invalid':
+                            formDeposito.get('senha').errors && formDeposito.get('senha').touched
+                        }"
                       />
+                      <div
+                      *ngIf="
+                        formDeposito
+                          .get('senha')
+                          .hasError('required') &&
+                        formDeposito.get('senha').touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      Senha deve ser obrigatorio!
+                    </div>
                       <button
-                        [disabled]="!formTransferencia.valid"
+                        [disabled]="!formDeposito.valid"
                         style="margin-top: 10px;"
                         (click)="
                           transferencia(
@@ -254,7 +294,7 @@
               <div style=" margin: auto; margin-top: 05px;">
                 <input
                   maxlength="5"
-                  formControlName="agencia"
+                  formControlName="agenciaDestino"
                   [(ngModel)]="helperConta.agenciaDestino"
                   type="text"
                   class="form-control text-center"
@@ -268,7 +308,7 @@
               <div style=" margin: auto; margin-top: 05px;">
                 <input
                   maxlength="8"
-                  formControlName="conta"
+                  formControlName="contaDestino"
                   [(ngModel)]="helperConta.contaDestino"
                   type="text"
                   class="form-control text-center"
@@ -291,7 +331,7 @@
               </div>
               <div style="margin-top: 05px;">
                 <input
-                  formControlName="valor"
+                  formControlName="quantia"
                   [(ngModel)]="helperConta.quantia"
                   type="text"
                   class="form-control text-center"
@@ -301,9 +341,9 @@
                 <div
                   *ngIf="
                     formNewTransferencia
-                      .get('valor')
+                      .get('quantia')
                       .hasError('required') &&
-                    formNewTransferencia.get('valor').touched
+                    formNewTransferencia.get('quantia').touched
                   "
                   class="invalid-feedback"
                 >
@@ -356,17 +396,62 @@
         
         <accordion>
           <accordion-group heading="Deposito">
-            
+            <form [formGroup]="formDeposito">
             <div class="form-group">
               <div>
-                <input type="text" placeholder="Valor"  [(ngModel)]="helperConta.quantia" class="form-control text-center">
+                <input
+                    type="text"
+                    [ngClass]="{
+                      'is-invalid':
+                        formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
+                    }"
+                    class="form-control text-center"
+                    formControlName="quantia"
+                    placeholder="Valor"
+                  />
+                  <div
+                    *ngIf="
+                      formDeposito.get('quantia').hasError('min') &&
+                      formDeposito.get('quantia').touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    Valor deve ser maior que 0!
+                  </div>
+                  <div
+                    *ngIf="
+                      formDeposito.get('quantia').hasError('required') &&
+                      formDeposito.get('quantia').touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    Valor é Obrigatório!!
+                  </div>
               </div>
               <div style="margin-top: 10px;">
-                <input type="password" placeholder="Senha"  [(ngModel)]="helperConta.senha" class="form-control text-center border border-danger">
+                <input
+                    type="password"
+                    [ngClass]="{
+                      'is-invalid':
+                        formDeposito.get('senha').errors && formDeposito.get('senha').touched
+                    }"
+                    class="form-control text-center"
+                    formControlName="senha"
+                    placeholder="Senha"
+                  />
+                  <div
+                    *ngIf="
+                      formDeposito.get('senha').hasError('required') &&
+                      formDeposito.get('senha').touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    Senha é Obrigatória!!
+                  </div>
               </div>
-              <input style="margin-top: 10px;" (click)="deposito(modalDeposito)" type="submit" value="Depositar" class="btn btn-success btn-block">
+              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" (click)="deposito(modalDeposito)" type="submit" value="Depositar" class="btn btn-success btn-block">
             </div>
-
+          </form>
           </accordion-group>
         </accordion>
 
@@ -389,21 +474,21 @@
         
         <accordion>
           <accordion-group heading="Aplicar Poupanca">
-            <form [formGroup]="formAplicacao">
+            <form [formGroup]="formDeposito">
             <div class="form-group">
               <div>
                 <input type="text" placeholder="Valor" formControlName="quantia" class="form-control text-center"
                 [ngClass]="{
                   'is-invalid':
-                    formAplicacao.get('quantia').errors && formAplicacao.get('quantia').touched
+                    formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
                 }"
                 >
                 <div
                   *ngIf="
-                    formAplicacao
+                    formDeposito
                       .get('quantia')
                       .hasError('required') &&
-                    formAplicacao.get('quantia').touched
+                    formDeposito.get('quantia').touched
                   "
                   class="invalid-feedback"
                 >
@@ -414,22 +499,22 @@
                 <input type="password" placeholder="Senha" formControlName="senha"  class="form-control text-center"
                 [ngClass]="{
                   'is-invalid':
-                    formAplicacao.get('senha').errors && formAplicacao.get('senha').touched
+                    formDeposito.get('senha').errors && formDeposito.get('senha').touched
                 }"
                 >
                 <div
                   *ngIf="
-                    formAplicacao
+                    formDeposito
                       .get('senha')
                       .hasError('required') &&
-                    formAplicacao.get('senha').touched
+                    formDeposito.get('senha').touched
                   "
                   class="invalid-feedback"
                 >
                   Senha deve ser obrigatorio!
                 </div>
               </div>
-              <input style="margin-top: 10px;" [disabled]="!formAplicacao.valid" (click)="resgatarValor(modalResgatar)" type="submit" value="Aplicar Poupanca" class="btn btn-success btn-block">
+              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" (click)="resgatarValor(modalResgatar)" type="submit" value="Aplicar Poupanca" class="btn btn-success btn-block">
             </div>
             </form>
           </accordion-group>
@@ -456,22 +541,22 @@
         
         <accordion>
           <accordion-group heading="Aplicar Poupanca">
-            <form [formGroup]="formAplicacao">
+            <form [formGroup]="formDeposito">
             <div class="form-group">
               <div>
                 <input 
                 type="text" placeholder="Valor" formControlName="quantia" class="form-control text-center"
                 [ngClass]="{
                   'is-invalid':
-                    formAplicacao.get('quantia').errors && formAplicacao.get('quantia').touched
+                    formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
                 }"
                 >
                 <div
                   *ngIf="
-                    formAplicacao
+                    formDeposito
                       .get('quantia')
                       .hasError('required') &&
-                    formAplicacao.get('quantia').touched
+                    formDeposito.get('quantia').touched
                   "
                   class="invalid-feedback"
                 >
@@ -482,22 +567,22 @@
                 <input type="password" placeholder="Senha" formControlName="senha"  class="form-control text-center"
                 [ngClass]="{
                   'is-invalid':
-                    formAplicacao.get('senha').errors && formAplicacao.get('senha').touched
+                    formDeposito.get('senha').errors && formDeposito.get('senha').touched
                 }"
                 >
                 <div
                   *ngIf="
-                    formAplicacao
+                    formDeposito
                       .get('senha')
                       .hasError('required') &&
-                    formAplicacao.get('senha').touched
+                    formDeposito.get('senha').touched
                   "
                   class="invalid-feedback"
                 >
                   Senha deve ser obrigatorio!
                 </div>
               </div>
-              <input style="margin-top: 10px;" [disabled]="!formAplicacao.valid" type="submit" (click)="aplicarPoupanca(modalAplicar)" value="Aplicar Poupanca" class="btn btn-success btn-block">
+              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" type="submit" (click)="aplicarPoupanca(modalAplicar)" value="Aplicar Poupanca" class="btn btn-success btn-block">
             </div>
             </form>
           </accordion-group>

@@ -25,7 +25,6 @@ export class ContaComponent implements OnInit {
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
   formDeposito: FormGroup;
-  formAplicacao: FormGroup;
   
   // VARIAVEIS DE INSTANCIAS
   conta: Conta = new Conta();
@@ -49,10 +48,9 @@ export class ContaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.validationValorDeposito();
+    this.validationDeposito();
     this.getAllByIdPessoa();
-    this.validationHelperConta();
-    this.validationAplicacao();
+    this.validationFormNewTransferencia();
   }
 
   abrirModal(template: any) {
@@ -71,14 +69,7 @@ export class ContaComponent implements OnInit {
   }
 
   abrirModalDeposito(template: any) {
-    this.abrirModal(template);
-
-    this.contas.forEach(
-      x => {
-        this.helperConta.conta = x.digitosConta;
-        this.helperConta.agencia = x.digitosAgencia;
-      }
-    );
+    this.abrirModal(template);    
   }
 
   abrirModalAplicar(template: any) {
@@ -91,7 +82,7 @@ export class ContaComponent implements OnInit {
         this.helperConta.tipoConta = x.tipoConta;
       }
     );
-    this.formAplicacao.reset();
+    this.formDeposito.reset();
   }
 
 
@@ -104,7 +95,7 @@ export class ContaComponent implements OnInit {
 
   // RESGATAR VALOR
   resgatarValor(template: any) {
-    this.helperConta = this.formAplicacao.value;
+    this.helperConta = this.formDeposito.value;
 
 
     this.contas.forEach(x => {
@@ -115,7 +106,7 @@ export class ContaComponent implements OnInit {
     this.contaService.resgatarValor(this.helperConta).subscribe(
       (conta: Conta) => {
         template.hide();
-        this.formAplicacao.reset();
+        this.formDeposito.reset();
         this.getAllByIdPessoa();
         this.toastr.success('Sucesso ao Resgatar Valor!');
       }, error => {
@@ -126,7 +117,7 @@ export class ContaComponent implements OnInit {
 
   // APLICACAO POUPANCA
   aplicarPoupanca(template: any) {
-    this.helperConta =  this.formAplicacao.value;
+    this.helperConta =  this.formDeposito.value;
 
     this.contas.forEach(x => {
       this.helperConta.agencia = x.digitosAgencia;
@@ -148,15 +139,24 @@ export class ContaComponent implements OnInit {
 
   // DEPOSITO
   deposito(modal: any) {
+
+    this.helperConta = this.formDeposito.value;
+
+    this.contas.forEach(x => {
+      this.helperConta.conta = x.digitosConta;
+      this.helperConta.agencia = x.digitosAgencia;
+    });
+
     this.contaService.deposito(this.helperConta).subscribe(
       (data: Conta) => {
         this.getAllByIdPessoa();
         modal.hide();
-        this.helperConta.senha = '';
-        this.helperConta.quantia = null;
+        
+        this.formDeposito.reset();
         this.toastr.success('Sucesso no deposito!');
       }, error => {
-        this.toastr.error(error);
+        this.formDeposito.reset();
+        this.toastr.error(error.error);
       }  
     );
   }
@@ -192,6 +192,7 @@ export class ContaComponent implements OnInit {
   // TRANSFERENCIA
   transferencia(template: any, historico: Historico) {
   
+      this.helperConta = this.formDeposito.value;
       this.helperConta.agenciaDestino = historico.digitosAgenciaDestino;
       this.helperConta.contaDestino = historico.digitosContaDestino;
       this.helperConta.agencia = historico.digitosAgencia;
@@ -255,29 +256,22 @@ export class ContaComponent implements OnInit {
     );
   }
 
-  validationHelperConta() {
+  validationFormNewTransferencia() {
     this.formNewTransferencia = this.fb.group(
       {
-        conta: ['', [Validators.required, Validators.max(99999999), Validators.min(10000000) ] ],
-        agencia: ['', [Validators.required, Validators.max(99999), Validators.min(10000), Validators.required ] ],
+        contaDestino: ['', [Validators.required, Validators.max(99999999), Validators.min(10000000) ] ],
+        agenciaDestino: ['', [Validators.required, Validators.max(99999), Validators.min(10000)] ],
         cpf: ['', Validators.required ],
         nomeConta: [''],
         senha: ['', Validators.required ],
-        valor: ['']
+        quantia: ['']
       }
     );
   }
 
-  validationAplicacao() {
-    this.formAplicacao = this.fb.group({
-      quantia: ['', Validators.required ],
-      senha: ['', Validators.required ]
-    });
-  }
-
-  validationValorDeposito() {
+  validationDeposito() {
     this.formDeposito = this.fb.group({
-      valorDeposito: ['', Validators.required ],
+      quantia: ['', [Validators.required, Validators.min(0.1)] ],
       senha: ['', Validators.required ]
     });
   }
