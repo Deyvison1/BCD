@@ -23,6 +23,7 @@ export class ContaComponent implements OnInit {
   pageAtual: number = 1;
   mes: number;
   qtdPages: number;
+  mostrarValorPoupanca: boolean = false;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
@@ -43,9 +44,6 @@ export class ContaComponent implements OnInit {
   contaTransferencia: Conta[] = [];
   historicoByMes: Historico[] = [];
 
-
-  object: any;
-
   constructor(
     private contaService: ContaService,
     private fb: FormBuilder,
@@ -61,8 +59,9 @@ export class ContaComponent implements OnInit {
     this.validationFormExtrato();
   }
 
-  getHistoricoByMes() {
-    
+
+  alternarValorVisivelPoupanca() {
+    this.mostrarValorPoupanca = !this.mostrarValorPoupanca;
   }
 
   enviarMes() {
@@ -103,7 +102,13 @@ export class ContaComponent implements OnInit {
   }
 
   abrirModalDeposito(template: any) {
-    this.abrirModal(template);    
+    this.abrirModal(template);
+  }
+
+  abrirModalDetalhes(template: any) {
+    
+    this.historicos.filter(x => x.operacao === 3);
+    this.abrirModal(template);
   }
 
   abrirModalAplicar(template: any) {
@@ -280,8 +285,10 @@ export class ContaComponent implements OnInit {
             (conta: Conta[]) => {
               conta.forEach(x => {
                 this.historicos = x.extrato;
-                this.valorTotalCorrente =  (x.tipoConta == 0)? x.saldo : 0 ;
-                this.valorTotalPoupanca =  (x.tipoConta == 1)? x.saldo : 0 ;
+                this.valorTotalCorrente =  (x.tipoConta === 0)? x.saldo : 0 ;
+              });
+              this.contas.forEach(x => {
+                this.valorTotalPoupanca = (x.tipoConta === 1)? x.saldo : 0;
               });
             }, error => {
               console.log(error);

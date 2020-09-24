@@ -24,6 +24,7 @@
               <strong>
                 Saldo
               </strong>
+              
               {{ valorTotalCorrente | currency: "R$: " }}
             </h5>
           </div>
@@ -33,19 +34,21 @@
       <table class="table table-striped text-center" style="height: 100px;">
         <thead>
           <tr>
-            <th>Nome Conta</th>
+            <th>Nome</th>
             <th>Tipo Conta</th>
-            <th>Saldo</th>
+            <th>Agencia</th>
             <th>Conta</th>
+            <th>Saldo</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let conta of contas">
-            <td>{{ conta.nomeConta }}</td>
-            <td *ngIf="conta.tipoConta == 0">Corrente</td>
-            <td *ngIf="conta.tipoConta == 1">Poupanca</td>
-            <td>{{ conta.saldo | currency: "R$: " }}</td>
+            <td>{{ conta.nomeConta | titlecase}}</td>
+            <td *ngIf="conta.tipoConta == 0"><button class="btn btn-sm btn-success">Corrente</button></td>
+            <td *ngIf="conta.tipoConta == 1"><button class="btn btn-sm btn-danger">Poupança</button></td>
+            <td>{{ conta.digitosAgencia | mask: '0000-0' }}</td>
             <td>{{ conta.digitosConta | mask: "00.0000-0" }}</td>
+            <td>{{ conta.saldo | currency: 'R$: ' }}</td>
           </tr>
         </tbody>
       </table>
@@ -55,23 +58,19 @@
         Conta Poupanca
       </h3>
       <hr />
-      <div style="height: 105px;" class="row text-center">
+      <div style="height: 90px;" class="row text-center">
+        
         <div class="col">
-          <p class="h4">Valor Em Conta</p>
-          <h4 style="margin-top: 20px;">
+
+          <button class="btn btn-info" (click)="alternarValorVisivelPoupanca ()">
+            <i class="{{ mostrarValorPoupanca ? 'fa fa-eye-slash' : 'fa fa-eye' }}"></i>
+            </button>
+          <br>
+          <br>
+          <p class="h5">Valor Em Conta</p>
+          <h4 *ngIf="mostrarValorPoupanca" style="margin-top: 20px;" >
             {{ valorTotalPoupanca | currency: "R$: " }}
           </h4>
-        </div>
-      </div>
-      <div style="height: 155px;" class="row bg-secondary text-center">
-        <div style="margin-top: 25px;" class="col divAgora">
-          <p class="h5">Valor Guardado</p>
-          <h4 style="margin-top: 20px;">R$: 2000</h4>
-        </div>
-        <div class="col btnDetails">
-          <a style="margin-top: 35px;" class="btn btn-info btn-block btn-lg"
-            >Detalhes</a
-          >
         </div>
       </div>
     </div>
@@ -104,6 +103,7 @@
   </div>
 </div>
 
+<!-- MODAL EXTRATO -->
 <div
   bsModal
   #modalExtrato="bs-modal"
@@ -164,7 +164,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let historico of historicoByMes | paginate: { 
-                  itemsPerPage: 10,
+                  itemsPerPage: 6,
                   currentPage: pageAtual } ">
                     <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy hh:mm' }}</td>
                     <td>{{ historico.valor | currency: 'R$: ' }}</td>
@@ -190,6 +190,7 @@
     </div>
   </div>
 </div>
+
 
 
 <div
@@ -491,7 +492,7 @@
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Deposito</h4>
+        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Resgatar Valor</h4>
         <button type="button" class="close pull-right" aria-label="Close" (click)="modalResgatar.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -519,6 +520,17 @@
                   class="invalid-feedback"
                 >
                   Valor deve ser obrigatorio!
+                </div>
+                <div
+                  *ngIf="
+                    formDeposito
+                      .get('quantia')
+                      .hasError('min') &&
+                    formDeposito.get('quantia').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Valor deve ser maior que 0!
                 </div>
               </div>
               <div style="margin-top: 10px;">

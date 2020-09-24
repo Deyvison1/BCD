@@ -321,6 +321,8 @@ namespace BCD.WebApi.Services.ContaServices
             if (contaOrigin == null || contaDestino == null)
             {
                 throw new NotFoundException("Conta origin nao encontrada e/ou conta destino nao encontrada!");
+            } else if(contaDto.Quantia > contaOrigin.Saldo) {
+                throw new NotFoundException("Saldo Insuficiente!");
             }
 
             bool senhaConfere = CompareSenha(contaDto.Senha, contaOrigin.Senha);
