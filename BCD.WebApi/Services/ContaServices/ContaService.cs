@@ -16,11 +16,9 @@ namespace BCD.WebApi.Services.ContaServices
     public class ContaService
     {
         private readonly IContaRepository _repo;
-
         public IMapper _map { get; }
         private HistoricoService _historicoServices { get; }
         private readonly IHistoricosContasRepository _repoHistoricosContas;
-
         public ContaService(IContaRepository repo, IMapper map, HistoricoService historicoServices,
             IHistoricosContasRepository repoHistoricoContas)
         {

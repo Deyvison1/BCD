@@ -204,31 +204,29 @@ export class ContaComponent implements OnInit {
 
 
   newTransferencia(modalNewTransferencia: any) {
-    this.pessoaService.getAllByIdPessoa(1).subscribe(
-      (pessoa: Pessoa[]) => {
-        pessoa.forEach(x => {
-          x.contas.forEach(x => {
-            this.conta = (x.pessoaId === 1)? x : null;
-          });
-        });
+    this.helperConta = this.formNewTransferencia.value;
 
-        this.helperConta.agencia = this.conta.digitosAgencia;
-        this.helperConta.conta = this.conta.digitosConta;
-        
-        this.contaService.transferencia(this.helperConta).subscribe(
-          (response: Conta[]) => {
-            modalNewTransferencia.hide();
-
-            this.getAllByIdPessoa();
-            this.toastr.success('Sucesso na Transferencia!');
-          }, error => {
-            this.toastr.error(error);
-          }
-        );
-      }, error => {
-        console.log(error);
+    this.contas.forEach(x => {
+      if(x.tipoConta === 0) {      
+        this.helperConta.agencia = x.digitosAgencia;
+        this.helperConta.conta = x.digitosConta;
       }
-    )
+    });
+
+    this.contaService.transferencia(this.helperConta).subscribe(
+      (conta: Conta) => {
+        this.getAllByIdPessoa();
+        this.toastr.success('Sucesso na Transferencia');
+        modalNewTransferencia.hide();
+
+        this.formNewTransferencia.reset();
+      }, error => {
+        modalNewTransferencia.hide();
+
+        this.formNewTransferencia.reset();
+        this.toastr.error(error.error);
+      }
+    );
   }
   // TRANSFERENCIA
   transferencia(template: any, historico: Historico) {
