@@ -20,7 +20,8 @@ export class ContaComponent implements OnInit {
   // VARIAVEIS TIPOS PRIMITIVOS
   valorTotalCorrente: number;
   valorTotalPoupanca: number;
-  pageAtual: number = 1;
+  pageAtualTransferencia = 1;
+  pageAtualExtrato = 1;
   mes: number;
   qtdPages: number;
   mostrarValorPoupanca: boolean = false;
@@ -307,7 +308,7 @@ export class ContaComponent implements OnInit {
         cpf: ['', Validators.required ],
         nomeConta: [''],
         senha: ['', Validators.required ],
-        quantia: ['']
+        quantia: ['', [Validators.required, Validators.min(0.1)]]
       }
     );
   }

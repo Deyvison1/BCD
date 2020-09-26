@@ -163,9 +163,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let historico of historicoByMes | paginate: { 
+                  <tr *ngFor="let historico of historicoByMes | paginate: { id: 'paginationExtrato',
                   itemsPerPage: 6,
-                  currentPage: pageAtual } ">
+                  currentPage: pageAtualExtrato } ">
                     <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy hh:mm' }}</td>
                     <td>{{ historico.valor | currency: 'R$: ' }}</td>
                     <td>
@@ -180,7 +180,8 @@
               </table>
             </div>
               <pagination-controls
-              (pageChange)="pageAtual = $event"
+              id="paginationExtrato"
+              (pageChange)="pageAtualExtrato = $event"
               previousLabel="Anterior"
               nextLabel="Proximo"
             ></pagination-controls>
@@ -221,7 +222,9 @@
           <tab heading="Contas Cadastradas" id="tab1">
             <div style="width: 470px; margin: auto; margin-top: 10px;">
               <form [formGroup]="formDeposito">
-                <accordion *ngFor="let historico of historicos">
+                <accordion *ngFor="let historico of historicos | paginate: { id: 'paginationTransferencia',
+                itemsPerPage: 4,
+                currentPage: pageAtualTransferencia }">
                   <accordion-group heading="{{ historico.nomeContaDestino }}">
                     <strong>Agencia </strong>
                     {{ historico.digitosAgenciaDestino }}&nbsp; &nbsp; &nbsp;
@@ -304,15 +307,14 @@
                   </accordion-group>
                 </accordion>
 <br>
-<!--
             <div class="text-right">
               <pagination-controls
-              (pageChange)="pageAtual = $event"
+              id="paginationTransferencia"
+              (pageChange)="pageAtualTransferencia = $event"
               previousLabel="Anterior"
               nextLabel="Proximo"
             ></pagination-controls>
             </div>
-            -->
               </form>
             </div>
           </tab>
@@ -325,10 +327,24 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Agencia"
-                  
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('agenciaDestino').errors && formNewTransferencia.get('agenciaDestino').touched
+                  }"
                 />
 
                 
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('agenciaDestino')
+                      .hasError('required') &&
+                    formNewTransferencia.get('agenciaDestino').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Agencia deve ser obrigatorio!
+                </div>
               </div>
               <p></p>
               <div style=" margin: auto; margin-top: 05px;">
@@ -338,7 +354,22 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Conta"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('contaDestino').errors && formNewTransferencia.get('contaDestino').touched
+                  }"
                 />
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('contaDestino')
+                      .hasError('required') &&
+                    formNewTransferencia.get('contaDestino').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Conta deve ser obrigatorio!
+                </div>
               </div>
               <p></p>
               <div style="margin-top: 05px;">
@@ -349,8 +380,34 @@
                     type="text"
                     class="form-control text-center"
                     placeholder="CPF"
+                    [ngClass]="{
+                      'is-invalid':
+                        formNewTransferencia.get('cpf').errors && formNewTransferencia.get('cpf').touched
+                    }"
                   />
+                  <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('cpf')
+                      .hasError('required') &&
+                    formNewTransferencia.get('cpf').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  CPF deve ser obrigatorio!
+                </div>
                   </div>
+                  <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('cpf')
+                      .hasError('required') &&
+                    formNewTransferencia.get('cpf').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  CPF deve ser obrigatorio!
+                </div>
                   <p></p>
               </div>
               <div style="margin-top: 05px;">
@@ -359,6 +416,10 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Valor"
+                  [ngClass]="{
+                    'is-invalid':
+                      formNewTransferencia.get('quantia').errors && formNewTransferencia.get('quantia').touched
+                  }"
                 />
 
                 <div
@@ -372,19 +433,43 @@
                 >
                   Valor deve ser obrigatorio!
                 </div>
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('quantia')
+                      .hasError('required') &&
+                    formNewTransferencia.get('quantia').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Valor deve ser maior que 0.
+                </div>
                 </div>
                 <p></p>
               <div style="margin-top: 05px;">
                 <input
                         type="password"
                         class="text-center form-control"
-                        name="senha"
                         formControlName="senha"
-                        [(ngModel)]="helperConta.senha"
                         required
                         placeholder="Senha"
+                        [ngClass]="{
+                          'is-invalid':
+                            formNewTransferencia.get('senha').errors && formNewTransferencia.get('senha').touched
+                        }"
                       />
                 <p></p>
+                <div
+                  *ngIf="
+                    formNewTransferencia
+                      .get('senha')
+                      .hasError('required') &&
+                    formNewTransferencia.get('senha').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Senha deve ser obrigatoria!
+                </div>
                 </div>
               <input
                 [disabled]="!formNewTransferencia.valid"
