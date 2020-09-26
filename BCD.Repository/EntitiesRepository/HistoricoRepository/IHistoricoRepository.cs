@@ -12,7 +12,7 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
         void DeleteRange(Historico[] historicoEntities);
         Task<bool> SaveAsync();
         Task<Historico[]> GetAllAsync();
-        Task<Historico[]> GetByMesAsync(int mes);
+        Task<Historico[]> GetByMesAsync(int mes, int agencia, int conta);
         Task<Historico> GetByIdAsync(int id);
         Task<Historico[]> GetBySearch(string search);
     }

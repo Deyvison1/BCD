@@ -19,9 +19,9 @@ namespace BCD.WebApi.Services.HistoricoServices
             _map = map;
         }
         // LISTAR PELO MES
-        public async Task<HistoricoDto[]> GetByMes(int mes)
+        public async Task<HistoricoDto[]> GetByMes(int mes, int agencia, int conta)
         {
-            var historicoByMes = await _repo.GetByMesAsync(mes);
+            var historicoByMes = await _repo.GetByMesAsync(mes, agencia, conta);
 
             var historicoByMesDto = _map.Map<HistoricoDto[]>(historicoByMes);
             return historicoByMesDto.ToArray();

@@ -18,10 +18,10 @@ namespace BCD.WebApi.Controllers
             _service = service;
         }
         // LISTAR PELO MES
-        [HttpGet("listarPeloMes/{mes}")]
-        public async Task<IActionResult> GetByMes(int mes) 
+        [HttpGet("listarPeloMes/{mes}/{agencia}/{conta}")]
+        public async Task<IActionResult> GetByMes(int mes, int agencia, int conta) 
         {
-            var historicoByMes = await _service.GetByMes(mes);
+            var historicoByMes = await _service.GetByMes(mes, agencia, conta);
 
             return Ok(historicoByMes);    
         }

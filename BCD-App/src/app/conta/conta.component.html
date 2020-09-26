@@ -54,11 +54,11 @@
       </table>
     </div>
     <div class="col border bg-danger">
-      <h3 style="font-family: Verdana; margin-top: 8px;" class="text-center">
+      <h3 style="font-family: Verdana; margin-top: 12px;" class="text-center">
         Conta Poupanca
       </h3>
       <hr />
-      <div style="height: 90px;" class="row text-center">
+      <div style="height: 135px;" class="row text-center">
         
         <div class="col">
 
@@ -85,7 +85,7 @@
           >
         </div>
         <div class="col">
-          <a class="btn btn-outline-danger btn-lg" (click)="abrirModalAplicar(modalAplicar)">Aplicar Valor</a>
+          <button class="btn btn-outline-danger btn-lg" [disabled]="contas.length <= 1" (click)="abrirModalAplicar(modalAplicar)">Aplicar Valor</button>
         </div>
         <div class="col">
           <a
@@ -98,7 +98,7 @@
       </div>
     </div>
     <div class="col text-center">
-      <a href="#" class="btn btn-outline-secondary btn-lg" (click)="abrirModalResgatarValor(modalResgatar)">Resgatar Valor</a>
+      <button href="#" class="btn btn-outline-secondary btn-lg" tooltip="{{ mensagemContaPoupancaVazia }}" [disabled]="contas.length <= 1" (click)="abrirModalResgatarValor(modalResgatar)">Resgatar Valor</button>
     </div>
   </div>
 </div>
@@ -267,8 +267,7 @@
                       Valor deve ser obrigatorio!
                     </div>
                   </div>
-                    <br />
-                    <accordion-group heading="Transferencia">
+                  <p></p>
                       <input
                         type="password"
                         class="text-center form-control"
@@ -304,7 +303,6 @@
                         Transferir
                       </button>
                     </accordion-group>
-                  </accordion-group>
                 </accordion>
 <br>
             <div class="text-right">
@@ -581,7 +579,7 @@
       <div class="modal-body">
         
         <accordion>
-          <accordion-group heading="Aplicar Poupanca">
+          <accordion-group heading="Resgatar Valor">
             <form [formGroup]="formDeposito">
             <div class="form-group">
               <div>
@@ -633,7 +631,7 @@
                   Senha deve ser obrigatorio!
                 </div>
               </div>
-              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" (click)="resgatarValor(modalResgatar)" type="submit" value="Aplicar Poupanca" class="btn btn-success btn-block">
+              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" (click)="resgatarValor(modalResgatar)" type="submit" value="Resgatar Valor" class="btn btn-success btn-block">
             </div>
             </form>
           </accordion-group>

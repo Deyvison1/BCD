@@ -25,6 +25,7 @@ export class ContaComponent implements OnInit {
   mes: number;
   qtdPages: number;
   mostrarValorPoupanca: boolean = false;
+  mensagemContaPoupancaVazia: string;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
@@ -45,6 +46,8 @@ export class ContaComponent implements OnInit {
   contaTransferencia: Conta[] = [];
   historicoByMes: Historico[] = [];
 
+  historicosTeste: Historico[] = [];
+
   constructor(
     private contaService: ContaService,
     private fb: FormBuilder,
@@ -58,15 +61,26 @@ export class ContaComponent implements OnInit {
     this.getAllByIdPessoa();
     this.validationFormNewTransferencia();
     this.validationFormExtrato();
+    this.mensagemToolTip();
   }
 
+  mensagemToolTip() {
+    this.mensagemContaPoupancaVazia = (this.contas.length <= 1)? 'Não Existe Conta Poupança' : null;
+  }
 
   alternarValorVisivelPoupanca() {
     this.mostrarValorPoupanca = !this.mostrarValorPoupanca;
   }
 
   enviarMes() {
-    this.historicoService.getByMes(this.mes).subscribe(
+    this.contas.forEach(x => {
+      if(x.tipoConta === 0) {
+        this.helperConta.conta = x.digitosConta;
+        this.helperConta.agencia = x.digitosAgencia;
+      }
+    });
+
+    this.historicoService.getByMes(this.mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
       (historicos: Historico[]) => {
         this.historicoByMes = historicos;
       }, error => {
@@ -85,10 +99,16 @@ export class ContaComponent implements OnInit {
 
   abrirModalExtrato(template: any) {
 
+    this.contas.forEach(x => {
+      if(x.tipoConta === 0) {
+        this.helperConta.conta = x.digitosConta;
+        this.helperConta.agencia = x.digitosAgencia;
+      }
+    });
     this.contaService.mesAtual().subscribe(
       (mes: number) => {
         this.mes = mes;
-        this.historicoService.getByMes(mes).subscribe(
+        this.historicoService.getByMes(mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
           (historicos: Historico[]) => {
             this.historicoByMes = historicos;
           }, error => {
@@ -174,7 +194,7 @@ export class ContaComponent implements OnInit {
         this.toastr.success('Sucesso ao Aplicar Poupanca');
       }, error => {
         this.formDeposito.reset();
-        this.toastr.error('Erro ao Aplicar Poupanca!');
+        this.toastr.error(error.error);
       }
     );
   }
@@ -250,6 +270,7 @@ export class ContaComponent implements OnInit {
               this.getAllContas();
               this.getAllByIdPessoa();
               this.toastr.success('Sucesso!');
+              this.formDeposito.reset();
             }, error => {
               this.formDeposito.reset();
               this.toastr.error(error.error);

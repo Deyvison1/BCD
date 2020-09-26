@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCD.Repository.Data;
+using BCD.Repository.EntitiesRepository.ContaCadastradaRepository;
 using BCD.Repository.EntitiesRepository.ContaRepository;
 using BCD.Repository.EntitiesRepository.EnderecoRepository;
 using BCD.Repository.EntitiesRepository.EnderecosPessoasRepository;
 using BCD.Repository.EntitiesRepository.HistoricoRepository;
 using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.Repository.EntitiesRepository.PessoaRepository;
+using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.ContaServices;
 using BCD.WebApi.Services.EnderecoServices;
 using BCD.WebApi.Services.HistoricoServices;
@@ -42,11 +44,13 @@ namespace BCD.WebApi
             services.AddScoped<ContaService>();
             services.AddScoped<HistoricoService>();
             services.AddScoped<EnderecoService>();
+            services.AddScoped<ContaCadastradaService>();
             services.AddScoped<IHistoricosContasRepository, HistoricosContasRepository>();
             services.AddScoped<IEnderecosPessoasRepository, EnderecosPessoasRepository>();
             services.AddScoped<IPessoaRepository, PessoaRepository>();
             services.AddScoped<IHistoricoRepository, HistoricoRepository>();
             services.AddScoped<IContaRepository, ContaRepository>();
+            services.AddScoped<IContaCadastradaRepository, ContaCadastradaRepository>();
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 
             services.AddDbContext<BCDContext>(x => x.UseSqlite(Configuration.GetConnectionString("Connection")));

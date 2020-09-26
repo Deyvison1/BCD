@@ -13,6 +13,7 @@ namespace BCD.Repository.Data
         public DbSet<HistoricosContas> HistoricosContas { get; set; }
         public DbSet<EnderecosPessoas> EnderecosPessoas { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<ContaCadastrada> ContasCadastradas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) 
         {

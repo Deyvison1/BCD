@@ -117,6 +117,32 @@ namespace BCD.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ContasCadastradas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ContaId = table.Column<int>(nullable: false),
+                    PessoaId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContasCadastradas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ContasCadastradas_Contas_ContaId",
+                        column: x => x.ContaId,
+                        principalTable: "Contas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ContasCadastradas_Pessoas_PessoaId",
+                        column: x => x.PessoaId,
+                        principalTable: "Pessoas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HistoricosContas",
                 columns: table => new
                 {
@@ -147,6 +173,16 @@ namespace BCD.Repository.Migrations
                 column: "PessoaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ContasCadastradas_ContaId",
+                table: "ContasCadastradas",
+                column: "ContaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContasCadastradas_PessoaId",
+                table: "ContasCadastradas",
+                column: "PessoaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EnderecosPessoas_PessoaId",
                 table: "EnderecosPessoas",
                 column: "PessoaId");
@@ -159,6 +195,9 @@ namespace BCD.Repository.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ContasCadastradas");
+
             migrationBuilder.DropTable(
                 name: "EnderecosPessoas");
 

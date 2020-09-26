@@ -32,6 +32,7 @@ namespace BCD.WebApi.Helpers
             ).ReverseMap();
             CreateMap<EnumUF, EnumUFDto>().ReverseMap();
             CreateMap<EnumTipoContaDto, EnumTipoContaDto>().ReverseMap();
+            CreateMap<ContaCadastrada, ContaCadastradaDto>().ReverseMap();
         }
     }
 }

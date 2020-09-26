@@ -7,6 +7,7 @@ using BCD.Domain.Entities;
 using BCD.Repository.EntitiesRepository.ContaRepository;
 using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.WebApi.Dtos;
+using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.Exception;
 using BCD.WebApi.Services.HistoricoServices;
 using CryptSharp;
@@ -19,13 +20,15 @@ namespace BCD.WebApi.Services.ContaServices
         public IMapper _map { get; }
         private HistoricoService _historicoServices { get; }
         private readonly IHistoricosContasRepository _repoHistoricosContas;
+        private readonly ContaCadastradaService _contaCadastradaService;
         public ContaService(IContaRepository repo, IMapper map, HistoricoService historicoServices,
-            IHistoricosContasRepository repoHistoricoContas)
+            IHistoricosContasRepository repoHistoricoContas, ContaCadastradaService contaCadastradaService)
         {
             _repoHistoricosContas = repoHistoricoContas;
             _historicoServices = historicoServices;
             _repo = repo;
             _map = map;
+            _contaCadastradaService = contaCadastradaService;
         }
         // PEGAR MES ATUAL
         public int PegarMesAtual() {
@@ -392,6 +395,17 @@ namespace BCD.WebApi.Services.ContaServices
 
                 if (await _repoHistoricosContas.SaveAsync())
                 {
+                    bool existeContaCadastrada = await _contaCadastradaService.ExisteContaCadastrada(contaDestino.Id, contaDestino.PessoaId);
+                    if(!existeContaCadastrada)
+                    {
+                        ContaCadastradaDto contaCadastradaDto = new ContaCadastradaDto 
+                        {
+                            ContaId = contaDestino.Id,
+                            PessoaId = contaDestino.PessoaId
+                        };
+                    await _contaCadastradaService.Add(contaCadastradaDto);
+
+                    }
                     return _map.Map<ContaDto>(contaOrigin);
                 }
 

@@ -14,7 +14,7 @@ export class HistoricoService {
     private http: HttpClient
   ) { }
 
-  getByMes(mes: number): Observable<Historico[]> {
-    return this.http.get<Historico[]>(`${this.baseURL}listarPeloMes/${mes}`);
+  getByMes(mes: number, agencia: number, conta: number): Observable<Historico[]> {
+    return this.http.get<Historico[]>(`${this.baseURL}listarPeloMes/${mes}/${agencia}/${conta}`);
   }
 }

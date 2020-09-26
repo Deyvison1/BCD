@@ -44,6 +44,24 @@ namespace BCD.Repository.Migrations
                     b.ToTable("Contas");
                 });
 
+            modelBuilder.Entity("BCD.Domain.Entities.ContaCadastrada", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ContaId");
+
+                    b.Property<int>("PessoaId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContaId");
+
+                    b.HasIndex("PessoaId");
+
+                    b.ToTable("ContasCadastradas");
+                });
+
             modelBuilder.Entity("BCD.Domain.Entities.Endereco", b =>
                 {
                     b.Property<int>("Id")
@@ -152,6 +170,19 @@ namespace BCD.Repository.Migrations
                 {
                     b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
                         .WithMany("Contas")
+                        .HasForeignKey("PessoaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BCD.Domain.Entities.ContaCadastrada", b =>
+                {
+                    b.HasOne("BCD.Domain.Entities.Conta", "Conta")
+                        .WithMany()
+                        .HasForeignKey("ContaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
+                        .WithMany()
                         .HasForeignKey("PessoaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
