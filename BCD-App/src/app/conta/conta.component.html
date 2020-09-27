@@ -85,10 +85,11 @@
           >
         </div>
         <div class="col">
-          <button class="btn btn-outline-danger btn-lg" [disabled]="contas.length <= 1" (click)="abrirModalAplicar(modalAplicar)">Aplicar Valor</button>
+          <button class="btn btn-outline-danger btn-lg" tooltip="{{ mensagemTooltipAplicarValor }}" [disabled]="contas.length <= 1" (click)="abrirModalAplicar(modalAplicar)">Aplicar Valor</button>
         </div>
         <div class="col">
           <a
+            tooltip="Transferencia"
             (click)="abrirModalTransferencia(modalTransferencia, historico)"
             class="btn btn-outline-info btn-lg"
             href="#"
@@ -98,7 +99,8 @@
       </div>
     </div>
     <div class="col text-center">
-      <button href="#" class="btn btn-outline-secondary btn-lg" tooltip="{{ mensagemContaPoupancaVazia }}" [disabled]="contas.length <= 1" (click)="abrirModalResgatarValor(modalResgatar)">Resgatar Valor</button>
+      <button href="#" class="btn btn-outline-secondary btn-lg" tooltip="{{ mensagemTooltipResgatarValor }}" 
+      [disabled]="contas.length <= 1" (click)="abrirModalResgatarValor(modalResgatar)">Resgatar Valor</button>
     </div>
   </div>
 </div>
@@ -179,12 +181,17 @@
                 </tbody>
               </table>
             </div>
-              <pagination-controls
+            <div *ngIf="historicoByMes.length">  
+            <pagination-controls
               id="paginationExtrato"
               (pageChange)="pageAtualExtrato = $event"
               previousLabel="Anterior"
               nextLabel="Proximo"
             ></pagination-controls>
+          </div>
+          <div *ngIf="!historicoByMes.length" >
+            <h2 class="">Sem Historico Para Essa Data</h2>
+          </div>
           </tab>
         </tabset>
       </div>
@@ -222,14 +229,14 @@
           <tab heading="Contas Cadastradas" id="tab1">
             <div style="width: 470px; margin: auto; margin-top: 10px;">
               <form [formGroup]="formDeposito">
-                <accordion *ngFor="let historico of historicos | paginate: { id: 'paginationTransferencia',
+                <accordion *ngFor="let conta of contaTransferencia | paginate: { id: 'paginationTransferencia',
                 itemsPerPage: 4,
                 currentPage: pageAtualTransferencia }">
-                  <accordion-group heading="{{ historico.nomeContaDestino }}">
+                  <accordion-group heading="{{ conta.nomeConta }}">
                     <strong>Agencia </strong>
-                    {{ historico.digitosAgenciaDestino }}&nbsp; &nbsp; &nbsp;
+                    {{ conta.digitosAgencia }}&nbsp; &nbsp; &nbsp;
                     &nbsp; <strong>Conta </strong>
-                    {{ historico.digitosContaDestino }}
+                    {{ conta.digitosConta }}
                     <br />
                     <div>
                     <input
@@ -295,7 +302,7 @@
                         (click)="
                           transferencia(
                             modalTransferencia,
-                            historico
+                            conta
                           )
                         "
                         class="btn btn-danger btn-block"

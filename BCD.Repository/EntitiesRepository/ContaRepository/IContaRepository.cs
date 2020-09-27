@@ -15,6 +15,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         Task<bool> SaveAsync();
         Task<bool> ExisteContaPoupanca(int idPessoa);
         Task<bool> ExisteContaCorrente(int idPessoa);
+        Task<Conta[]> GetByListIdConta(List<int> idConta);
         Task<Conta[]> ListGetByIdPessoaAsync(int idPessoa);
         Task<Conta> GetByIdPessoaAsync(int idPessoa);
         Task<Conta> GetByIdPessoaCorrenteAsync(int idPessoa);

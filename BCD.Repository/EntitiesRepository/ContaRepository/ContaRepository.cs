@@ -141,5 +141,23 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
                 && x.CPF.Equals(cpf)
             ));
         }
+
+        public async Task<Conta[]> GetByListIdConta(List<int> idConta)
+        {
+            // Crio uma lista do tipo conta
+            List<Conta> list = new List<Conta>();
+            // Percorro a lista de idConta
+            foreach(int item in idConta)
+            {
+                // Cada vez que percorrer a lista eu ja busco a conta pelo id
+                var conta = await _context.Contas.FirstOrDefaultAsync(
+                    x => x.Id.Equals(item)
+                );
+                // Cada vez que fizer a busca pelo id vou adicionando a resposta a lista
+                list.Add(conta);
+            }
+            // retorno a lista
+            return list.ToArray();
+        }
     }
 }

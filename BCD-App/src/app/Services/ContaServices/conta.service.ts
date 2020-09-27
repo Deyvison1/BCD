@@ -10,9 +10,14 @@ import { HelperConta } from 'src/app/Models/HelperConta';
 export class ContaService {
 
   baseUrl = 'http://localhost:5000/api/conta/';
+
   constructor(
     private http: HttpClient
   ) { }
+
+  getAllContasCadastradas(pessoaId: number): Observable<Conta[]> {
+    return this.http.get<Conta[]>(`${this.baseUrl}contaCadastrada/${pessoaId}`);
+  }
 
   // PEGAR MES ATUAL
   mesAtual(): Observable<number> {

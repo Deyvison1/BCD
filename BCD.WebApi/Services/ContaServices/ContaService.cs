@@ -30,6 +30,24 @@ namespace BCD.WebApi.Services.ContaServices
             _map = map;
             _contaCadastradaService = contaCadastradaService;
         }
+        // LISTAR CONTAS CADASTRADAS
+        public async Task<ContaDto[]> GetAllContaCadastradaByPessoaId(int pessoaId) 
+        {
+            var contaCadastradaByPessoaId = await _contaCadastradaService.GetAllByPessoaId(pessoaId);
+
+            List<int> ids = new List<int>();
+            foreach(var item in contaCadastradaByPessoaId) 
+            {
+                if(item.PessoaId.Equals(pessoaId)) 
+                {
+                    ids.Add(item.ContaId);
+                }
+            }
+            var contas = await _repo.GetByListIdConta(ids);
+            
+            var contasDto = _map.Map<ContaDto[]>(contas);
+            return contasDto;
+        }
         // PEGAR MES ATUAL
         public int PegarMesAtual() {
             int mesAtual = DateTime.Now.Month;
@@ -401,7 +419,7 @@ namespace BCD.WebApi.Services.ContaServices
                         ContaCadastradaDto contaCadastradaDto = new ContaCadastradaDto 
                         {
                             ContaId = contaDestino.Id,
-                            PessoaId = contaDestino.PessoaId
+                            PessoaId = contaOrigin.PessoaId
                         };
                     await _contaCadastradaService.Add(contaCadastradaDto);
 

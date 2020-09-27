@@ -25,7 +25,8 @@ export class ContaComponent implements OnInit {
   mes: number;
   qtdPages: number;
   mostrarValorPoupanca: boolean = false;
-  mensagemContaPoupancaVazia: string;
+  mensagemTooltipResgatarValor: string;
+  mensagemTooltipAplicarValor: string;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
@@ -61,12 +62,8 @@ export class ContaComponent implements OnInit {
     this.getAllByIdPessoa();
     this.validationFormNewTransferencia();
     this.validationFormExtrato();
-    this.mensagemToolTip();
   }
 
-  mensagemToolTip() {
-    this.mensagemContaPoupancaVazia = (this.contas.length <= 1)? 'Não Existe Conta Poupança' : null;
-  }
 
   alternarValorVisivelPoupanca() {
     this.mostrarValorPoupanca = !this.mostrarValorPoupanca;
@@ -149,7 +146,15 @@ export class ContaComponent implements OnInit {
   abrirModalTransferencia(template: any) {
     this.abrirModal(template);
 
-    this.historicos = this.historicos.filter(x => x.operacao === 4);
+    this.contaService.getAllContasCadastradas(1).subscribe(
+      (contas: Conta[]) => {
+        this.contaTransferencia = contas;
+
+        console.log(this.contaTransferencia);
+      }, error => {
+        console.log(error.error);
+      }
+    );
     this.getAllContas();
   }
 
@@ -250,13 +255,19 @@ export class ContaComponent implements OnInit {
     );
   }
   // TRANSFERENCIA
-  transferencia(template: any, historico: Historico) {
+  transferencia(template: any, conta: Conta) {
   
       this.helperConta = this.formDeposito.value;
-      this.helperConta.agenciaDestino = historico.digitosAgenciaDestino;
-      this.helperConta.contaDestino = historico.digitosContaDestino;
-      this.helperConta.agencia = historico.digitosAgencia;
-      this.helperConta.conta = historico.digitosConta;
+      this.helperConta.agenciaDestino = conta.digitosAgencia;
+      this.helperConta.contaDestino = conta.digitosConta;
+      
+      this.contas.forEach(x => {
+        if(x.tipoConta === 0) {
+          this.helperConta.conta = x.digitosConta;
+          this.helperConta.agencia = x.digitosAgencia;
+        }
+      });
+
       
       this.contaService.getByContaAndAgencia(this.helperConta.contaDestino, this.helperConta.agenciaDestino).subscribe(
         (conta: Conta) => {
@@ -300,6 +311,9 @@ export class ContaComponent implements OnInit {
 
         pessoas.forEach(x => {
           this.contas = x.contas
+
+          this.mensagemTooltipResgatarValor = (x.contas.length === 1)? 'Conta Poupança Inexistente' : 'Resgatar Valor';
+          this.mensagemTooltipAplicarValor = (x.contas.length === 1)? 'Conta Poupança Inexistente' : 'Aplicação Poupança';
           
           this.contaService.getByIdList(1).subscribe(
             (conta: Conta[]) => {

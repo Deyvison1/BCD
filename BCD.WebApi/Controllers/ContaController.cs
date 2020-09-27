@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using BCD.WebApi.Dtos;
+using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.ContaServices;
 using BCD.WebApi.Services.Exception;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +14,24 @@ namespace BCD.WebApi.Controllers
     public class ContaController : ControllerBase
     {
         private readonly ContaService _service;
-
         public ContaController(ContaService service)
         {
             _service = service;
+        }
+        // LISTAR CONTAS CADASTRADAS
+        [HttpGet("contaCadastrada/{pessoaId}")]
+        public async Task<IActionResult> GetContaCadastrada(int pessoaId)
+        {
+            try
+            {
+                var contaCadastrada = await _service.GetAllContaCadastradaByPessoaId(pessoaId);
+
+                return Ok(contaCadastrada);
+            } 
+            catch(ArgumentException e) 
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
         }
         // PEGAR MES ATUAL
         [HttpGet("mesAtual")]
@@ -222,7 +237,7 @@ namespace BCD.WebApi.Controllers
         }
         // LISTAR POR ID COM EXTRATO
         [HttpGet("listar/{id}")]
-        public async Task<IActionResult> GetByIdExtratp(int id) {
+        public async Task<IActionResult> GetByIdLista(int id) {
             try {
                 var conta = await _service.GetByIdList(id);
                 return Ok(conta);

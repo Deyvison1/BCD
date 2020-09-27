@@ -24,7 +24,6 @@ namespace BCD.WebApi.Dtos
         public int PessoaId { get; set; }
         [Required(ErrorMessage = "{0} é obrigatório!")]
         public string Senha { get; set; }
-
         public List<HistoricoDto> Extrato { get; set; }
         public float ValorTotal { get; set; }
     }
