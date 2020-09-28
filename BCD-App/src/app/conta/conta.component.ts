@@ -24,6 +24,7 @@ export class ContaComponent implements OnInit {
   pageAtualTransferencia = 1;
   pageAtualExtrato = 1;
   pageAtualExtratoPoupanca = 1;
+  pageAtualExtratoLastMeses = 1;
   mes: number;
   qtdPages: number;
   mostrarValorPoupanca: boolean = false;
@@ -50,7 +51,6 @@ export class ContaComponent implements OnInit {
   historicoByMesCorrente: Historico[] = [];
   historicoByMesPoupanca: Historico[] = [];
 
-  historicosTeste: Historico[] = [];
 
   constructor(
     private contaService: ContaService,
@@ -83,16 +83,12 @@ export class ContaComponent implements OnInit {
 
     this.historicoService.getByMesCorrente(this.mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
       (historicos: Historico[]) => {
-        historicos.filter(
-          x => x.operacao != 0
-        );
+        
         this.historicoByMesCorrente = historicos;
 
         this.historicoService.getByMesPoupanca(this.mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
           (historicosPoupanca: Historico[]) => {
-            historicosPoupanca.filter(
-              x => x.operacao != 0
-            );
+            
             this.historicoByMesPoupanca = historicosPoupanca;
             this.loading = false;
           }, error => {
@@ -112,7 +108,6 @@ export class ContaComponent implements OnInit {
 
   abrirModalResgatarValor(template: any) {
     this.abrirModal(template);
-
   }
 
   abrirModalExtrato(template: any) {
