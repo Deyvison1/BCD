@@ -25,7 +25,7 @@ namespace BCD.WebApi.Services.HistoricoServices
             var historicoByMesPoupanca = await _repo.GetByMesPoupancaAsync(mes, agencia, conta);
 
             var historicoByMesPoupancaDto = _map.Map<HistoricoDto[]>(historicoByMesPoupanca);
-
+            
             return historicoByMesPoupancaDto.ToArray();
         }
         // LISTAR PELO MES CONTA CORRENTE
@@ -34,8 +34,8 @@ namespace BCD.WebApi.Services.HistoricoServices
             var historicoByMes = await _repo.GetByMesCorrenteAsync(mes, agencia, conta);
 
             var historicoByMesDto = _map.Map<HistoricoDto[]>(historicoByMes);
-
-            return historicoByMesDto.ToArray();
+            
+            return historicoByMesDto;
         }
         // DELETAR
         public async Task<HistoricoDto> Delete(int id) 

@@ -18,6 +18,7 @@ import { HistoricoService } from '../Services/HistoricoServices/historico.servic
 export class ContaComponent implements OnInit {
 
   // VARIAVEIS TIPOS PRIMITIVOS
+  public loading = false;
   valorTotalCorrente: number;
   valorTotalPoupanca: number;
   pageAtualTransferencia = 1;
@@ -72,6 +73,7 @@ export class ContaComponent implements OnInit {
   }
 
   enviarMes() {
+    this.loading = true;
     this.contas.forEach(x => {
       if(x.tipoConta === 0) {
         this.helperConta.conta = x.digitosConta;
@@ -92,12 +94,15 @@ export class ContaComponent implements OnInit {
               x => x.operacao != 0
             );
             this.historicoByMesPoupanca = historicosPoupanca;
+            this.loading = false;
           }, error => {
             console.log(error.error);
+            this.loading = false;
           }
         );
       }, error => {
         console.log(error);
+        this.loading = false;
       }
     );
   }
@@ -184,8 +189,8 @@ export class ContaComponent implements OnInit {
 
   // RESGATAR VALOR
   resgatarValor(template: any) {
+    this.loading = true;
     this.helperConta = this.formDeposito.value;
-
 
     this.contas.forEach(x => {
       this.helperConta.agencia = x.digitosAgencia;
@@ -198,15 +203,19 @@ export class ContaComponent implements OnInit {
         this.formDeposito.reset();
         this.getAllByIdPessoa();
         this.toastr.success('Sucesso ao Resgatar Valor!');
+        this.loading = false;
       }, error => {
         this.formDeposito.reset();
         this.toastr.error(error.error);
+        this.loading = false;
       }
     );
   }
 
   // APLICACAO POUPANCA
   aplicarPoupanca(template: any) {
+    this.loading = true;
+
     this.helperConta =  this.formDeposito.value;
 
     this.contas.forEach(x => {
@@ -221,16 +230,18 @@ export class ContaComponent implements OnInit {
 
         this.formDeposito.reset();
         this.toastr.success('Sucesso ao Aplicar Poupanca');
+        this.loading = false;
       }, error => {
         this.formDeposito.reset();
         this.toastr.error(error.error);
+        this.loading = false;
       }
     );
   }
 
   // DEPOSITO
   deposito(modal: any) {
-
+    this.loading = true;
     this.helperConta = this.formDeposito.value;
 
     this.contas.forEach(x => {
@@ -245,15 +256,19 @@ export class ContaComponent implements OnInit {
         
         this.formDeposito.reset();
         this.toastr.success('Sucesso no deposito!');
+        this.loading = false;
       }, error => {
         this.formDeposito.reset();
         this.toastr.error(error.error);
+        this.loading = false;
       }  
     );
   }
 
 
   newTransferencia(modalNewTransferencia: any) {
+    this.loading = true;
+
     this.helperConta = this.formNewTransferencia.value;
 
     this.contas.forEach(x => {
@@ -270,17 +285,19 @@ export class ContaComponent implements OnInit {
         modalNewTransferencia.hide();
 
         this.formNewTransferencia.reset();
+        this.loading = false;
       }, error => {
         modalNewTransferencia.hide();
 
         this.formNewTransferencia.reset();
         this.toastr.error(error.error);
+        this.loading = false;
       }
     );
   }
   // TRANSFERENCIA
   transferencia(template: any, conta: Conta) {
-  
+      this.loading = true;
       this.helperConta = this.formDeposito.value;
       this.helperConta.agenciaDestino = conta.digitosAgencia;
       this.helperConta.contaDestino = conta.digitosConta;
@@ -306,29 +323,37 @@ export class ContaComponent implements OnInit {
               this.getAllByIdPessoa();
               this.toastr.success('Sucesso!');
               this.formDeposito.reset();
+              this.loading = false;
             }, error => {
               this.formDeposito.reset();
               this.toastr.error(error.error);
+              this.loading = false;
             }
           );
         }, error => {
           template.hide();
           this.toastr.error(error.error);
+          this.loading = false;
         }
       );
   }
 
   getAllContas() {
+    this.loading = true;
+
     this.contaService.getAllDeleteNomeCurrency('Deyvison').subscribe(
       (contas: Conta[]) => {
         this.todasContas = contas;
+        this.loading = false;
       }, error => {
         this.toastr.error(error.error);
+        this.loading = false;
       }
     );
   }
   
   getAllByIdPessoa() {
+    this.loading = true;
     return this.pessoaService.getAllByIdPessoa(1).subscribe(
       (pessoas: Pessoa[]) => {
         this.pessoas = pessoas;
@@ -348,8 +373,10 @@ export class ContaComponent implements OnInit {
               this.contas.forEach(x => {
                 this.valorTotalPoupanca = (x.tipoConta === 1)? x.saldo : 0;
               });
+              this.loading = false;
             }, error => {
               console.log(error);
+              this.loading = false;
             }
           );
         });
