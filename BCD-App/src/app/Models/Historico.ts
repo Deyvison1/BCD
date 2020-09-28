@@ -4,9 +4,9 @@ export class Historico {
         id: number;
         dataTransacao: Date;
         valor: number;
-        descricaoTransacao:string
-        tipoConta:string
-        nomeConta:string
+        descricaoTransacao: string;
+        tipoConta: number;
+        nomeConta: string;
         digitosConta: number;
         digitosAgencia: number;
         digitosAgenciaDestino: number;

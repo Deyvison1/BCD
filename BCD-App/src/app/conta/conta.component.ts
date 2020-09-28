@@ -22,6 +22,7 @@ export class ContaComponent implements OnInit {
   valorTotalPoupanca: number;
   pageAtualTransferencia = 1;
   pageAtualExtrato = 1;
+  pageAtualExtratoPoupanca = 1;
   mes: number;
   qtdPages: number;
   mostrarValorPoupanca: boolean = false;
@@ -35,17 +36,18 @@ export class ContaComponent implements OnInit {
 
   // VARIAVEIS DE INSTANCIAS
   conta: Conta = new Conta();
-  contas: Conta[] = [];
-  todasContas: Conta[] = [];
   historico: Historico = new Historico();
   helperConta: HelperConta = new HelperConta();
   pessoas: Pessoa[] = [];
   pessoa: Pessoa = new Pessoa();
 
   // VARIAVEIS DE LISTAS
+  todasContas: Conta[] = [];
+  contas: Conta[] = [];
   historicos: Historico[] = [];
   contaTransferencia: Conta[] = [];
-  historicoByMes: Historico[] = [];
+  historicoByMesCorrente: Historico[] = [];
+  historicoByMesPoupanca: Historico[] = [];
 
   historicosTeste: Historico[] = [];
 
@@ -77,9 +79,23 @@ export class ContaComponent implements OnInit {
       }
     });
 
-    this.historicoService.getByMes(this.mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
+    this.historicoService.getByMesCorrente(this.mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
       (historicos: Historico[]) => {
-        this.historicoByMes = historicos;
+        historicos.filter(
+          x => x.operacao != 0
+        );
+        this.historicoByMesCorrente = historicos;
+
+        this.historicoService.getByMesPoupanca(this.mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
+          (historicosPoupanca: Historico[]) => {
+            historicosPoupanca.filter(
+              x => x.operacao != 0
+            );
+            this.historicoByMesPoupanca = historicosPoupanca;
+          }, error => {
+            console.log(error.error);
+          }
+        );
       }, error => {
         console.log(error);
       }
@@ -105,9 +121,17 @@ export class ContaComponent implements OnInit {
     this.contaService.mesAtual().subscribe(
       (mes: number) => {
         this.mes = mes;
-        this.historicoService.getByMes(mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
+        this.historicoService.getByMesCorrente(mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
           (historicos: Historico[]) => {
-            this.historicoByMes = historicos;
+            this.historicoByMesCorrente = historicos;
+
+            this.historicoService.getByMesPoupanca(mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
+              (historicosPoupanca: Historico[]) => {
+                this.historicoByMesPoupanca = historicosPoupanca;
+              }, error => {
+                console.log(error.error);
+              }
+            );
           }, error => {
             console.log(error.error);
           }

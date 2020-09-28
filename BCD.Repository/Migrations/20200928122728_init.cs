@@ -37,7 +37,7 @@ namespace BCD.Repository.Migrations
                     DataTransacao = table.Column<DateTime>(nullable: false),
                     Valor = table.Column<float>(nullable: false),
                     DescricaoTransacao = table.Column<string>(nullable: true),
-                    TipoConta = table.Column<string>(nullable: true),
+                    TipoConta = table.Column<int>(nullable: false),
                     NomeContaDestino = table.Column<string>(nullable: true),
                     Operacao = table.Column<int>(nullable: false),
                     NomeConta = table.Column<string>(nullable: true),

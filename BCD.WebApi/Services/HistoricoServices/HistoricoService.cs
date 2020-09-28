@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -18,12 +19,22 @@ namespace BCD.WebApi.Services.HistoricoServices
             _repo = repo;
             _map = map;
         }
-        // LISTAR PELO MES
-        public async Task<HistoricoDto[]> GetByMes(int mes, int agencia, int conta)
+        // LISTAR PELO MES CONTA POUPANCA
+        public async Task<HistoricoDto[]> GeteByMesPoupanca(int mes, int agencia, int conta)
         {
-            var historicoByMes = await _repo.GetByMesAsync(mes, agencia, conta);
+            var historicoByMesPoupanca = await _repo.GetByMesPoupancaAsync(mes, agencia, conta);
+
+            var historicoByMesPoupancaDto = _map.Map<HistoricoDto[]>(historicoByMesPoupanca);
+
+            return historicoByMesPoupancaDto.ToArray();
+        }
+        // LISTAR PELO MES CONTA CORRENTE
+        public async Task<HistoricoDto[]> GetByMesCorrente(int mes, int agencia, int conta)
+        {
+            var historicoByMes = await _repo.GetByMesCorrenteAsync(mes, agencia, conta);
 
             var historicoByMesDto = _map.Map<HistoricoDto[]>(historicoByMes);
+
             return historicoByMesDto.ToArray();
         }
         // DELETAR

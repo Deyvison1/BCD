@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div style="border-radius: 4px;" class="col-8 border">
+    <div style="border-radius: 4px;" class="col-8 border shadow p-3 mb-5 bg-white rounded">
       <div style="padding-top: 12px; padding-bottom: 10px;" class="row">
         <div class="col-3">
           <a
@@ -53,15 +53,14 @@
         </tbody>
       </table>
     </div>
-    <div class="col border bg-danger">
-      <h3 style="font-family: Verdana; margin-top: 12px;" class="text-center">
+    <div class="col border shadow p-3 mb-5 bg-white rounded">
+      <h3 style="font-family: Verdana; margin-top: 10px;" class="text-center">
         Conta Poupanca
       </h3>
       <hr />
-      <div style="height: 135px;" class="row text-center">
+      <div style="height: 135px; padding-top: 10px;" class="row text-center">
         
         <div class="col">
-
           <button class="btn btn-info" (click)="alternarValorVisivelPoupanca ()">
             <i class="{{ mostrarValorPoupanca ? 'fa fa-eye-slash' : 'fa fa-eye' }}"></i>
             </button>
@@ -154,7 +153,7 @@
       </div>
       <div class="modal-body">
         <tabset>
-          <tab heading="Extrato" id="tab">
+          <tab heading="Conta Corrente" id="tab">
             <div>
               <table class="table table-bordered">
                 <thead>
@@ -165,7 +164,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let historico of historicoByMes | paginate: { id: 'paginationExtrato',
+                  <tr *ngFor="let historico of historicoByMesCorrente | paginate: { id: 'paginationExtrato',
                   itemsPerPage: 6,
                   currentPage: pageAtualExtrato } ">
                     <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy hh:mm' }}</td>
@@ -174,14 +173,14 @@
                       <button class="btn btn-sm btn-danger btn-block" *ngIf="historico.operacao == 0">Saque</button>
                       <button class="btn btn-sm btn-secondary btn-block" *ngIf="historico.operacao == 1">Deposito</button>
                       <button class="btn btn-sm btn-success btn-block" *ngIf="historico.operacao == 2">Apliacao Poupanca</button>
-                      <button class="btn btn-sm btn-dark btn-block" *ngIf="historico.operacao == 3">Resgate Poupanca</button>
+                      <button class="btn btn-sm btn-dark btn-block" *ngIf="historico.operacao == 3">Recebimento de Resgate Poupanca</button>
                       <button class="btn btn-sm btn-info btn-block" *ngIf="historico.operacao == 4">Transferencia</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div *ngIf="historicoByMes.length">  
+            <div *ngIf="historicoByMesCorrente.length">  
             <pagination-controls
               id="paginationExtrato"
               (pageChange)="pageAtualExtrato = $event"
@@ -189,7 +188,46 @@
               nextLabel="Proximo"
             ></pagination-controls>
           </div>
-          <div *ngIf="!historicoByMes.length" >
+          <div *ngIf="!historicoByMesCorrente.length" >
+            <h2 class="">Sem Historico Para Essa Data</h2>
+          </div>
+          </tab>
+          <tab heading="Conta Poupanca" id="tab">
+            <div>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Data Transacao</th>
+                    <th>Valor Transacao</th>
+                    <th>Descricao Transacao</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let historico of historicoByMesPoupanca | paginate: { id: 'paginationExtratoPoupanca',
+                  itemsPerPage: 6,
+                  currentPage: pageAtualExtratoPoupanca } ">
+                    <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy hh:mm' }}</td>
+                    <td>{{ historico.valor | currency: 'R$: ' }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-danger btn-block" *ngIf="historico.operacao == 0">Saque</button>
+                      <button class="btn btn-sm btn-secondary btn-block" *ngIf="historico.operacao == 1">Deposito</button>
+                      <button class="btn btn-sm btn-success btn-block" *ngIf="historico.operacao == 2">Recebimento Aplicação Corrente</button>
+                      <button class="btn btn-sm btn-dark btn-block" *ngIf="historico.operacao == 3">Resgate Poupanca</button>
+                      <button class="btn btn-sm btn-info btn-block" *ngIf="historico.operacao == 4">Transferencia</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div *ngIf="historicoByMesPoupanca.length">  
+            <pagination-controls
+              id="paginationExtratoPoupanca"
+              (pageChange)="pageAtualExtratoPoupanca = $event"
+              previousLabel="Anterior"
+              nextLabel="Proximo"
+            ></pagination-controls>
+          </div>
+          <div *ngIf="!historicoByMesPoupanca.length" >
             <h2 class="">Sem Historico Para Essa Data</h2>
           </div>
           </tab>
@@ -312,7 +350,7 @@
                     </accordion-group>
                 </accordion>
 <br>
-            <div class="text-right">
+            <div *ngIf="contaTransferencia.length" class="text-right">
               <pagination-controls
               id="paginationTransferencia"
               (pageChange)="pageAtualTransferencia = $event"
@@ -320,6 +358,10 @@
               nextLabel="Proximo"
             ></pagination-controls>
             </div>
+
+          <div *ngIf="!contaTransferencia.length">
+            <h2 class="">Nenhuma Conta Cadastrada</h2>
+          </div>
               </form>
             </div>
           </tab>
@@ -638,7 +680,8 @@
                   Senha deve ser obrigatorio!
                 </div>
               </div>
-              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" (click)="resgatarValor(modalResgatar)" type="submit" value="Resgatar Valor" class="btn btn-success btn-block">
+              <input style="margin-top: 10px;" [disabled]="!formDeposito.valid" (click)="resgatarValor(modalResgatar)" 
+              type="submit" value="Resgatar Valor" class="btn btn-success btn-block">
             </div>
             </form>
           </accordion-group>

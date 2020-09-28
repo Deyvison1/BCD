@@ -4,7 +4,7 @@ export class Conta {
     id: number; 
     digitosConta: number; 
     digitosAgencia: number; 
-    tipoConta: EnumTipoContaDto; 
+    tipoConta: number; 
     nomeConta: string;
     saldo: number;
     pessoaId: number; 

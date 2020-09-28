@@ -10,7 +10,7 @@ namespace BCD.Domain.Entities
         public DateTime DataTransacao { get; private set; }
         public float Valor { get; private set; }
         public string DescricaoTransacao { get; private set; }
-        public string TipoConta { get; set; }
+        public EnumTipoConta TipoConta { get; set; }
         public string NomeContaDestino { get; private set; }
         public int Operacao { get; private set; }
         public string NomeConta { get; private set; }

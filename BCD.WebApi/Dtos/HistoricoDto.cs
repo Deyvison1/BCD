@@ -10,7 +10,7 @@ namespace BCD.WebApi.Dtos
         public DateTime DataTransacao { get; set; }
         public float Valor { get; set; }
         public string DescricaoTransacao { get; set; }
-        public string TipoConta { get; set; }
+        public int TipoConta { get; set; }
         public int Operacao { get; set; }
         public string NomeContaDestino { get; set; }
         public string NomeConta { get; set; }

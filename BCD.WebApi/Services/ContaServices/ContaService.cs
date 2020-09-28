@@ -255,7 +255,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DescricaoTransacao = "SAQUE CONTA CORRENTE",
                     DigitosConta = conta.DigitosConta,
                     DigitosAgencia = conta.DigitosAgencia,
-                    TipoConta = "CONTA CORRENTE",
+                    TipoConta = 0,
                     Valor = contaSaque.Quantia,
                     DataTransacao = DateTime.Now,
                     NomeConta = conta.NomeConta,
@@ -299,7 +299,7 @@ namespace BCD.WebApi.Services.ContaServices
                 HistoricoDto historicoDto = new HistoricoDto
                 {
                     DataTransacao = DateTime.Now,
-                    TipoConta = "CONTA CORRENTE",
+                    TipoConta = 0,
                     DescricaoTransacao = "DEPOSITO EM CONTA CONRRENTE",
                     DigitosAgencia = conta.DigitosAgencia,
                     DigitosConta = conta.DigitosConta,
@@ -365,7 +365,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosConta = contaOrigin.DigitosConta,
                     DigitosAgenciaDestino = contaDestino.DigitosAgencia,
                     DigitosContaDestino = contaDestino.DigitosConta,
-                    TipoConta = "CONTA CORRENTE",
+                    TipoConta = 0,
                     Valor = contaDto.Quantia,
                     NomeConta = contaOrigin.NomeConta,
                     NomeContaDestino = contaDestino.NomeConta,
@@ -381,7 +381,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosConta = contaOrigin.DigitosConta,
                     DigitosAgenciaDestino = contaDestino.DigitosAgencia,
                     DigitosContaDestino = contaDestino.DigitosConta,
-                    TipoConta = "CONTA CORRENTE",
+                    TipoConta = 0,
                     Valor = contaDto.Quantia,
                     NomeConta = contaOrigin.NomeConta,
                     NomeContaDestino = contaDestino.NomeConta,
@@ -465,7 +465,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosConta = contaCorrente.DigitosConta,
                     DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
                     DigitosContaDestino = contaPoupanca.DigitosConta,
-                    TipoConta = "CONTA CORRENTE",
+                    TipoConta = 0,
                     Valor = contaDto.Quantia,
                     NomeConta = contaCorrente.NomeConta,
                     Operacao = 2
@@ -480,9 +480,10 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosConta = contaCorrente.DigitosConta,
                     DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
                     DigitosContaDestino = contaPoupanca.DigitosConta,
-                    TipoConta = "CONTA POUPANCA",
+                    TipoConta = 1,
                     Valor = contaDto.Quantia,
-                    NomeConta = contaPoupanca.NomeConta
+                    NomeConta = contaPoupanca.NomeConta,
+                    Operacao = 2
                 };
                 var historicoContaPoupancaAdd = await _historicoServices.Add(historicoPoupancaDto);
 
@@ -550,7 +551,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosConta = contaCorrente.DigitosConta,
                     DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
                     DigitosContaDestino = contaPoupanca.DigitosConta,
-                    TipoConta = "CONTA CORRENTE",
+                    TipoConta = 0,
                     Valor = contaDto.Quantia,
                     Operacao = 3,
                     NomeConta = contaCorrente.NomeConta
@@ -565,7 +566,7 @@ namespace BCD.WebApi.Services.ContaServices
                     DigitosConta = contaCorrente.DigitosConta,
                     DigitosAgenciaDestino = contaPoupanca.DigitosAgencia,
                     DigitosContaDestino = contaPoupanca.DigitosConta,
-                    TipoConta = "CONTA POUPANCA",
+                    TipoConta = 1,
                     Valor = contaDto.Quantia,
                     Operacao = 3,
                     NomeConta = contaPoupanca.NomeConta

@@ -128,7 +128,7 @@ namespace BCD.Repository.Migrations
 
                     b.Property<int>("Operacao");
 
-                    b.Property<string>("TipoConta");
+                    b.Property<int>("TipoConta");
 
                     b.Property<float>("Valor");
 
