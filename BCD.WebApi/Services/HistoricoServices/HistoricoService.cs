@@ -21,6 +21,24 @@ namespace BCD.WebApi.Services.HistoricoServices
         }
 
         // LISTAR PELO MES CONTA POUPANCA
+        public async Task<List<HistoricoDto[]>> GetLastHistoricos(int mes, int agencia, int conta, int tipoConta)
+        {
+            List<int> meses = new List<int>();
+
+            int helperMes = mes - 3;
+
+            for(int i = helperMes; helperMes < mes; i++) {
+                meses.Add(i);
+            }
+
+            var historicoByMesPoupanca = await _repo.GetByMesLastAsync(meses.ToArray(), agencia, conta, tipoConta);
+
+            var historicoByMesPoupancaDto = _map.Map<IEnumerable<HistoricoDto[]>>(historicoByMesPoupanca);
+            
+            return historicoByMesPoupancaDto.ToList();
+        }
+
+        // LISTAR PELO MES CONTA POUPANCA
         public async Task<HistoricoDto[]> GeteByMesPoupanca(int mes, int agencia, int conta)
         {
             var historicoByMesPoupanca = await _repo.GetByMesPoupancaAsync(mes, agencia, conta);
@@ -105,5 +123,6 @@ namespace BCD.WebApi.Services.HistoricoServices
 
             return historicoDto.ToArray();
         }
+
     }
 }
