@@ -81,6 +81,5 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
                 x => x.TipoConta != 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
             ).ToArrayAsync();
         }
-
     }
 }

@@ -19,7 +19,6 @@ namespace BCD.WebApi.Services.HistoricoServices
             _repo = repo;
             _map = map;
         }
-
         // LISTAR PELO MES CONTA POUPANCA
         public async Task<HistoricoDto[]> GeteByMesPoupanca(int mes, int agencia, int conta)
         {
