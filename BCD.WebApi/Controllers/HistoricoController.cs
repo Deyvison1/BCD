@@ -17,15 +17,6 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
-
-        // LISTAR PELO MES
-        [HttpGet("listar/{mes}/{agencia}/{conta}/{tipoConta}")]
-        public async Task<IActionResult> GetByMesCorrente(int mes, int agencia, int conta, int tipoConta) 
-        {
-            var historicoByMes = await _service.GetLastHistoricos(mes, agencia, conta, tipoConta);
-
-            return Ok(historicoByMes); 
-        }
         // LISTAR PELO MES
         [HttpGet("listarPeloMesCorrente/{mes}/{agencia}/{conta}")]
         public async Task<IActionResult> GetByMesCorrente(int mes, int agencia, int conta) 

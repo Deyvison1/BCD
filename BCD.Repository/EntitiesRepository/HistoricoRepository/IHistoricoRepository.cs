@@ -15,7 +15,6 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
         Task<Historico[]> GetAllAsync();
         Task<Historico[]> GetByMesCorrenteAsync(int mes, int agencia, int conta);
         Task<Historico[]> GetByMesPoupancaAsync(int mes, int agencia, int conta);
-        Task<List<Historico[]>> GetByMesLastAsync(int[] mes, int agencia, int conta, int tipoConta);
         Task<Historico> GetByIdAsync(int id);
         Task<Historico[]> GetBySearch(string search);
     }

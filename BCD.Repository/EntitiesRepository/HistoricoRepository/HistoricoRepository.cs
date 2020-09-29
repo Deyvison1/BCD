@@ -82,22 +82,5 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
             ).ToArrayAsync();
         }
 
-        public async Task<List<Historico[]>> GetByMesLastAsync(int[] mes, int agencia, int conta, int tipoConta)
-        {
-            List<Historico> historicos = new List<Historico>();
-            List<Historico[]> historicos2 = new List<Historico[]>();
-            historicos =  await _context.Historicos.Where(
-                x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
-            ).ToListAsync();
-
-            foreach(int item in mes) {
-                var forHistorico = historicos.Where(
-                    x => x.DataTransacao.Month.Equals(item)
-                ).ToArray();
-                historicos2.Add(forHistorico);
-            }
-
-            return historicos2;
-        }
     }
 }
