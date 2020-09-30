@@ -13,6 +13,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         Task<bool> ExisteCPF(string cpf);
         Task<Pessoa[]> GetAllPessoaById(int idPessoa);
         Task<Pessoa[]> GetAllAsync();
+        Task<string> GetCpfByIdPessoa(int idPessoa);
         Task<Pessoa> GetByIdAsync(int id);
         Task<Pessoa[]> GetBySearchAsync(string search);
     }

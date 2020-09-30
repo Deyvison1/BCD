@@ -161,6 +161,7 @@
                     <th>Data Transacao</th>
                     <th>Valor Transacao</th>
                     <th>Descricao Transacao</th>
+                    <th>Conta Destino</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -175,6 +176,10 @@
                       <button class="btn btn-sm btn-success btn-block" *ngIf="historico.operacao == 2">Apliacao Poupanca</button>
                       <button class="btn btn-sm btn-dark btn-block" *ngIf="historico.operacao == 3">Recebimento de Resgate Poupanca</button>
                       <button class="btn btn-sm btn-info btn-block" *ngIf="historico.operacao == 4">Transferencia</button>
+                    </td>
+                    <td *ngIf="historico.nomeContaDestino != null">{{ historico.nomeContaDestino }}</td>
+                    <td *ngIf="historico.nomeContaDestino == null">
+                      <i class="fas fa-user-tie"></i>
                     </td>
                   </tr>
                 </tbody>
@@ -212,7 +217,7 @@
                     <td>
                       <button class="btn btn-sm btn-danger btn-block" *ngIf="historico.operacao == 0">Saque</button>
                       <button class="btn btn-sm btn-secondary btn-block" *ngIf="historico.operacao == 1">Deposito</button>
-                      <button class="btn btn-sm btn-success btn-block" *ngIf="historico.operacao == 2">Recebimento Aplicação Corrente</button>
+                      <button class="btn btn-sm btn-success btn-block" *ngIf="historico.operacao == 2">Recebimento Aplicação Poupança</button>
                       <button class="btn btn-sm btn-dark btn-block" *ngIf="historico.operacao == 3">Resgate Poupanca</button>
                       <button class="btn btn-sm btn-info btn-block" *ngIf="historico.operacao == 4">Transferencia</button>
                     </td>

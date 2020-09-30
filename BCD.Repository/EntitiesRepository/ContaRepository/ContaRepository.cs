@@ -46,9 +46,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         {
             var getAllAsync = _context.Contas.OrderByDescending(
                 x => x.Id
-            ).Include(x => x.Extrato).ThenInclude(x => x.Historico)
-            .Include(x => x.Pessoa)
-            .ToArrayAsync();
+            ).ToArrayAsync();
             return await getAllAsync;
         }
         // OBTER PELO ID
@@ -72,7 +70,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         {
             var conta = _context.Contas.Where(
                 x => x.PessoaId.Equals(idPessoa)
-            ).ToArrayAsync();
+            ).Include(x => x.Extrato).ToArrayAsync();
             return await conta;
         }
         // OBTER PELO ID PESSOA

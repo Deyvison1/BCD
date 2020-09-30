@@ -77,5 +77,14 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
             ).Include(x => x.Enderecos).ThenInclude(x => x.Endereco).Include(x => x.Contas).ToArrayAsync();
             return await pessoas;
         }
+
+        public async Task<string> GetCpfByIdPessoa(int idPessoa)
+        {
+            string[] cpf = await _context.Pessoas.Where(
+                x => x.Id.Equals(idPessoa)
+            ).Select(x => x.CPF).ToArrayAsync();
+            string cpfFinal = cpf.FirstOrDefault();
+            return cpfFinal;
+        }
     }
 }

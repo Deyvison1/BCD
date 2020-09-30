@@ -22,7 +22,7 @@ namespace BCD.WebApi.Services.ContaCadastradaServices
         public async Task<ContaCadastradaDto> Add(ContaCadastradaDto contaDto)
         {
             var conta = _map.Map<ContaCadastrada>(contaDto);
-
+            
             _repo.Add(conta);
             
             if(await _repo.SaveChangeAsync()) 

@@ -73,13 +73,13 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
         {
             return await _context.Historicos.Where(
                 x => x.TipoConta == 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
-            ).ToArrayAsync();
+            ).OrderByDescending(x => x.DataTransacao).ToArrayAsync();
         }
         public async Task<Historico[]> GetByMesPoupancaAsync(int mes, int agencia, int conta)
         {
             return await _context.Historicos.Where(
                 x => x.TipoConta != 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
-            ).ToArrayAsync();
+            ).OrderByDescending(x => x.DataTransacao).ToArrayAsync();
         }
     }
 }

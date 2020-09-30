@@ -76,6 +76,14 @@ namespace BCD.WebApi.Services.PessoaServices
 
             return pessoaDto.ToArray();
         }
+        // LISTAR CPF PELO ID
+        public async Task<string> GetCpfById(int idPessoa)
+        {
+            string cpf = await _repo.GetCpfByIdPessoa(idPessoa);
+
+            return cpf;
+        }
+
         // LISTAR POR ID PESSOA
         public async Task<PessoaDto[]> GetAllByIdPessoa(int idPessoa)
         {

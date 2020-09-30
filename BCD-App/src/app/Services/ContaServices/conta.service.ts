@@ -32,17 +32,14 @@ export class ContaService {
   getByContaAndAgencia(conta: number, agencia: number): Observable<Conta> {
     return this.http.get<Conta>(`${this.baseUrl}contaAndAgencia/${conta}/${agencia}`);
   }
-  getAllDeleteNomeCurrency(nomeConta: string): Observable<Conta[]> {
-    return this.http.get<Conta[]>(`${this.baseUrl}nomeConta/${nomeConta}`);
-  }
   getById(id: number): Observable<Conta> {
     return this.http.get<Conta>(`${this.baseUrl}${id}`);
   }
   getBySearch(search: string): Observable<Conta[]> {
     return this.http.get<Conta[]>(`${this.baseUrl}buscar/${search}`);
   }
-  getByIdList(id: number): Observable<Conta[]> {
-    return this.http.get<Conta[]>(`${this.baseUrl}listar/${id}`);
+  getListByIdPessoa(idPessoa: number): Observable<Conta[]> {
+    return this.http.get<Conta[]>(`${this.baseUrl}listarPorIdPessoa/${idPessoa}`);
   }
   // DELETE
   delete(id: number) {

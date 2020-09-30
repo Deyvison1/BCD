@@ -236,10 +236,10 @@ namespace BCD.WebApi.Controllers
             }
         }
         // LISTAR POR ID COM EXTRATO
-        [HttpGet("listar/{id}")]
-        public async Task<IActionResult> GetByIdLista(int id) {
+        [HttpGet("listarPorIdPessoa/{idPessoa}")]
+        public async Task<IActionResult> GetByIdLista(int idPessoa) {
             try {
-                var conta = await _service.GetByIdList(id);
+                var conta = await _service.ListGetByIdPessoa(idPessoa);
                 return Ok(conta);
             }
             catch(NotFoundException e) {

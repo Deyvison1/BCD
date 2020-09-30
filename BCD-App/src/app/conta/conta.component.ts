@@ -44,7 +44,6 @@ export class ContaComponent implements OnInit {
   pessoa: Pessoa = new Pessoa();
 
   // VARIAVEIS DE LISTAS
-  todasContas: Conta[] = [];
   contas: Conta[] = [];
   historicos: Historico[] = [];
   contaTransferencia: Conta[] = [];
@@ -179,7 +178,6 @@ export class ContaComponent implements OnInit {
         console.log(error.error);
       }
     );
-    this.getAllContas();
   }
 
   // RESGATAR VALOR
@@ -250,7 +248,7 @@ export class ContaComponent implements OnInit {
         modal.hide();
         
         this.formDeposito.reset();
-        this.toastr.success('Sucesso no deposito!');
+        this.toastr.success('Sucesso no Deposito!');
         this.loading = false;
       }, error => {
         this.formDeposito.reset();
@@ -314,9 +312,8 @@ export class ContaComponent implements OnInit {
             (conta: Conta[]) => {
               template.hide();
 
-              this.getAllContas();
               this.getAllByIdPessoa();
-              this.toastr.success('Sucesso!');
+              this.toastr.success('Sucesso na Transferencia!');
               this.formDeposito.reset();
               this.loading = false;
             }, error => {
@@ -333,19 +330,6 @@ export class ContaComponent implements OnInit {
       );
   }
 
-  getAllContas() {
-    this.loading = true;
-
-    this.contaService.getAllDeleteNomeCurrency('Deyvison').subscribe(
-      (contas: Conta[]) => {
-        this.todasContas = contas;
-        this.loading = false;
-      }, error => {
-        this.toastr.error(error.error);
-        this.loading = false;
-      }
-    );
-  }
   
   getAllByIdPessoa() {
     this.loading = true;
@@ -359,7 +343,7 @@ export class ContaComponent implements OnInit {
           this.mensagemTooltipResgatarValor = (x.contas.length === 1)? 'Conta Poupança Inexistente' : 'Resgatar Valor';
           this.mensagemTooltipAplicarValor = (x.contas.length === 1)? 'Conta Poupança Inexistente' : 'Aplicação Poupança';
           
-          this.contaService.getByIdList(1).subscribe(
+          this.contaService.getListByIdPessoa(1).subscribe(
             (conta: Conta[]) => {
               conta.forEach(x => {
                 this.historicos = x.extrato;

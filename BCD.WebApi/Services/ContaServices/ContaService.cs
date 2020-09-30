@@ -10,6 +10,7 @@ using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.Exception;
 using BCD.WebApi.Services.HistoricoServices;
+using BCD.WebApi.Services.PessoaServices;
 using CryptSharp;
 
 namespace BCD.WebApi.Services.ContaServices
@@ -21,14 +22,18 @@ namespace BCD.WebApi.Services.ContaServices
         private HistoricoService _historicoServices { get; }
         private readonly IHistoricosContasRepository _repoHistoricosContas;
         private readonly ContaCadastradaService _contaCadastradaService;
+        private readonly PessoaService _pessoaService;
+
         public ContaService(IContaRepository repo, IMapper map, HistoricoService historicoServices,
-            IHistoricosContasRepository repoHistoricoContas, ContaCadastradaService contaCadastradaService)
+            IHistoricosContasRepository repoHistoricoContas, ContaCadastradaService contaCadastradaService,
+            PessoaService pessoaService)
         {
             _repoHistoricosContas = repoHistoricoContas;
             _historicoServices = historicoServices;
             _repo = repo;
             _map = map;
             _contaCadastradaService = contaCadastradaService;
+            _pessoaService = pessoaService;
         }
         // LISTAR CONTAS CADASTRADAS
         public async Task<ContaDto[]> GetAllContaCadastradaByPessoaId(int pessoaId) 
@@ -113,11 +118,11 @@ namespace BCD.WebApi.Services.ContaServices
                 {
                     throw new ArgumentException("Ja existe uma conta poupanca para essa pessoa!");
                 }
-
             }
+
+            contaDto.CPF = await _pessoaService.GetCpfById(contaDto.PessoaId);
             var conta = _map.Map<Conta>(contaDto);
-
-
+            
             _repo.Add(conta);
 
             if (await _repo.SaveAsync())
@@ -174,7 +179,7 @@ namespace BCD.WebApi.Services.ContaServices
             return contaDto.ToArray();
         }
         // LISTAR POR ID COM EXTRATO
-        public async Task<ContaDto[]> GetByIdList(int id)
+        public async Task<ContaDto[]> ListGetByIdPessoa(int id)
         {
             var conta = await _repo.GetByIdAsyncList(id);
             if (conta == null) throw new NotFoundException("Nenhum registro encontrado com esse id");
@@ -413,7 +418,7 @@ namespace BCD.WebApi.Services.ContaServices
 
                 if (await _repoHistoricosContas.SaveAsync())
                 {
-                    bool existeContaCadastrada = await _contaCadastradaService.ExisteContaCadastrada(contaDestino.Id, contaDestino.PessoaId);
+                    bool existeContaCadastrada = await _contaCadastradaService.ExisteContaCadastrada(contaDestino.Id, contaOrigin.PessoaId);
                     if(!existeContaCadastrada)
                     {
                         ContaCadastradaDto contaCadastradaDto = new ContaCadastradaDto 
@@ -421,8 +426,7 @@ namespace BCD.WebApi.Services.ContaServices
                             ContaId = contaDestino.Id,
                             PessoaId = contaOrigin.PessoaId
                         };
-                    await _contaCadastradaService.Add(contaCadastradaDto);
-
+                        await _contaCadastradaService.Add(contaCadastradaDto);
                     }
                     return _map.Map<ContaDto>(contaOrigin);
                 }
