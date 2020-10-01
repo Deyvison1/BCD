@@ -25,6 +25,7 @@ export class ContaComponent implements OnInit {
   pageAtualExtrato = 1;
   pageAtualExtratoPoupanca = 1;
   pageAtualExtratoLastMeses = 1;
+  pageAtualExtratoLast = 1;
   mes: number;
   qtdPages: number;
   mostrarValorPoupanca: boolean = false;
@@ -49,6 +50,7 @@ export class ContaComponent implements OnInit {
   contaTransferencia: Conta[] = [];
   historicoByMesCorrente: Historico[] = [];
   historicoByMesPoupanca: Historico[] = [];
+  historicoByMes: Historico[] = [];
 
 
   constructor(
@@ -65,7 +67,6 @@ export class ContaComponent implements OnInit {
     this.validationFormNewTransferencia();
     this.validationFormExtrato();
   }
-
 
   alternarValorVisivelPoupanca() {
     this.mostrarValorPoupanca = !this.mostrarValorPoupanca;
@@ -127,6 +128,7 @@ export class ContaComponent implements OnInit {
             this.historicoService.getByMesPoupanca(mes, this.helperConta.agencia, this.helperConta.conta).subscribe(
               (historicosPoupanca: Historico[]) => {
                 this.historicoByMesPoupanca = historicosPoupanca;
+
               }, error => {
                 console.log(error.error);
               }
@@ -140,6 +142,16 @@ export class ContaComponent implements OnInit {
       }
     );
     this.abrirModal(template);
+  }
+
+  lastHistoricoByMes() {
+    this.historicoService.getLastMeses(this.helperConta.agencia, this.helperConta.conta, this.helperConta.tipoConta).subscribe(
+      (historico: Historico[]) => {
+        this.historicoByMes = historico;
+      }, error => {
+        console.log(error.error);
+      }
+    );
   }
 
   abrirModalDeposito(template: any) {

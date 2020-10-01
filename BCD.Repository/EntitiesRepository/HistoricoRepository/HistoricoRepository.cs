@@ -73,13 +73,38 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
         {
             return await _context.Historicos.Where(
                 x => x.TipoConta == 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
-            ).OrderByDescending(x => x.DataTransacao).ToArrayAsync();
+            ).OrderBy(x => x.DataTransacao).ToArrayAsync();
         }
         public async Task<Historico[]> GetByMesPoupancaAsync(int mes, int agencia, int conta)
         {
             return await _context.Historicos.Where(
                 x => x.TipoConta != 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
-            ).OrderByDescending(x => x.DataTransacao).ToArrayAsync();
+            ).OrderBy(x => x.DataTransacao).ToArrayAsync();
+        }
+
+        public async Task<Historico[]> GetLastMesesPoupanca(int agencia, int conta, int tipoConta, params int[] meses)
+        {
+            var listaHistoricosByLastMeses = await _context.Historicos.Where(
+                list => meses.Contains(list.DataTransacao.Month) 
+                && list.DigitosAgencia.Equals(agencia)
+                && list.DigitosConta.Equals(conta)
+                && list.TipoConta != 0
+            ).OrderBy(
+                x => x.DataTransacao
+            ).ToArrayAsync();
+            return listaHistoricosByLastMeses;
+        }
+        public async Task<Historico[]> GetLastMesesCorrente(int agencia, int conta, int tipoConta, params int[] meses)
+        {
+            var listaHistoricosByLastMeses = await _context.Historicos.Where(
+                list => meses.Contains(list.DataTransacao.Month) 
+                && list.DigitosAgencia.Equals(agencia)
+                && list.DigitosConta.Equals(conta)
+                && list.TipoConta == 0
+            ).OrderBy(
+                x => x.DataTransacao
+            ).ToArrayAsync();
+            return listaHistoricosByLastMeses;
         }
     }
 }

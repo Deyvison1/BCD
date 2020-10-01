@@ -14,6 +14,11 @@ export class HistoricoService {
     private http: HttpClient
   ) { }
 
+
+  getLastMeses(agencia: number, conta: number, tipoConta: number): Observable<Historico[]> {
+    return this.http.get<Historico[]>(`${this.baseURL}listLast/${agencia}/${conta}/${tipoConta}`);
+  }
+
   getByMesCorrente(mes: number, agencia: number, conta: number): Observable<Historico[]> {
     return this.http.get<Historico[]>(`${this.baseURL}listarPeloMesCorrente/${mes}/${agencia}/${conta}`);
   }

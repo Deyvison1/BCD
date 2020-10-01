@@ -19,6 +19,34 @@ namespace BCD.WebApi.Services.HistoricoServices
             _repo = repo;
             _map = map;
         }
+        // PEGAR OS MESES DOS ULTIMOS EXTRATO
+        public int[] MesesLastExtrato(int mes)
+        {
+            int mesIncial = mes - 3;
+            List<int> meses = new List<int>();
+            for(int i = mesIncial; i < mes; i++)
+            {
+                meses.Add(i);
+            }
+            return meses.ToArray();
+        }
+        // LISTAR ULTIMOS 3 MESES
+        public async Task<HistoricoDto[]> GetLastMeses(int agencia, int conta, int tipoConta)
+        {
+            // PEGAR MES ATUAL
+            int mesAtual = DateTime.Now.Month;
+            // CRIADO A LISTA
+            List<int> meses = new List<int>();
+            // PERCORRO A LISTA ADICIONANDO OS MESES DE ACORDO COM A DATA ATUAL
+            meses.AddRange(MesesLastExtrato(mesAtual));
+            
+            var historicos = (tipoConta == 0) ? await _repo.GetLastMesesCorrente(agencia, conta, tipoConta, meses.ToArray()) :
+                await _repo.GetLastMesesPoupanca(agencia, conta, tipoConta, meses.ToArray());
+
+            var historicosDto = _map.Map<HistoricoDto[]>(historicos);
+
+            return historicosDto.ToArray();
+        }
         // LISTAR PELO MES CONTA POUPANCA
         public async Task<HistoricoDto[]> GeteByMesPoupanca(int mes, int agencia, int conta)
         {
