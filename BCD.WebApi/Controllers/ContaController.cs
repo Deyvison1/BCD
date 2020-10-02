@@ -136,8 +136,22 @@ namespace BCD.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }
         }
+        // SOLICITAR CONTA
+         [HttpPost("solicitar")]
+        public async Task<IActionResult> SolicitarConta(SolicitarConta contaDto) {
+            try {
+                var contaRequest = await _service.SolicitarConta(contaDto);
+
+                return Ok(contaRequest);
+            }
+            catch(NotFoundException e) {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
         // ADICIONAR
-        [HttpPost]
         public async Task<IActionResult> Add(ContaDto contaDto) {
             try {
                 var contaAdd = await _service.Add(contaDto);

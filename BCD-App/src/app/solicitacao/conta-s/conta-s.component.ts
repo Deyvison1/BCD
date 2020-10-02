@@ -68,6 +68,10 @@ export class ContaSComponent implements OnInit {
     console.log(this.solicitarConta);
   }
 
+  buscarCep() {
+    this.solicitarConta = this.form.value;
+    console.log(this.solicitarConta.cep);
+  }
 
   addEndereco() {
     this.enderecos.push(this.criarEndereco({ id: 0 }));

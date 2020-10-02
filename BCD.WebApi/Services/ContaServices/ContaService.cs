@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCD.Domain.Entities;
 using BCD.Repository.EntitiesRepository.ContaRepository;
+using BCD.Repository.EntitiesRepository.EnderecosPessoasRepository;
 using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.ContaCadastradaServices;
+using BCD.WebApi.Services.EnderecoServices;
 using BCD.WebApi.Services.Exception;
 using BCD.WebApi.Services.HistoricoServices;
 using BCD.WebApi.Services.PessoaServices;
@@ -23,10 +25,12 @@ namespace BCD.WebApi.Services.ContaServices
         private readonly IHistoricosContasRepository _repoHistoricosContas;
         private readonly ContaCadastradaService _contaCadastradaService;
         private readonly PessoaService _pessoaService;
+        private readonly IEnderecosPessoasRepository _repoEnderecoPessoa;
+        private readonly EnderecoService _enderecoService;
 
         public ContaService(IContaRepository repo, IMapper map, HistoricoService historicoServices,
             IHistoricosContasRepository repoHistoricoContas, ContaCadastradaService contaCadastradaService,
-            PessoaService pessoaService)
+            PessoaService pessoaService, EnderecoService enderecoService, IEnderecosPessoasRepository repoEnderecoPessoa)
         {
             _repoHistoricosContas = repoHistoricoContas;
             _historicoServices = historicoServices;
@@ -34,6 +38,63 @@ namespace BCD.WebApi.Services.ContaServices
             _map = map;
             _contaCadastradaService = contaCadastradaService;
             _pessoaService = pessoaService;
+            _enderecoService = enderecoService;
+            _repoEnderecoPessoa = repoEnderecoPessoa;
+        }
+        // SOLICITAR CONTA
+        public async Task<ContaDto> SolicitarConta(SolicitarConta solicitarConta) 
+        {
+            PessoaDto pessoaDto = new PessoaDto
+            {
+                Nome = solicitarConta.NomeConta,
+                CPF = solicitarConta.CPF,
+                Situacao = 1
+            };
+
+            var pessoaAdd = _pessoaService.Add(pessoaDto);
+
+            ContaDto contaDto = new ContaDto
+            {
+                CPF = solicitarConta.CPF,
+                NomeConta = solicitarConta.NomeConta,
+                Senha = solicitarConta.Senha,
+                Situacao = 1,
+                TipoConta = solicitarConta.TipoConta,
+                PessoaId = pessoaAdd.Id 
+            };
+            var conta = _map.Map<Conta>(contaDto);
+            _repo.Add(conta);
+
+            List<EnderecoDto> enderecoDto = new List<EnderecoDto>();
+
+
+            if(await _repo.SaveAsync())
+            {
+                enderecoDto.AddRange(solicitarConta.Enderecos);
+
+                var enderecoAdd =  await _enderecoService.AddRange(enderecoDto);
+
+                List<EnderecosPessoasDto> enderecosPessoasDtos = new List<EnderecosPessoasDto>();
+                
+                enderecoDto.ForEach(x => 
+                {
+                    EnderecosPessoasDto enderecosPessoasDto = new EnderecosPessoasDto
+                    {
+                        DataAtualizacao = DateTime.Now,
+                        EnderecoId = x.Id,
+                        PessoaId = pessoaAdd.Id
+                    };
+                    enderecosPessoasDtos.Add(enderecosPessoasDto);
+                });
+                var enderecoPessoaAdd = _map.Map<List<EnderecosPessoas>>(enderecosPessoasDtos);
+                 _repoEnderecoPessoa.AddRange(enderecoPessoaAdd);
+                
+                if(await _repoEnderecoPessoa.SaveAsync())
+                {
+                    return _map.Map<ContaDto>(conta);
+                }
+            }
+            throw new ArgumentException("Error");
         }
         // LISTAR CONTAS CADASTRADAS
         public async Task<ContaDto[]> GetAllContaCadastradaByPessoaId(int pessoaId) 
@@ -96,12 +157,6 @@ namespace BCD.WebApi.Services.ContaServices
             return helperContaDto;
         }
         // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
-
-        // ADICIONAR SOLICTACAO PARA CONTA
-        //public async Task<ContaDto> SolicitarConta()
-        //{
-
-        //} 
 
         // ADICIONAR CONTA ADMIN
         public async Task<ContaDto> Add(ContaDto contaDto)

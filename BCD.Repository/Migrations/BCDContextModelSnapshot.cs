@@ -163,6 +163,8 @@ namespace BCD.Repository.Migrations
 
                     b.Property<string>("Nome");
 
+                    b.Property<int>("Situacao");
+
                     b.HasKey("Id");
 
                     b.ToTable("Pessoas");

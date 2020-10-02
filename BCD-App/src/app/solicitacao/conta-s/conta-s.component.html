@@ -1,4 +1,4 @@
-<div class="container">
+<div style="margin-top: 100px;" class="container">
   <form [formGroup]="form">
   <div class="form-group">
     <div class="row">
@@ -39,17 +39,12 @@
                     <input type="text" class="form-control text-center" formControlName="cep" />
                   </div>
                   <div class="col-2 text-center">
-                    <button class="btn btn-info btn-block" >
+                    <button class="btn btn-info btn-block" (click)="buscarCep()">
                       <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
                   </div>
                 <p></p>
               </div>
-
-
-                <div>
-                  <input type="text" class="form-control text-center" formControlName="localidade" [(ngModel)]="enderecoInstancia.localidade"/>
-                </div>
               </legend>
             </fieldset>
           </div>

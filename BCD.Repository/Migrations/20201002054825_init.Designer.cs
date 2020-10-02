@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BCD.Repository.Migrations
 {
     [DbContext(typeof(BCDContext))]
-    [Migration("20201002013500_init")]
+    [Migration("20201002054825_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +164,8 @@ namespace BCD.Repository.Migrations
                     b.Property<string>("CPF");
 
                     b.Property<string>("Nome");
+
+                    b.Property<int>("Situacao");
 
                     b.HasKey("Id");
 
