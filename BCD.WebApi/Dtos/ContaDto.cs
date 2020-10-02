@@ -18,6 +18,8 @@ namespace BCD.WebApi.Dtos
         [StringLength(50, ErrorMessage = "{0} deve ter no maximo 50 caracteres!")]
         public string NomeConta { get; set; }
         public string CPF { get; set; }
+        // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
+        public int Situacao { get; set; }
         public float Saldo { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         public int PessoaId { get; set; }

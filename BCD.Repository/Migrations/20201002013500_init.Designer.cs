@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BCD.Repository.Migrations
 {
     [DbContext(typeof(BCDContext))]
-    [Migration("20200928122728_init")]
+    [Migration("20201002013500_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,8 @@ namespace BCD.Repository.Migrations
                     b.Property<float>("Saldo");
 
                     b.Property<string>("Senha");
+
+                    b.Property<int>("Situacao");
 
                     b.Property<int>("TipoConta");
 
@@ -192,7 +194,7 @@ namespace BCD.Repository.Migrations
             modelBuilder.Entity("BCD.Domain.Entities.EnderecosPessoas", b =>
                 {
                     b.HasOne("BCD.Domain.Entities.Endereco", "Endereco")
-                        .WithMany("Pessoas")
+                        .WithMany("Pessoa")
                         .HasForeignKey("EnderecoId")
                         .OnDelete(DeleteBehavior.Cascade);
 

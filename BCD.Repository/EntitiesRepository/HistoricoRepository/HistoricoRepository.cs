@@ -73,13 +73,13 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
         {
             return await _context.Historicos.Where(
                 x => x.TipoConta == 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
-            ).OrderBy(x => x.DataTransacao).ToArrayAsync();
+            ).OrderByDescending(x => x.DataTransacao).ToArrayAsync();
         }
         public async Task<Historico[]> GetByMesPoupancaAsync(int mes, int agencia, int conta)
         {
             return await _context.Historicos.Where(
                 x => x.TipoConta != 0 && x.Operacao > 0 && x.DataTransacao.Month.Equals(mes)
-            ).OrderBy(x => x.DataTransacao).ToArrayAsync();
+            ).OrderByDescending(x => x.DataTransacao).ToArrayAsync();
         }
 
         public async Task<Historico[]> GetLastMesesPoupanca(int agencia, int conta, int tipoConta, params int[] meses)
@@ -89,7 +89,7 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
                 && list.DigitosAgencia.Equals(agencia)
                 && list.DigitosConta.Equals(conta)
                 && list.TipoConta != 0
-            ).OrderBy(
+            ).OrderByDescending(
                 x => x.DataTransacao
             ).ToArrayAsync();
             return listaHistoricosByLastMeses;
@@ -101,7 +101,7 @@ namespace BCD.Repository.EntitiesRepository.HistoricoRepository
                 && list.DigitosAgencia.Equals(agencia)
                 && list.DigitosConta.Equals(conta)
                 && list.TipoConta == 0
-            ).OrderBy(
+            ).OrderByDescending(
                 x => x.DataTransacao
             ).ToArrayAsync();
             return listaHistoricosByLastMeses;

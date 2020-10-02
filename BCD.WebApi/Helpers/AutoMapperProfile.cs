@@ -20,7 +20,13 @@ namespace BCD.WebApi.Helpers
                 }
             ).ReverseMap();
             //
-            CreateMap<Endereco, EnderecoDto>().ReverseMap();
+            CreateMap<Endereco, EnderecoDto>().ForMember(
+                x => x.Pessoas, opt => {
+                    opt.MapFrom(src => src.Pessoa.Select(
+                        x => x.Pessoa
+                    ).ToList());
+                }
+            ).ReverseMap();
             //
             CreateMap<Historico, HistoricoDto>().ReverseMap();
             CreateMap<Conta, ContaDto>().ForMember(

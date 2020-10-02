@@ -1,0 +1,100 @@
+<div class="container">
+  <form [formGroup]="form">
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <input class="form-control text-center" formControlName="nomeConta" type="text" placeholder="Nome Conta" />
+        <p></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <input class="form-control text-center" formControlName="CPF" type="text" formControlName="cpf" id="" placeholder="CPF" />
+        <p></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <select formControlName="tipoConta" class="form-control text-center">
+          <option value="0">Corrente</option>
+          <option value="1">Poupanca</option>
+        </select>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-10">
+        <input type="text" class="form-control text-center" formControlName="cep" placeholder="Endereco"/>
+        <p></p>
+        <div id="collapseBasic" [collapse]="isCollapsed">
+          <div formArrayName="enderecos" *ngFor="let endereco of enderecos.controls; let i = index;">
+            <fieldset [formGroupName]="i">
+              <legend>
+                {{ enderecoInstancia.bairro == ''? 'Bairro': enderecoInstancia.bairro }}
+                &nbsp;
+                <button class="btn btn-warning mb-1" (click)="removerEndereco(i)">remove</button>
+                <p></p>
+                <div class="row">
+                  <div class="col-10">
+                    <input type="text" class="form-control text-center" formControlName="cep" />
+                  </div>
+                  <div class="col-2 text-center">
+                    <button class="btn btn-info btn-block" >
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                <p></p>
+              </div>
+
+
+                <div>
+                  <input type="text" class="form-control text-center" formControlName="localidade" [(ngModel)]="enderecoInstancia.localidade"/>
+                </div>
+              </legend>
+            </fieldset>
+          </div>
+          <div class="text-center">
+          <button class="btn btn-sm btn-block btn-info" (click)="addEndereco()">
+            Add
+          </button>
+          <p></p>
+        </div>
+        </div>
+    </div>
+      <div class="col-2">
+        <button
+          type="button"
+          class="btn btn-block btn-primary"
+          (click)="isCollapsed = !isCollapsed"
+          [attr.aria-expanded]="!isCollapsed"
+          aria-controls="collapseBasic"
+        >
+        <span *ngIf="isCollapsed">Abrir</span>
+        <span *ngIf="!isCollapsed">Fechar</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <input class="form-control text-center" type="password" placeholder="Senha" formControlName="senha"/>
+      </div>
+    </div>
+  </div>
+  <input class="form-control btn btn-success" type="submit" value="Enviar" (click)="solicitar()"/>
+</form>
+</div>
+
+
+
+<div class="my-container">
+  <ng-template #customLoadingTemplate>
+      <div class="">
+        <br>
+        <br>
+          <h4 class="text-center">Carregando</h4>
+      </div>
+  </ng-template>
+
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+</div>

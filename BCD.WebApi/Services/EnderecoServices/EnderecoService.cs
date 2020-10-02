@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -49,6 +50,62 @@ namespace BCD.WebApi.Services.EnderecoServices
             }
             throw new ArgumentException("Erro ao persistir dados no banco!");
 
+        }
+        // ADICIONAR
+        public async Task<EnderecoDto> AddRange(List<EnderecoDto> enderecoDto)
+        {
+            var ceps = enderecoDto.Select(x => x.CEP).ToList<int>();
+            var existeCep = await _repo.ExisteCepCadastrado(ceps);
+            
+            
+            var endereco = _map.Map<Endereco>(enderecoDto);
+
+            if(existeCep.Length > 0)
+            {
+                foreach(int cep in existeCep)
+                {
+                    foreach(var item in enderecoDto) 
+                    {
+                        bool existeEndereco = await _repoEnderecosPessoas.ExisteEndereco(cep,item.IdPessoa);
+
+                        if(existeEndereco)
+                        {
+                            throw new ArgumentException("Essa pessoa ja tem esse endereco cadastrado!");
+                        }
+                    }
+                }
+                
+            }
+            var enderecos = _map.Map<List<Endereco>>(enderecoDto);
+             _repo.AddRange(enderecos);
+            
+            if(await _repo.SaveAsync())
+            {
+                List<EnderecosPessoasDto> listEnderecosPessoasDto = new List<EnderecosPessoasDto>();
+                enderecos.ForEach(x => {
+                        enderecoDto.ForEach(
+                            y => {
+                                EnderecosPessoasDto enderecosPessoasDto2 = new EnderecosPessoasDto
+                                {
+                                    DataAtualizacao = DateTime.Now,
+                                    EnderecoId = x.Id,
+                                    PessoaId = y.IdPessoa
+                                };
+                                listEnderecosPessoasDto.Add(enderecosPessoasDto2);   
+                            }
+                        );
+                });
+                // MAPEAMENTO DE DTO PRA ENTIDADE PARA REALIZAR O INSERT
+                var enderecoPessoas = _map.Map<EnderecosPessoas[]>(listEnderecosPessoasDto);
+
+                _repoEnderecosPessoas.AddRange(enderecoPessoas.ToList<EnderecosPessoas>());
+
+                if(await _repoEnderecosPessoas.SaveAsync())
+                {
+                    return _map.Map<EnderecoDto>(endereco);
+                }
+            }
+            throw new ArgumentException("Erro ao persistir no banco!");
         }
         // ADICIONAR
         public async Task<EnderecoDto> Add(EnderecoDto enderecoDto)

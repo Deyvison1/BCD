@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.EnderecoServices;
@@ -16,6 +17,22 @@ namespace BCD.WebApi.Controllers
         public EnderecoController(EnderecoService service)
         {
             _service = service;
+        }
+
+        // ADICIONAR
+        [HttpPost("list")]
+        public async Task<IActionResult> AddRange(List<EnderecoDto> enderecoDto)
+        {
+            try
+            {
+                var addEndereco = await _service.AddRange(enderecoDto);
+                
+                return Created($"/api/endereco/{addEndereco.Id}", addEndereco);
+            }
+            catch(ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
         }
         // ADICIONAR
         [HttpPost]

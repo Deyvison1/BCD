@@ -3,11 +3,11 @@
     <div style="border-radius: 4px;" class="col-8 border shadow p-3 mb-5 bg-white rounded">
       <div style="padding-top: 4px; padding-bottom: 10px;" class="row">
         <div class="col-3">
-          <a
+          <button
             (click)="abrirModalExtrato(modalExtrato)"
             class="btn btn-outline-info btn-block text-center btn-lg"
             href="#"
-            >Extrato</a
+            >Extrato</button
           >
         </div>
         <div class="col-5">
@@ -61,7 +61,7 @@
       <div style="height: 135px; padding-top: 10px;" class="row text-center">
         
         <div class="col">
-          <button class="btn btn-info" (click)="alternarValorVisivelPoupanca ()">
+          <button tooltip="{{ mensagemValorVisivel }}" [disabled]="contas.length == 1" class="btn btn-info" (click)="alternarValorVisivelPoupanca ()">
             <i class="{{ mostrarValorPoupanca ? 'fa fa-eye-slash' : 'fa fa-eye' }}"></i>
             </button>
           <br>
@@ -202,7 +202,7 @@
               
             <div class="row">
               <div class="col-8">
-              <select class="form-control text-center"  [(ngModel)]="helperConta.tipoConta">
+              <select tooltip="Tipo da Conta" class="form-control text-center"  [(ngModel)]="helperConta.tipoConta">
                 <option value="0">CONTA CORRENTE</option>
                 <option value="1">CONTA POUPANÇA</option>
               </select>
@@ -251,7 +251,7 @@
             ></pagination-controls>
           </div>
           <div *ngIf="!historicoByMes.length" >
-            <h2 class="">Sem Historico Para Essa Data</h2>
+            <h2 class="">Selecione o Tipo da Conta</h2>
           </div>
           </tab>
           <tab heading="Conta Poupanca" id="tab">
@@ -546,7 +546,7 @@
                   *ngIf="
                     formNewTransferencia
                       .get('quantia')
-                      .hasError('required') &&
+                      .hasError('min') &&
                     formNewTransferencia.get('quantia').touched
                   "
                   class="invalid-feedback"
@@ -780,6 +780,18 @@
                     formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
                 }"
                 >
+
+                <div
+                  *ngIf="
+                    formDeposito
+                      .get('quantia')
+                      .hasError('min') &&
+                    formDeposito.get('quantia').touched
+                  "
+                  class="invalid-feedback"
+                >
+                  Valor deve ser maior que 0!
+                </div>
                 <div
                   *ngIf="
                     formDeposito
@@ -833,3 +845,4 @@
 
   <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
 </div>
+

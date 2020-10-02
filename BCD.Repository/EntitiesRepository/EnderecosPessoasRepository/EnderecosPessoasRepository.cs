@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BCD.Domain.Entities;
@@ -15,6 +16,10 @@ namespace BCD.Repository.EntitiesRepository.EnderecosPessoasRepository
             _context = context;
         }
 
+        public async void AddRange(List<EnderecosPessoas> enderecoPessoas)
+        {
+            await _context.AddRangeAsync(enderecoPessoas);
+        }
         public void Add(EnderecosPessoas enderecosPessoas)
         {
             _context.Add(enderecosPessoas);
@@ -46,5 +51,6 @@ namespace BCD.Repository.EntitiesRepository.EnderecosPessoasRepository
                 x => x.PessoaId.Equals(pessoaId) && x.EnderecoId.Equals(idEndereco)
             );
         }
+
     }
 }

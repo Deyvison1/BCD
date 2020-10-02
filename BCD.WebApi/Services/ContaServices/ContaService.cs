@@ -95,7 +95,15 @@ namespace BCD.WebApi.Services.ContaServices
             };
             return helperContaDto;
         }
-        // ADICIONAR CONTA
+        // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
+
+        // ADICIONAR SOLICTACAO PARA CONTA
+        //public async Task<ContaDto> SolicitarConta()
+        //{
+
+        //} 
+
+        // ADICIONAR CONTA ADMIN
         public async Task<ContaDto> Add(ContaDto contaDto)
         {
             var helperConta = await GerarContaAndAgencia(contaDto.PessoaId);
@@ -451,6 +459,10 @@ namespace BCD.WebApi.Services.ContaServices
                 throw new NotFoundException("Saldo insuficiente!");
             }
 
+
+            bool senhaConfere = CompareSenha(contaDto.Senha, contaCorrente.Senha);
+            if (!senhaConfere) throw new ArgumentException("Senha incorreta!");
+
             contaCorrente.Saldo -= contaDto.Quantia;
             contaPoupanca.Saldo += contaDto.Quantia;
 
@@ -536,6 +548,10 @@ namespace BCD.WebApi.Services.ContaServices
             {
                 throw new NotFoundException("Saldo insuficiente!");
             }
+
+
+            bool senhaConfere = CompareSenha(contaDto.Senha, contaPoupanca.Senha);
+            if (!senhaConfere) throw new ArgumentException("Senha incorreta!");
 
             contaCorrente.Saldo += contaDto.Quantia;
             contaPoupanca.Saldo -= contaDto.Quantia;

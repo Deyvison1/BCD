@@ -11,6 +11,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { NgxMaskModule, IConfig } from "ngx-mask";
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxLoadingModule } from 'ngx-loading';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -20,6 +21,9 @@ import { FooterComponent } from "./footer/footer.component";
 import { ContaComponent } from "./conta/conta.component";
 import { PessoaComponent } from "./pessoa/pessoa.component";
 import { ToastrModule } from "ngx-toastr";
+import { SolicitacaoComponent } from './solicitacao/solicitacao.component';
+import { ContaSComponent } from './solicitacao/conta-s/conta-s.component';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +32,8 @@ import { ToastrModule } from "ngx-toastr";
     FooterComponent,
     ContaComponent,
     PessoaComponent,
+    SolicitacaoComponent,
+    ContaSComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +48,7 @@ import { ToastrModule } from "ngx-toastr";
     ReactiveFormsModule,
     NgxMaskModule.forRoot(),
     FormsModule,
+    CollapseModule.forRoot(),
     NgxPaginationModule,
     NgxLoadingModule.forRoot({}),
     ToastrModule.forRoot({

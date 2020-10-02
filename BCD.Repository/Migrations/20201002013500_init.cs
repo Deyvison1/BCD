@@ -78,6 +78,7 @@ namespace BCD.Repository.Migrations
                     Saldo = table.Column<float>(nullable: false),
                     CPF = table.Column<string>(nullable: true),
                     Senha = table.Column<string>(nullable: true),
+                    Situacao = table.Column<int>(nullable: false),
                     PessoaId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

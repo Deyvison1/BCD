@@ -35,6 +35,8 @@ namespace BCD.Repository.Migrations
 
                     b.Property<string>("Senha");
 
+                    b.Property<int>("Situacao");
+
                     b.Property<int>("TipoConta");
 
                     b.HasKey("Id");
@@ -190,7 +192,7 @@ namespace BCD.Repository.Migrations
             modelBuilder.Entity("BCD.Domain.Entities.EnderecosPessoas", b =>
                 {
                     b.HasOne("BCD.Domain.Entities.Endereco", "Endereco")
-                        .WithMany("Pessoas")
+                        .WithMany("Pessoa")
                         .HasForeignKey("EnderecoId")
                         .OnDelete(DeleteBehavior.Cascade);
 

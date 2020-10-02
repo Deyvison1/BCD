@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BCD.Domain.Entities;
@@ -13,6 +14,11 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
         public EnderecoRepository(BCDContext context)
         {
             _context = context;
+        }
+
+        public async void AddRange(List<Endereco> enderecos)
+        {
+            await _context.AddRangeAsync(enderecos);
         }
         public void Add(Endereco enderecoEntities)
         {
@@ -68,6 +74,14 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
             return await _context.Enderecos.FirstOrDefaultAsync(
                 x => x.CEP.Equals(cep)
             );
+        }
+        // Se retornar algum registro e pq tem esse cep cadastrado ja
+        public async Task<int[]> ExisteCepCadastrado(List<int> ceps)
+        {
+            var result = _context.Enderecos.Where(
+                list => ceps.Contains(list.CEP)
+            ).Select(x => x.Id);
+            return await result.ToArrayAsync();
         }
     }
 }

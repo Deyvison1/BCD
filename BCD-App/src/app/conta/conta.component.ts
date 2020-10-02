@@ -31,6 +31,7 @@ export class ContaComponent implements OnInit {
   mostrarValorPoupanca: boolean = false;
   mensagemTooltipResgatarValor: string;
   mensagemTooltipAplicarValor: string;
+  mensagemValorVisivel: string;
 
   // VARIAVEIS TIPO CLASS
   formNewTransferencia: FormGroup;
@@ -354,6 +355,7 @@ export class ContaComponent implements OnInit {
 
           this.mensagemTooltipResgatarValor = (x.contas.length === 1)? 'Conta Poupança Inexistente' : 'Resgatar Valor';
           this.mensagemTooltipAplicarValor = (x.contas.length === 1)? 'Conta Poupança Inexistente' : 'Aplicação Poupança';
+          this.mensagemValorVisivel = (x.contas.length == 1)? 'Conta Poupança Inexistente' : '';
           
           this.contaService.getListByIdPessoa(1).subscribe(
             (conta: Conta[]) => {
