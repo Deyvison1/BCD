@@ -1,9 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ToastrService } from 'ngx-toastr';
+import { Conta } from 'src/app/Models/Conta';
 import { Endereco } from "src/app/Models/Endereco";
 import { Pessoa } from 'src/app/Models/Pessoa';
 import { SolicitarConta } from 'src/app/Models/SolicitarConta';
+import { ContaService } from 'src/app/Services/ContaServices/conta.service';
 import { EnderecoService } from 'src/app/Services/EnderecoServices/endereco.service';
 
 @Component({
@@ -26,6 +28,7 @@ export class ContaSComponent implements OnInit {
 
   // LISTAS
   enderecosCompletos: Endereco[] = [];
+  contas: Conta[] = [];
 
   objeto: any;
 
@@ -37,7 +40,8 @@ export class ContaSComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private enderecoService: EnderecoService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private contaService: ContaService
     ) {}
 
   ngOnInit() {
@@ -45,7 +49,7 @@ export class ContaSComponent implements OnInit {
   }
 
   solicitar() {
-    this.solicitarConta = this.form.value;
+    this.solicitarConta = Object.assign({}, this.form.value);
 
 
       this.solicitarConta.enderecos.forEach(x => {
@@ -57,6 +61,7 @@ export class ContaSComponent implements OnInit {
           }
         );
       });
+
     this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
       (endereco: Endereco) => {
         this.enderecosCompletos.push(endereco);
@@ -65,7 +70,15 @@ export class ContaSComponent implements OnInit {
       }
     );
     this.solicitarConta.enderecos = this.enderecosCompletos;
-    console.log(this.solicitarConta);
+    
+    this.contaService.solicitarConta(this.solicitarConta).subscribe(
+      (data: Conta[]) => {
+        this.contas = data;
+        this.toastr.success('Sucesso');
+      }, error => {
+        this.toastr.error(error.error);
+      }
+    );
   }
 
   buscarCep() {

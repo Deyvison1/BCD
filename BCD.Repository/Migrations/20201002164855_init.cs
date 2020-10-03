@@ -8,27 +8,6 @@ namespace BCD.Repository.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Enderecos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CEP = table.Column<int>(nullable: false),
-                    Logradouro = table.Column<string>(nullable: true),
-                    Complemento = table.Column<string>(nullable: true),
-                    Bairro = table.Column<string>(nullable: true),
-                    Localidade = table.Column<string>(nullable: true),
-                    UF = table.Column<int>(nullable: false),
-                    Unidade = table.Column<string>(nullable: true),
-                    IBGE = table.Column<int>(nullable: false),
-                    GIA = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Enderecos", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Historicos",
                 columns: table => new
                 {
@@ -94,24 +73,27 @@ namespace BCD.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EnderecosPessoas",
+                name: "Enderecos",
                 columns: table => new
                 {
-                    EnderecoId = table.Column<int>(nullable: false),
-                    PessoaId = table.Column<int>(nullable: false),
-                    DataAtualizacao = table.Column<DateTime>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CEP = table.Column<string>(nullable: true),
+                    Logradouro = table.Column<string>(nullable: true),
+                    Complemento = table.Column<string>(nullable: true),
+                    Bairro = table.Column<string>(nullable: true),
+                    Localidade = table.Column<string>(nullable: true),
+                    UF = table.Column<int>(nullable: false),
+                    Unidade = table.Column<string>(nullable: true),
+                    IBGE = table.Column<int>(nullable: false),
+                    GIA = table.Column<string>(nullable: true),
+                    PessoaId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EnderecosPessoas", x => new { x.EnderecoId, x.PessoaId });
+                    table.PrimaryKey("PK_Enderecos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EnderecosPessoas_Enderecos_EnderecoId",
-                        column: x => x.EnderecoId,
-                        principalTable: "Enderecos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EnderecosPessoas_Pessoas_PessoaId",
+                        name: "FK_Enderecos_Pessoas_PessoaId",
                         column: x => x.PessoaId,
                         principalTable: "Pessoas",
                         principalColumn: "Id",
@@ -185,8 +167,8 @@ namespace BCD.Repository.Migrations
                 column: "PessoaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EnderecosPessoas_PessoaId",
-                table: "EnderecosPessoas",
+                name: "IX_Enderecos_PessoaId",
+                table: "Enderecos",
                 column: "PessoaId");
 
             migrationBuilder.CreateIndex(
@@ -201,13 +183,10 @@ namespace BCD.Repository.Migrations
                 name: "ContasCadastradas");
 
             migrationBuilder.DropTable(
-                name: "EnderecosPessoas");
+                name: "Enderecos");
 
             migrationBuilder.DropTable(
                 name: "HistoricosContas");
-
-            migrationBuilder.DropTable(
-                name: "Enderecos");
 
             migrationBuilder.DropTable(
                 name: "Contas");

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BCD.Repository.Migrations
 {
     [DbContext(typeof(BCDContext))]
-    [Migration("20201002054825_init")]
+    [Migration("20201002164855_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,7 +73,7 @@ namespace BCD.Repository.Migrations
 
                     b.Property<string>("Bairro");
 
-                    b.Property<int>("CEP");
+                    b.Property<string>("CEP");
 
                     b.Property<string>("Complemento");
 
@@ -85,28 +85,17 @@ namespace BCD.Repository.Migrations
 
                     b.Property<string>("Logradouro");
 
+                    b.Property<int>("PessoaId");
+
                     b.Property<int>("UF");
 
                     b.Property<string>("Unidade");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Enderecos");
-                });
-
-            modelBuilder.Entity("BCD.Domain.Entities.EnderecosPessoas", b =>
-                {
-                    b.Property<int>("EnderecoId");
-
-                    b.Property<int>("PessoaId");
-
-                    b.Property<DateTime>("DataAtualizacao");
-
-                    b.HasKey("EnderecoId", "PessoaId");
-
                     b.HasIndex("PessoaId");
 
-                    b.ToTable("EnderecosPessoas");
+                    b.ToTable("Enderecos");
                 });
 
             modelBuilder.Entity("BCD.Domain.Entities.Historico", b =>
@@ -193,13 +182,8 @@ namespace BCD.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("BCD.Domain.Entities.EnderecosPessoas", b =>
+            modelBuilder.Entity("BCD.Domain.Entities.Endereco", b =>
                 {
-                    b.HasOne("BCD.Domain.Entities.Endereco", "Endereco")
-                        .WithMany("Pessoa")
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
                         .WithMany("Enderecos")
                         .HasForeignKey("PessoaId")

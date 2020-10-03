@@ -16,7 +16,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         }
         public void Add(Pessoa pessoaEntities)
         {
-            _context.Add(pessoaEntities);
+            _context.Pessoas.Add(pessoaEntities);
         }
 
         public void Delete(Pessoa pessoaEntities)
@@ -41,9 +41,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         {
             var getAll = _context.Pessoas.OrderByDescending(
                 x => x.Id
-            ).Include(x => x.Enderecos).ThenInclude(
-                x => x.Endereco
-            ).Include(x => x.Contas)
+            ).Include(x => x.Enderecos).Include(x => x.Contas)
             .ToArrayAsync();
             return await getAll;
         }
@@ -74,7 +72,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         {
             var pessoas = _context.Pessoas.Where(
                 x => x.Id.Equals(idPessoa)
-            ).Include(x => x.Enderecos).ThenInclude(x => x.Endereco).Include(x => x.Contas).ToArrayAsync();
+            ).Include(x => x.Enderecos).Include(x => x.Contas).ToArrayAsync();
             return await pessoas;
         }
 

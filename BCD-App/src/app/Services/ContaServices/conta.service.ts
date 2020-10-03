@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Conta } from 'src/app/Models/Conta';
 import { HelperConta } from 'src/app/Models/HelperConta';
+import { SolicitarConta } from 'src/app/Models/SolicitarConta';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,10 @@ export class ContaService {
     return this.http.delete(`${this.baseUrl}${id}`);
   }
 
+  // SOLICITAR
+  solicitarConta(solicitarConta: SolicitarConta) {
+    return this.http.post(`${this.baseUrl}solicitar`, solicitarConta);
+  }
   // DEPOSITO
   deposito(helperConta: HelperConta) {
     return this.http.put(`${this.baseUrl}deposito`, helperConta);

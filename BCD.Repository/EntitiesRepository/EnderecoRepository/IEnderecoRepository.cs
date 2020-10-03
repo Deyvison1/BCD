@@ -12,8 +12,8 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
         void Delete(Endereco enderecoEntities);
         void DeleteRange(Endereco[] enderecoEntities);
         Task<bool> SaveAsync();
-        Task<int[]> ExisteCepCadastrado(List<int> ceps);
-        Task<Endereco> GetByCep(int cep);
+        Task<int[]> ExisteCepCadastrado(List<string> ceps);
+        Task<Endereco> GetByCep(string cep);
         Task<Endereco[]> GetAllAsync();
         Task<Endereco> GetByIdAsync(int id);
         Task<Endereco[]> GetBySearchAsync(string search);

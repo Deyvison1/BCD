@@ -87,13 +87,12 @@
           <button class="btn btn-outline-danger btn-lg" tooltip="{{ mensagemTooltipAplicarValor }}" [disabled]="contas.length <= 1" (click)="abrirModalAplicar(modalAplicar)">Aplicar Valor</button>
         </div>
         <div class="col">
-          <a
+          <button
             tooltip="Transferencia"
             (click)="abrirModalTransferencia(modalTransferencia, historico)"
             class="btn btn-outline-info btn-lg"
             href="#"
-            >Transferencia</a
-          >
+            >Transferencia</button>
         </div>
       </div>
     </div>

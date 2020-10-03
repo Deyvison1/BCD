@@ -7,7 +7,6 @@ using BCD.Repository.Data;
 using BCD.Repository.EntitiesRepository.ContaCadastradaRepository;
 using BCD.Repository.EntitiesRepository.ContaRepository;
 using BCD.Repository.EntitiesRepository.EnderecoRepository;
-using BCD.Repository.EntitiesRepository.EnderecosPessoasRepository;
 using BCD.Repository.EntitiesRepository.HistoricoRepository;
 using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.Repository.EntitiesRepository.PessoaRepository;
@@ -46,7 +45,6 @@ namespace BCD.WebApi
             services.AddScoped<EnderecoService>();
             services.AddScoped<ContaCadastradaService>();
             services.AddScoped<IHistoricosContasRepository, HistoricosContasRepository>();
-            services.AddScoped<IEnderecosPessoasRepository, EnderecosPessoasRepository>();
             services.AddScoped<IPessoaRepository, PessoaRepository>();
             services.AddScoped<IHistoricoRepository, HistoricoRepository>();
             services.AddScoped<IContaRepository, ContaRepository>();

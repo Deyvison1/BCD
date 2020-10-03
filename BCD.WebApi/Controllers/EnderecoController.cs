@@ -18,22 +18,6 @@ namespace BCD.WebApi.Controllers
         {
             _service = service;
         }
-
-        // ADICIONAR
-        [HttpPost("list")]
-        public async Task<IActionResult> AddRange(List<EnderecoDto> enderecoDto)
-        {
-            try
-            {
-                var addEndereco = await _service.AddRange(enderecoDto);
-                
-                return Created($"/api/endereco/{addEndereco.Id}", addEndereco);
-            }
-            catch(ArgumentException e)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
-            }
-        }
         // ADICIONAR
         [HttpPost]
         public async Task<IActionResult> Add(EnderecoDto enderecoDto)

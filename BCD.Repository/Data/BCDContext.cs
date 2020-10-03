@@ -11,7 +11,6 @@ namespace BCD.Repository.Data
         public DbSet<Conta> Contas { get; set; }
         public DbSet<Historico> Historicos { get; set; }
         public DbSet<HistoricosContas> HistoricosContas { get; set; }
-        public DbSet<EnderecosPessoas> EnderecosPessoas { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<ContaCadastrada> ContasCadastradas { get; set; }
 
@@ -19,8 +18,8 @@ namespace BCD.Repository.Data
         {
             base.OnModelCreating(builder);
 
+
             builder.Entity<HistoricosContas>().HasKey(pe => new { pe.HistoricoId , pe.ContaId });
-            builder.Entity<EnderecosPessoas>().HasKey(pe => new { pe.EnderecoId , pe.PessoaId });
         }
     }
 }

@@ -69,14 +69,14 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
             return await getBySearch;
         }
 
-        public async Task<Endereco> GetByCep(int cep)
+        public async Task<Endereco> GetByCep(string cep)
         {
             return await _context.Enderecos.FirstOrDefaultAsync(
                 x => x.CEP.Equals(cep)
             );
         }
         // Se retornar algum registro e pq tem esse cep cadastrado ja
-        public async Task<int[]> ExisteCepCadastrado(List<int> ceps)
+        public async Task<int[]> ExisteCepCadastrado(List<string> ceps)
         {
             var result = _context.Enderecos.Where(
                 list => ceps.Contains(list.CEP)
