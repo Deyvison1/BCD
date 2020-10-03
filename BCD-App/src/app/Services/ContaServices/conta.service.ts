@@ -16,6 +16,7 @@ export class ContaService {
     private http: HttpClient
   ) { }
 
+
   getAllContasCadastradas(pessoaId: number): Observable<Conta[]> {
     return this.http.get<Conta[]>(`${this.baseUrl}contaCadastrada/${pessoaId}`);
   }

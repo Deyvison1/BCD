@@ -18,6 +18,7 @@ export class ContaSComponent implements OnInit {
   public loading = false;
   // VARIAEVEIS TIPO PRIMITIVO
   isCollapsed = true;
+  cep: number;
   
   // FormGroup
   form: FormGroup;
@@ -30,7 +31,6 @@ export class ContaSComponent implements OnInit {
   enderecosCompletos: Endereco[] = [];
   contas: Conta[] = [];
 
-  objeto: any;
 
   // FormArray
   get enderecos(): FormArray {
@@ -51,39 +51,36 @@ export class ContaSComponent implements OnInit {
   solicitar() {
     this.solicitarConta = Object.assign({}, this.form.value);
 
-
-      this.solicitarConta.enderecos.forEach(x => {
+    this.solicitarConta.enderecos.forEach(
+      x => 
+      {
         this.enderecoService.getEnderecoByCep(x.cep).subscribe(
-          (endereco: Endereco) => {
-            this.enderecosCompletos.push(endereco);
+          (data: Endereco) => {
+            this.solicitarConta.enderecos.push(data);
+
+            this.solicitarConta.enderecos.splice(0, 1);
           }, error => {
-            this.toastr.error(`Cep Invalido: ${x.cep}`);
+            console.log(error);
           }
         );
-      });
+      }
+    );
 
     this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
-      (endereco: Endereco) => {
-        this.enderecosCompletos.push(endereco);
-      }, error => {
-        this.toastr.error(`Cep Invalido: ${this.solicitarConta.cep}`);
+      (data: Endereco) => {
+        this.solicitarConta.enderecos.push(data);
+      },
+      error => {
+        console.log(error);
       }
     );
-    this.solicitarConta.enderecos = this.enderecosCompletos;
-    
-    this.contaService.solicitarConta(this.solicitarConta).subscribe(
-      (data: Conta[]) => {
-        this.contas = data;
-        this.toastr.success('Sucesso');
-      }, error => {
-        this.toastr.error(error.error);
-      }
-    );
+
+    console.log(this.solicitarConta);
+   
   }
 
   buscarCep() {
-    this.solicitarConta = this.form.value;
-    console.log(this.solicitarConta.cep);
+  
   }
 
   addEndereco() {

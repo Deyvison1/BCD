@@ -4,7 +4,7 @@ using BCD.WebApi.Dtos.EnumsDto;
 
 namespace BCD.WebApi.Dtos
 {
-    public class SolicitarConta
+    public class SolicitarContaDto
     {
         [Required(ErrorMessage = "{0} é obrigatorio")]
         public string NomeConta { get; set; }

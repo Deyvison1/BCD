@@ -24,7 +24,7 @@
     <br>
     <div class="row">
       <div class="col-10">
-        <input type="text" class="form-control text-center" formControlName="cep" placeholder="Endereco"/>
+        <input type="text" class="form-control text-center"  formControlName="cep" placeholder="Endereco"/>
         <p></p>
         <div id="collapseBasic" [collapse]="isCollapsed">
           <div formArrayName="enderecos" *ngFor="let endereco of enderecos.controls; let i = index;">
