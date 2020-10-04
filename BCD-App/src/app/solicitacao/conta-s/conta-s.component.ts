@@ -51,40 +51,56 @@ export class ContaSComponent implements OnInit {
   solicitar() {
     this.solicitarConta = Object.assign({}, this.form.value);
 
-    this.solicitarConta.enderecos.forEach(
-      x => 
-      {
-        this.enderecoService.getEnderecoByCep(x.cep).subscribe(
-          (data: Endereco) => {
-            x.uf = "DF";
-            this.solicitarConta.enderecos.push(data);
+    if(this.solicitarConta.enderecos.length) 
+    {
 
-            this.solicitarConta.enderecos.splice(0, 1);
-          }, error => {
-            console.log(error);
-          }
-        );
-      }
-    );
+      this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
+        (data: Endereco) => {
+          this.solicitarConta.enderecos.push(data);
+        },
+        error => {
+          console.log(error);
+        }
+      );
+      this.solicitarConta.enderecos.forEach(
+        x => 
+        {
+          this.enderecoService.getEnderecoByCep(x.cep).subscribe(
+            (data: Endereco) => {
 
-    this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
-      (data: Endereco) => {
-        this.solicitarConta.enderecos.push(data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
-
+              this.solicitarConta.enderecos.push(data);
+              
+              this.solicitarConta.enderecos.splice(0, 1);
+              
+              }, error => {
+              console.log(error);
+            }
+          );
+        }
+      );
+    } else 
+    {
+      this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
+        (data: Endereco) => {
+          this.solicitarConta.enderecos.push(data);
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }
+    
+    /*
     this.contaService.addSolicitacao(this.solicitarConta).subscribe(
       (data: SolicitarConta) => {
+        this.solicitarConta = data;
         this.toastr.success('sucesso');
       }, error => {
         console.log(error)
       }
     );
+    */
     console.log(this.solicitarConta);
-    
   }
 
   buscarCep() {

@@ -48,7 +48,21 @@ namespace BCD.WebApi.Services.EnderecoServices
             throw new ArgumentException("Erro ao persistir dados no banco!");
 
         }
-        
+
+        // ADICIONAR
+        public async Task<EnderecoDto[]> AddRange(List<EnderecoDto> enderecoDto)
+        {   
+            var endereco = _map.Map<List<Endereco>>(enderecoDto);
+
+            _repo.AddRange(endereco);
+
+            if(await _repo.SaveAsync())
+            {
+                return _map.Map<EnderecoDto[]>(endereco);
+            }
+            
+            throw new ArgumentException("Erro ao persistir no banco!");
+        }
         // ADICIONAR
         public async Task<EnderecoDto> Add(EnderecoDto enderecoDto)
         {
@@ -58,6 +72,10 @@ namespace BCD.WebApi.Services.EnderecoServices
 
             _repo.Add(endereco);
             
+            if(await _repo.SaveAsync())
+            {
+                return _map.Map<EnderecoDto>(endereco);
+            }
             throw new ArgumentException("Erro ao persistir no banco!");
         }
         // LISTAR TODOS

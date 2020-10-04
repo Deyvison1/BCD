@@ -9,5 +9,5 @@ export class Endereco {
         unidade: string;
         ibge: number;
         gia: string;
-        idPessoa: number;
+        PessoaId: number;
 }

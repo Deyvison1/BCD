@@ -16,18 +16,19 @@ namespace BCD.WebApi.Controllers
     {
         private readonly ContaService _service;
         private readonly SolicitarContaService _serviceSolicitarConta;
-        public ContaController(ContaService service)
+        public ContaController(ContaService service, SolicitarContaService serviceSolicitarConta)
         {
             _service = service;
+            _serviceSolicitarConta = serviceSolicitarConta;
         }
 
         // LISTAR CONTAS CADASTRADAS
-        [HttpPost("list")]
+        [HttpPost("solicitarConta")]
         public async Task<IActionResult> AddRequest(SolicitarContaDto solicitarContaDto)
         {
             try
             {
-
+                var solicitarConta = await _serviceSolicitarConta.Add(solicitarContaDto);
                 return Ok(solicitarContaDto);
             } 
             catch(ArgumentException e) 

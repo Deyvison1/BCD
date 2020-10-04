@@ -16,6 +16,6 @@ namespace BCD.WebApi.Dtos
         public int IBGE { get; set; }
         public string GIA { get; set; }
         public List<PessoaDto> Pessoas { get; set; }
-        public int IdPessoa { get; set; }
+        public int PessoaId { get; set; }
     }
 }
