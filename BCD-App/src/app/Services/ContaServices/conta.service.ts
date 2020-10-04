@@ -16,6 +16,9 @@ export class ContaService {
     private http: HttpClient
   ) { }
 
+  addSolicitacao(solicitarConta: SolicitarConta) {
+    return this.http.post(`${this.baseUrl}list`,solicitarConta);
+  }
 
   getAllContasCadastradas(pessoaId: number): Observable<Conta[]> {
     return this.http.get<Conta[]>(`${this.baseUrl}contaCadastrada/${pessoaId}`);
@@ -48,10 +51,6 @@ export class ContaService {
     return this.http.delete(`${this.baseUrl}${id}`);
   }
 
-  // SOLICITAR
-  solicitarConta(solicitarConta: SolicitarConta) {
-    return this.http.post(`${this.baseUrl}solicitar`, solicitarConta);
-  }
   // DEPOSITO
   deposito(helperConta: HelperConta) {
     return this.http.put(`${this.baseUrl}deposito`, helperConta);

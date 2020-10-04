@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.ContaServices;
+using BCD.WebApi.Services.ContaServices.SolicitarContaServices;
 using BCD.WebApi.Services.Exception;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,25 @@ namespace BCD.WebApi.Controllers
     public class ContaController : ControllerBase
     {
         private readonly ContaService _service;
+        private readonly SolicitarContaService _serviceSolicitarConta;
         public ContaController(ContaService service)
         {
             _service = service;
+        }
+
+        // LISTAR CONTAS CADASTRADAS
+        [HttpPost("list")]
+        public async Task<IActionResult> AddRequest(SolicitarContaDto solicitarContaDto)
+        {
+            try
+            {
+
+                return Ok(solicitarContaDto);
+            } 
+            catch(ArgumentException e) 
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
         }
         // LISTAR CONTAS CADASTRADAS
         [HttpGet("contaCadastrada/{pessoaId}")]

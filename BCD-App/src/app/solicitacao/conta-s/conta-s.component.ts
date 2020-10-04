@@ -56,6 +56,7 @@ export class ContaSComponent implements OnInit {
       {
         this.enderecoService.getEnderecoByCep(x.cep).subscribe(
           (data: Endereco) => {
+            x.uf = "DF";
             this.solicitarConta.enderecos.push(data);
 
             this.solicitarConta.enderecos.splice(0, 1);
@@ -75,8 +76,15 @@ export class ContaSComponent implements OnInit {
       }
     );
 
+    this.contaService.addSolicitacao(this.solicitarConta).subscribe(
+      (data: SolicitarConta) => {
+        this.toastr.success('sucesso');
+      }, error => {
+        console.log(error)
+      }
+    );
     console.log(this.solicitarConta);
-   
+    
   }
 
   buscarCep() {

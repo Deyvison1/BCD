@@ -12,6 +12,7 @@ using BCD.Repository.EntitiesRepository.HistoricosContasRepository;
 using BCD.Repository.EntitiesRepository.PessoaRepository;
 using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.ContaServices;
+using BCD.WebApi.Services.ContaServices.SolicitarContaServices;
 using BCD.WebApi.Services.EnderecoServices;
 using BCD.WebApi.Services.HistoricoServices;
 using BCD.WebApi.Services.PessoaServices;
@@ -42,6 +43,7 @@ namespace BCD.WebApi
             services.AddScoped<PessoaService>();
             services.AddScoped<ContaService>();
             services.AddScoped<HistoricoService>();
+            services.AddScoped<SolicitarContaService>();
             services.AddScoped<EnderecoService>();
             services.AddScoped<ContaCadastradaService>();
             services.AddScoped<IHistoricosContasRepository, HistoricosContasRepository>();

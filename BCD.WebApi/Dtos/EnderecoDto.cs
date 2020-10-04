@@ -11,7 +11,7 @@ namespace BCD.WebApi.Dtos
         public string Complemento { get; set; }
         public string Bairro { get; set; }
         public string Localidade { get; set; }
-        public EnumUFDto UF { get; set; }
+        public string UF { get; set; }
         public string Unidade { get; set; }
         public int IBGE { get; set; }
         public string GIA { get; set; }

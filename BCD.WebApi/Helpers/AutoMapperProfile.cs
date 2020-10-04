@@ -13,7 +13,6 @@ namespace BCD.WebApi.Helpers
         {
             //
             CreateMap<Pessoa, PessoaDto>().ReverseMap();
-            //
             CreateMap<Endereco, EnderecoDto>().ReverseMap();
             //
             CreateMap<Historico, HistoricoDto>().ReverseMap();

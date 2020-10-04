@@ -1,10 +1,11 @@
 import { Endereco } from './Endereco';
+import { EnumTipoConta } from './Enums/EnumTipoConta';
 
 export class SolicitarConta {
 
     nomeConta: string;
     cpf: string;
-    tipoConta: number;
+    tipoConta: EnumTipoConta;
     senha: string;
     enderecos: Endereco[];
     cep: number;
