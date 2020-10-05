@@ -8,7 +8,7 @@ namespace BCD.WebApi.Dtos
     {
         public string NomeConta { get; set; }
         public string CPF { get; set; }
-        public EnumTipoContaDto TipoConta { get; set; }
+        public int TipoConta { get; set; }
         public string Senha { get; set; }
         public List<EnderecoDto> Enderecos { get; set; }
 

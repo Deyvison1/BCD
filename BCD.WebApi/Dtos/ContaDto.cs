@@ -13,7 +13,7 @@ namespace BCD.WebApi.Dtos
         public int DigitosAgencia { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         [Range(0, 1)]
-        public EnumTipoContaDto TipoConta { get; set; }
+        public int TipoConta { get; set; }
         [Required(ErrorMessage = "{0} é obrigatorio!")]
         [StringLength(50, ErrorMessage = "{0} deve ter no maximo 50 caracteres!")]
         public string NomeConta { get; set; }

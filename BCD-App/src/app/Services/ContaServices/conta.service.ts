@@ -17,7 +17,7 @@ export class ContaService {
   ) { }
 
   addSolicitacao(solicitarConta: SolicitarConta) {
-    return this.http.post(`${this.baseUrl}solicitarConta`,solicitarConta);
+    return this.http.post(`${this.baseUrl}solicitarConta`, solicitarConta);
   }
 
   getAllContasCadastradas(pessoaId: number): Observable<Conta[]> {

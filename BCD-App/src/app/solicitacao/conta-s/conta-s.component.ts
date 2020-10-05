@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ToastrService } from 'ngx-toastr';
-import { Conta } from 'src/app/Models/Conta';
+import { ToastrService } from "ngx-toastr";
+import { Conta } from "src/app/Models/Conta";
 import { Endereco } from "src/app/Models/Endereco";
-import { Pessoa } from 'src/app/Models/Pessoa';
-import { SolicitarConta } from 'src/app/Models/SolicitarConta';
-import { ContaService } from 'src/app/Services/ContaServices/conta.service';
-import { EnderecoService } from 'src/app/Services/EnderecoServices/endereco.service';
+import { Pessoa } from "src/app/Models/Pessoa";
+import { SolicitarConta } from "src/app/Models/SolicitarConta";
+import { ContaService } from "src/app/Services/ContaServices/conta.service";
+import { EnderecoService } from "src/app/Services/EnderecoServices/endereco.service";
 
 @Component({
   selector: "app-conta-s",
@@ -14,12 +14,11 @@ import { EnderecoService } from 'src/app/Services/EnderecoServices/endereco.serv
   styleUrls: ["./conta-s.component.css"],
 })
 export class ContaSComponent implements OnInit {
-  
   public loading = false;
   // VARIAEVEIS TIPO PRIMITIVO
   isCollapsed = true;
   cep: number;
-  
+
   // FormGroup
   form: FormGroup;
 
@@ -31,10 +30,9 @@ export class ContaSComponent implements OnInit {
   enderecosCompletos: Endereco[] = [];
   contas: Conta[] = [];
 
-
   // FormArray
   get enderecos(): FormArray {
-    return <FormArray>this.form.get('enderecos');
+    return <FormArray>this.form.get("enderecos");
   }
 
   constructor(
@@ -42,7 +40,7 @@ export class ContaSComponent implements OnInit {
     private enderecoService: EnderecoService,
     private toastr: ToastrService,
     private contaService: ContaService
-    ) {}
+  ) {}
 
   ngOnInit() {
     this.validation();
@@ -51,61 +49,37 @@ export class ContaSComponent implements OnInit {
   solicitar() {
     this.solicitarConta = Object.assign({}, this.form.value);
 
-    if(this.solicitarConta.enderecos.length) 
+    if (this.solicitarConta.enderecos.length) 
     {
-
-      this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
-        (data: Endereco) => {
-          this.solicitarConta.enderecos.push(data);
-        },
-        error => {
-          console.log(error);
-        }
-      );
       this.solicitarConta.enderecos.forEach(
-        x => 
-        {
+        x => {
           this.enderecoService.getEnderecoByCep(x.cep).subscribe(
-            (data: Endereco) => {
-
-              this.solicitarConta.enderecos.push(data);
+            (endereco: Endereco) => {
+              this.solicitarConta.enderecos.push(endereco);
               
-              this.solicitarConta.enderecos.splice(0, 1);
-              
-              }, error => {
-              console.log(error);
-            }
+              this.solicitarConta.enderecos.splice(0,1);
+            }, err => { this.toastr.error(err.err); }
           );
         }
       );
-    } else 
+      this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
+        (endereco: Endereco) => {
+          this.solicitarConta.enderecos.push(endereco);
+        }, error => { console.log(error.error);  }
+      );
+    } 
+    else 
     {
       this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
-        (data: Endereco) => {
-          this.solicitarConta.enderecos.push(data);
-        },
-        error => {
-          console.log(error);
-        }
+        (endereco: Endereco) => {
+          this.solicitarConta.enderecos.push(endereco);
+        }, error => { console.log(error.error);  }
       );
     }
-    
-    /*
-    this.contaService.addSolicitacao(this.solicitarConta).subscribe(
-      (data: SolicitarConta) => {
-        this.solicitarConta = data;
-        this.toastr.success('sucesso');
-      }, error => {
-        console.log(error)
-      }
-    );
-    */
-    console.log(this.solicitarConta);
+
   }
 
-  buscarCep() {
-  
-  }
+  buscarCep() {}
 
   addEndereco() {
     this.enderecos.push(this.criarEndereco({ id: 0 }));
@@ -128,13 +102,12 @@ export class ContaSComponent implements OnInit {
 
   validation() {
     this.form = this.fb.group({
-      cep: [],
-      tipoConta: [0,],
-      senha: [],
-      nomeConta: [],
-      cpf: [],
-      enderecos: this.fb.array([])
+      cep: [""],
+      tipoConta: [""],
+      senha: [""],
+      nomeConta: [""],
+      cpf: [""],
+      enderecos: this.fb.array([]),
     });
   }
-
 }

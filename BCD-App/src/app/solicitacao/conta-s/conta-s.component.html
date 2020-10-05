@@ -9,7 +9,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <input class="form-control text-center" formControlName="CPF" type="text" formControlName="cpf" id="" placeholder="CPF" />
+        <input class="form-control text-center" formControlName="cpf" type="text" formControlName="cpf" id="" placeholder="CPF" />
         <p></p>
       </div>
     </div>
@@ -39,7 +39,7 @@
                     <input type="text" class="form-control text-center" formControlName="cep" />
                   </div>
                   <div class="col-2 text-center">
-                    <button class="btn btn-info btn-block" (click)="buscarCep()">
+                    <button class="btn btn-info btn-block">
                       <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
                   </div>
@@ -76,7 +76,7 @@
       </div>
     </div>
   </div>
-  <input class="form-control btn btn-success" type="submit" value="Enviar" (click)="solicitar()"/>
+  <button class="form-control btn btn-success" type="submit" (click)="solicitar()">Solicitar</button>
 </form>
 </div>
 
