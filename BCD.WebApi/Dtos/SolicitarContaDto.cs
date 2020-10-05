@@ -10,7 +10,7 @@ namespace BCD.WebApi.Dtos
         public string CPF { get; set; }
         public int TipoConta { get; set; }
         public string Senha { get; set; }
-        public List<EnderecoDto> Enderecos { get; set; }
+        public List<Cep> Ceps { get; set; }
 
     }
 }

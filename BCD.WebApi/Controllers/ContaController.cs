@@ -21,7 +21,6 @@ namespace BCD.WebApi.Controllers
             _service = service;
             _serviceSolicitarConta = serviceSolicitarConta;
         }
-
         // LISTAR CONTAS CADASTRADAS
         [HttpPost("solicitarConta")]
         public async Task<IActionResult> AddRequest(SolicitarContaDto solicitarContaDto)
@@ -31,7 +30,7 @@ namespace BCD.WebApi.Controllers
                 var solicitarConta = await _serviceSolicitarConta.Add(solicitarContaDto);
                 return Ok(solicitarContaDto);
             } 
-            catch(ArgumentException e) 
+            catch(ArgumentException e)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }

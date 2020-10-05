@@ -17,13 +17,13 @@ export class ContaSComponent implements OnInit {
   public loading = false;
   // VARIAEVEIS TIPO PRIMITIVO
   isCollapsed = true;
-  cep: number;
 
   // FormGroup
   form: FormGroup;
 
   // VARIAVEIS DE INSTANCIAS
   solicitarConta: SolicitarConta = new SolicitarConta();
+  solicitarConta2: SolicitarConta = new SolicitarConta();
   enderecoInstancia: Endereco = new Endereco();
 
   // LISTAS
@@ -31,8 +31,8 @@ export class ContaSComponent implements OnInit {
   contas: Conta[] = [];
 
   // FormArray
-  get enderecos(): FormArray {
-    return <FormArray>this.form.get("enderecos");
+  get ceps(): FormArray {
+    return <FormArray>this.form.get("ceps");
   }
 
   constructor(
@@ -49,65 +49,35 @@ export class ContaSComponent implements OnInit {
   solicitar() {
     this.solicitarConta = Object.assign({}, this.form.value);
 
-    if (this.solicitarConta.enderecos.length) 
-    {
-      this.solicitarConta.enderecos.forEach(
-        x => {
-          this.enderecoService.getEnderecoByCep(x.cep).subscribe(
-            (endereco: Endereco) => {
-              this.solicitarConta.enderecos.push(endereco);
-              
-              this.solicitarConta.enderecos.splice(0,1);
-            }, err => { this.toastr.error(err.err); }
-          );
-        }
-      );
-      this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
-        (endereco: Endereco) => {
-          this.solicitarConta.enderecos.push(endereco);
-        }, error => { console.log(error.error);  }
-      );
-    } 
-    else 
-    {
-      this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
-        (endereco: Endereco) => {
-          this.solicitarConta.enderecos.push(endereco);
-        }, error => { console.log(error.error);  }
-      );
-    }
-
+    this.contaService.addSolicitacao(this.solicitarConta).subscribe(
+      (data) => {
+        this.toastr.success('Sucesso na Solicitação!');
+        this.form.reset();
+      }, err => { console.log(err.error); }
+    );
   }
 
-  buscarCep() {}
-
   addEndereco() {
-    this.enderecos.push(this.criarEndereco({ id: 0 }));
+    this.ceps.push(this.criarCep({ id: 0 }));
   }
 
   removerEndereco(id: number) {
-    this.enderecos.removeAt(id);
+    this.ceps.removeAt(id);
   }
 
-  criarEndereco(endereco: any) {
+  criarCep(cep: any) {
     return this.fb.group({
-      id: [endereco.id],
-      cep: [endereco.cep, [Validators.required]],
-      logradouro: [endereco.logradouro, [Validators.required]],
-      bairro: [endereco.bairro, [Validators.required]],
-      localidade: [endereco.localidade, [Validators.required]],
-      uf: [endereco.uf, [Validators.required]],
+      cep: [cep.cep]
     });
   }
 
   validation() {
     this.form = this.fb.group({
-      cep: [""],
-      tipoConta: [""],
-      senha: [""],
-      nomeConta: [""],
-      cpf: [""],
-      enderecos: this.fb.array([]),
+      tipoConta: [0],
+      senha: [''],
+      nomeConta: [''],
+      cpf: [''],
+      ceps: this.fb.array([]),
     });
   }
 }

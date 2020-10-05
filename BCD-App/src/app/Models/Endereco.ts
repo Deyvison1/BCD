@@ -4,10 +4,11 @@ export class Endereco {
         logradouro: string;
         complemento: string;
         bairro: string;
-        localidade: string;
+        localidade: string;     
         uf: string;
-        unidade: string;
         ibge: number;
         gia: string;
-        PessoaId: number;
+        ddd: string;
+        siafi: string;
+        pessoaId: number;
 }

@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.EnderecoServices;
 using BCD.WebApi.Services.PessoaServices;
+using Newtonsoft.Json;
 
 namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
 {
@@ -23,7 +26,7 @@ namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
             _map = mapper;
         }
 
-        public async Task<SolicitarContaDto> Add(SolicitarContaDto solicitarContaDto) 
+        public async Task<EnderecoDto[]> Add(SolicitarContaDto solicitarContaDto) 
         {
             // MONTANDO O OBJETO DO TIPO PESSOA
             PessoaDto pessoaDto = new PessoaDto 
@@ -47,19 +50,38 @@ namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
             };
             // INSERINDO NO BANCO 
             var contaAdicionada = await _contaService.Add(contaDto);
-
-            List<EnderecoDto> enderecosDto = new List<EnderecoDto>();
             
-            enderecosDto.AddRange(solicitarContaDto.Enderecos);
+            var enderecos = await GetEnderecoByCep(solicitarContaDto.Ceps);
             
-            enderecosDto.ForEach(
-                x => 
-                    x.PessoaId = pessoaAdicionada.Id
+            enderecos.ForEach(
+                x => x.PessoaId = pessoaAdicionada.Id
             );
+            var enderecosAdicionados = await _enderecoService.AddRange(enderecos);
             
-            var enderecosAdicionados = await _enderecoService.AddRange(enderecosDto);
-            
-            return solicitarContaDto;
+            return enderecosAdicionados;
         }
+
+        public async Task<List<EnderecoDto>> GetEnderecoByCep(List<Cep> ceps)
+        {
+            List<EnderecoDto> enderecos = new List<EnderecoDto>();
+            foreach(Cep cepFor in ceps)
+            {
+            var requisicaoWeb = WebRequest.CreateHttp("https://viacep.com.br/ws/"+cepFor.cep+"/json/");
+            requisicaoWeb.Method = "GET";
+            requisicaoWeb.UserAgent = "RequisicaoWebDemo";
+            using (var resposta = requisicaoWeb.GetResponse())
+            {
+                var streamDados = resposta.GetResponseStream();
+                StreamReader reader = new StreamReader(streamDados);
+                object objResponse = await reader.ReadToEndAsync();
+                var endereco = JsonConvert.DeserializeObject<EnderecoDto>(objResponse.ToString());
+                enderecos.Add(endereco);
+                streamDados.Close();
+                resposta.Close();
+            }
+            }
+            return enderecos;
+        }
+
     }
 }

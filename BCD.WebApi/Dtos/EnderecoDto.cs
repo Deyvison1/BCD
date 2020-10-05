@@ -12,10 +12,10 @@ namespace BCD.WebApi.Dtos
         public string Bairro { get; set; }
         public string Localidade { get; set; }
         public string UF { get; set; }
-        public string Unidade { get; set; }
-        public int IBGE { get; set; }
+        public string IBGE { get; set; }
         public string GIA { get; set; }
-        public List<PessoaDto> Pessoas { get; set; }
+        public string DDD { get; set; }
+        public string Siafi { get; set; }
         public int PessoaId { get; set; }
     }
 }

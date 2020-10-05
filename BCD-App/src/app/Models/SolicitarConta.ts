@@ -7,6 +7,5 @@ export class SolicitarConta {
     cpf: string;
     tipoConta: EnumTipoConta;
     senha: string;
-    enderecos: Endereco[];
-    cep: number;
+    ceps: string[];
 }
