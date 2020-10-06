@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,6 +157,14 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
             }
             // retorno a lista
             return list.ToArray();
+        }
+
+        public async Task<Conta> GetStatusContaByCpfAndSenha(string cpf)
+        {
+            var conta = await _context.Contas.FirstOrDefaultAsync(
+                x => x.CPF.Equals(cpf)
+            );
+            return conta;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Services.EnderecoServices;
+using BCD.WebApi.Services.Exception;
 using BCD.WebApi.Services.PessoaServices;
 using Newtonsoft.Json;
 
@@ -25,7 +27,23 @@ namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
             _enderecoService = enderecoService; 
             _map = mapper;
         }
+        // MOSTRAR ESTADO DA SOLICITACAO
+        public async Task<int> StatusSolicitacao(StatusSolicitacao status)
+        {
+            var situacao = await _contaService.GetStatusBySolicitacao(status.CPF);
+            if(situacao == null)
+            {
+                throw new NotFoundException("CPF Incorreto");
+            }
 
+            bool compareSenha = _contaService.CompareSenha(status.Senha, situacao.Senha);
+            if(compareSenha)
+            {
+                return situacao.Situacao;
+            }
+            throw new ArgumentException("Senha Incorreta");
+        }
+        // SOLICITAR CONTA
         public async Task<EnderecoDto[]> Add(SolicitarContaDto solicitarContaDto) 
         {
             // MONTANDO O OBJETO DO TIPO PESSOA
@@ -60,7 +78,7 @@ namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
             
             return enderecosAdicionados;
         }
-
+        // BUSCAR ENDERECO PELO CEP
         public async Task<List<EnderecoDto>> GetEnderecoByCep(List<Cep> ceps)
         {
             List<EnderecoDto> enderecos = new List<EnderecoDto>();
@@ -82,6 +100,7 @@ namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
             }
             return enderecos;
         }
+
 
     }
 }

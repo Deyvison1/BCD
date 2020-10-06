@@ -16,6 +16,10 @@ export class ContaService {
     private http: HttpClient
   ) { }
 
+  statusSolicitacao(model: any) {
+    return this.http.post(`${this.baseUrl}status`, model);
+  }
+  
   addSolicitacao(solicitarConta: SolicitarConta) {
     return this.http.post(`${this.baseUrl}solicitarConta`, solicitarConta);
   }

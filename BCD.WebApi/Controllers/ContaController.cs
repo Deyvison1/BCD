@@ -22,6 +22,24 @@ namespace BCD.WebApi.Controllers
             _serviceSolicitarConta = serviceSolicitarConta;
         }
         // LISTAR CONTAS CADASTRADAS
+        [HttpPost("status")]
+        public async Task<IActionResult> AddRequest(StatusSolicitacao solicitacaoStatus)
+        {
+            try
+            {
+                var statusSolicitacao = await _serviceSolicitarConta.StatusSolicitacao(solicitacaoStatus);
+                return Ok(statusSolicitacao);
+            }
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            } 
+            catch(ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
+        // LISTAR CONTAS CADASTRADAS
         [HttpPost("solicitarConta")]
         public async Task<IActionResult> AddRequest(SolicitarContaDto solicitarContaDto)
         {

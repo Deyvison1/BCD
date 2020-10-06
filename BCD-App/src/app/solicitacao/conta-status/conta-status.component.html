@@ -1,0 +1,28 @@
+<div class="">
+  <div class="checkStatus">
+    <div class="border rounded-bottom border-info shadow p-3 mb-5 bg-white rounded" >
+      <h4 class="text-center">Status Solicitação</h4>
+      <p></p>
+      <form #form="ngForm" (ngSubmit)="checkStatus()">
+        <div class="form-group">
+          <input  mask="000.000.000.00" type="text" class="form-control text-center" [(ngModel)]="model.cpf" id="cpf" name="cpf" required placeholder="CPF">
+        </div>
+        <div>
+          <input type="text" class="form-control text-center" placeholder="Senha" [(ngModel)]="model.senha" id="senha" name="senha" required>
+        </div>
+        <p></p>
+        <div class="text-center">
+          <input [disabled]="!form.valid" class="btn btn-success btn-block btn-sm" type="submit" value="Pesquisar"/><br>
+          <p>Não fez a solicitação? <a routerLink="conta">Clique aqui</a> e faça agora</p>
+        </div>
+      </form>
+    </div>
+
+  <div *ngIf="resultado" class="text-center shadow p-3 mb-5 bg-white rounded border border-success">
+    <p class="h3" *ngIf="situacao == 0">Solicitção Aprovada</p>
+    <p class="h3" *ngIf="situacao == 1">Solicitação Desativada</p>
+    <p class="h3" *ngIf="situacao == 2">Solicitação Bloqueada</p>
+    <p class="h3" *ngIf="situacao == 3">Solicitação em Analise</p>
+  </div>
+  </div>
+</div>

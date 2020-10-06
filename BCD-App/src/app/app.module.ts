@@ -23,6 +23,7 @@ import { PessoaComponent } from "./pessoa/pessoa.component";
 import { ToastrModule } from "ngx-toastr";
 import { SolicitacaoComponent } from './solicitacao/solicitacao.component';
 import { ContaSComponent } from './solicitacao/conta-s/conta-s.component';
+import { ContaStatusComponent } from './solicitacao/conta-status/conta-status.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { ContaSComponent } from './solicitacao/conta-s/conta-s.component';
     ContaComponent,
     PessoaComponent,
     SolicitacaoComponent,
-    ContaSComponent
+    ContaSComponent,
+    ContaStatusComponent
   ],
   imports: [
     BrowserModule,

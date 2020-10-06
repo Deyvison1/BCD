@@ -16,7 +16,7 @@ import { EnderecoService } from "src/app/Services/EnderecoServices/endereco.serv
 export class ContaSComponent implements OnInit {
   public loading = false;
   // VARIAEVEIS TIPO PRIMITIVO
-  isCollapsed = true;
+  isCollapsed = false;
 
   // FormGroup
   form: FormGroup;
@@ -44,6 +44,7 @@ export class ContaSComponent implements OnInit {
 
   ngOnInit() {
     this.validation();
+    this.deixarUmCepAdd();
   }
 
   solicitar() {
@@ -57,6 +58,9 @@ export class ContaSComponent implements OnInit {
     );
   }
 
+  deixarUmCepAdd() {
+    this.ceps.push(this.criarCep({ id: 0 }));
+  }
   addEndereco() {
     this.ceps.push(this.criarCep({ id: 0 }));
   }

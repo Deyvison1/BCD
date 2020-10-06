@@ -98,6 +98,14 @@ namespace BCD.WebApi.Services.ContaServices
             };
             return helperContaDto;
         }
+        // MOSTRAR STATUS SOLICITACAO
+        public async Task<ContaDto> GetStatusBySolicitacao(string cpf)
+        {
+            var conta = await _repo.GetStatusContaByCpfAndSenha(cpf);
+            var contaDto = _map.Map<ContaDto>(conta);
+
+            return contaDto;
+        }
         // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
 
         // ADICIONAR CONTA ADMIN
