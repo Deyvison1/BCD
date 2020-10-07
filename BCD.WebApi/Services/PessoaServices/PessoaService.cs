@@ -83,12 +83,19 @@ namespace BCD.WebApi.Services.PessoaServices
 
             return cpf;
         }
-
-        // LISTAR POR ID PESSOA
+        // LISTA // LISTAR POR ID PESSOA
         public async Task<PessoaDto[]> GetAllByIdPessoa(int idPessoa)
         {
             var pessoa = await _repo.GetAllPessoaById(idPessoa);
             var pessoaDto = _map.Map<PessoaDto[]>(pessoa);
+
+            return pessoaDto;
+        }
+        // LISTAR POR ID PESSOA
+        public async Task<PessoaDto> GetAllByIdPessoaasync(int idPessoa)
+        {
+            var pessoa = await _repo.GetAllPessoaByIdAsync(idPessoa);
+            var pessoaDto = _map.Map<PessoaDto>(pessoa);
 
             return pessoaDto;
         }
@@ -102,11 +109,11 @@ namespace BCD.WebApi.Services.PessoaServices
             return pessoaDto;
         }
         // LISTAR POR PESQUISA, NOME OU CPF
-        public async Task<PessoaDto> GetBySearch(string search)
+        public async Task<PessoaDto[]> GetBySearch(string search)
         {
             var pessoa = await _repo.GetBySearchAsync(search);
             
-            var pessoaDto = _map.Map<PessoaDto>(pessoa);
+            var pessoaDto = _map.Map<PessoaDto[]>(pessoa);
 
             return pessoaDto;
         }

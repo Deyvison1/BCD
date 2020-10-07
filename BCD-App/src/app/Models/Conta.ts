@@ -10,5 +10,5 @@ export class Conta {
     pessoaId: number; 
     extrato: Historico[];
     cpf: string;
-    situacao: boolean;
+    situacao: number;
 }

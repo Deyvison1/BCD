@@ -10,6 +10,7 @@ import { ContaService } from '../Services/ContaServices/conta.service';
 export class NavComponent implements OnInit {
 
   nome: string;
+  logado = false;
 
   constructor(
     private contaService: ContaService

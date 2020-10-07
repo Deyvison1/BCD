@@ -1,12 +1,15 @@
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
   <h5 class="my-0 mr-md-auto font-weight-normal">Deyvison Blank</h5>
     <nav class="my-2 my-md-0 mr-md-3">
-            <a class="p-2 text-dark" href="#">Contas</a>
-        <a class="p-2 text-dark" href="#">Profile</a>
-        <a class="p-2 text-dark" href="#">Suport</a>
+        <a class="p-2 text-dark" routerLink="solicitacao/conta">Solicitar Conta</a>
+        <a class="p-2 text-dark" routerLink="solicitacao/status">Situação Conta</a>
+        <a *ngIf="logado" class="p-2 text-dark" href="#">Perfil</a>
+        <a *ngIf="logado" class="p-2 text-dark" href="#">Suporte</a>
     </nav>
-  <a class="btn btn-outline-success" href="#">Log In</a>
-  <a style="text-decoration: none;" class="p-2 text-dark">Welcome {{ nome | titlecase }}</a>
+  <a class="btn btn-outline-success" href="#">Logar</a>
+  <span *ngIf="logado">
+  <a style="text-decoration: none;" class="p-2 text-dark">Bem Vindo {{ nome | titlecase }}</a>
+</span>
 </div>
 
 

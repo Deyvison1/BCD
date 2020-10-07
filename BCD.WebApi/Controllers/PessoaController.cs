@@ -59,7 +59,19 @@ namespace BCD.WebApi.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }
         }
-        // LISTAR POR ID PESSOA
+        // LISTAR POR ID PESSOA 
+        [HttpGet("byId/{idPessoa}")]
+        public async Task<IActionResult> GetAllByIdPessoaAsync(int idPessoa) {
+            try {
+                var getAllPessoa = await _service.GetAllByIdPessoaasync(idPessoa);
+
+                return Ok(getAllPessoa);
+            }
+            catch(ArgumentException e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
+        // LISTAR POR ID PESSOA LISTA
         [HttpGet("details/{idPessoa}")]
         public async Task<IActionResult> GetAllByIdPessoa(int idPessoa) {
             try {

@@ -84,5 +84,17 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
             string cpfFinal = cpf.FirstOrDefault();
             return cpfFinal;
         }
+
+        public async Task<Pessoa> GetAllPessoaByIdAsync(int idPessoa)
+        {
+            IQueryable<Pessoa> query = _context.Pessoas.
+                Include(x => x.Contas).
+                Include(x => x.Enderecos);
+
+            query = query.AsNoTracking().
+            OrderByDescending(x => x.Id).
+            Where(x => x.Id.Equals(idPessoa));
+            return await query.FirstOrDefaultAsync();    
+        }
     }
 }

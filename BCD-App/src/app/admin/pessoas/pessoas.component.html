@@ -1,0 +1,297 @@
+<div class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-4">
+        <input type="search" [(ngModel)]="filtroLista" placeholder="Pesquisar" class="form-control" />
+      </div>
+    </div>
+    <br />
+    <div class="">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Situação</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let pessoa of pessoasFiltradas
+                | paginate
+                  : { id: 'pessoas', itemsPerPage: 6, currentPage: pageAtual }
+            "
+          >
+            <td>{{ pessoa.nome | titlecase }}</td>
+            <td>{{ pessoa.cpf | mask: "000.000.000-00" }}</td>
+            <td>
+              <span *ngIf="pessoa.situacao == 0">Ativada</span>
+              <span *ngIf="pessoa.situacao == 1">Desativada</span>
+              <span *ngIf="pessoa.situacao == 2">Bloqueada</span>
+              <span *ngIf="pessoa.situacao == 3">Analise</span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button
+                  class="btn btn-info btn-sm"
+                >
+                  Detalhes
+                </button>
+                <button class="bnt btn-secondary btn-sm" (click)="editar(pessoa, modalEditar)">Editar</button>
+                <button class="btn btn-danger btn-sm">Excluir</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-center">
+        <pagination-controls
+          id="pessoas"
+          (pageChange)="pageAtual = $event"
+          previousLabel="Anterior"
+          nextLabel="Proximo"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #modalEditar="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Detalhes {{ pessoa.nome }}
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="modalEditar.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <tabset [justified]="true">
+            <tab heading="Pessoa">
+              <div class="" style="margin-top: 10px">
+                <div class="row">
+                  <div class="form-group col-4">
+                    <label class="h6">Nome</label>
+                    <input
+                      type="text"
+                      class="form-control text-center"
+                      formControlName="nome"
+                      placeholder="Nome"
+                    />
+                  </div>
+                  <div class="form-group col-4">
+                    <label class="h6">CPF</label>
+                    <input
+                      mask="000.000.000-00"
+                      type="text"
+                      class="form-control text-center"
+                      formControlName="cpf"
+                      placeholder="CPF"
+                    />
+                  </div>
+                  <div class="form-group col-4">
+                    <label class="h6">Situação</label>
+                    <select class="form-control" formControlName="situacao">
+                      <option value="0">Ativada</option>
+                      <option value="1">Desativada</option>
+                      <option value="2">Bloqueada</option>
+                      <option value="3">Analise</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </tab>
+            <tab heading="Enderecos">
+              <div>
+              <div class="border border-top-0" style="margin-top: 07px;"
+                formArrayName="enderecos"
+                *ngFor="let endereco of enderecos.controls; let i = index"
+              >
+                <fieldset [formGroupName]="i" class="form-group">
+                  <legend class="container">
+                    <hr>
+                    <div class="row">
+                      <div class="form-group col-3">
+                        <label class="h6">Cep</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          formControlName="cep"
+                          placeholder="CEP"
+                        />
+                      </div>
+                      <div class="form-group col-4">
+                        <label class="h6">Logradouro</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          formControlName="logradouro"
+                          placeholder="Logradouro"
+                        />
+                      </div>
+                      <div class="form-group col-5">
+                        <label class="h6">Bairro</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          formControlName="bairro"
+                          placeholder="Bairro"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-4">
+                        <label class="h6">Localidade</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          formControlName="localidade"
+                          placeholder="Localidade"
+                        />
+                      </div>
+
+                      <div class="form-group col-2">
+                        <label class="h6">UF</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          formControlName="uf"
+                          placeholder="UF"
+                        />
+                      </div>
+
+                      <div class="form-group col-3">
+                        <label class="h6">IBGE</label>
+                        <input
+                          type="text"
+                          class="form-control text-center"
+                          formControlName="ibge"
+                          placeholder="IBGE"
+                        />
+                      </div>
+                      <div class="col-3 text-center" style="margin-top: 37px">
+                        <button
+                          class="btn btn-sm btn-danger"
+                          (click)="removerItemList(i)"
+                        >
+                          Remover
+                        </button>
+                        &nbsp;
+                      </div>
+                    </div>
+                  </legend>
+                  
+                </fieldset>
+              </div>
+              <div style="margin-top: 07px;" class="row">
+              <div class="col text-left">
+                <button class="btn btn-primary" (click)="abrirModalNewEndereco(modalAddCep)">
+                  Adicionar
+                </button>
+              </div>
+            </div>
+              </div>
+            </tab>
+            <tab heading="Contas">
+              <div>
+              <table width="100%" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Conta</th>
+                    <th>Agencia</th>
+                    <th>Nome</th>
+                    <th>Saldo</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let conta of pessoa.contas">
+                    <td>{{ conta.digitosConta | mask: "00.0000-0" }}</td>
+                    <td>{{ conta.digitosAgencia | mask: "0000-0" }}</td>
+                    <td>{{ conta.nomeConta | titlecase }}</td>
+                    <td>{{ conta.saldo | currency: "R$: " }}</td>
+                    <td>
+                      <button class="btn btn-success btn-sm" *ngIf="conta.situacao == 0">Ativada</button>
+                      <button class="btn btn-secondary btn-sm" *ngIf="conta.situacao == 1">Desativada</button>
+                      <button class="btn btn-warning btn-sm" *ngIf="conta.situacao == 2">Bloqueada</button>
+                      <button class="btn btn-info btn-sm" *ngIf="conta.situacao == 3">Analise</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            </tab>
+            <hr />
+            <div class="row">
+              <div class="col text-left">
+                <button class="btn btn-secondary" (click)="modalEditar.hide()">Fechar</button>
+              </div>
+              <div class="col text-right">
+                <button class="btn btn-info" (click)="salvar()">Salvar Alterações</button>
+              </div>
+            </div>
+          </tabset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div bsModal #modalAddCep="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name2">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name2" class="modal-title pull-left">Adicionar Endereco</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalAddCep.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <div>
+                <input class="text-center form-control" [(ngModel)]="cep" type="text" placeholder="CEP" mask="00000-000">
+              </div>
+              <br>
+              <button class="btn btn-success" (click)="addEndereco(modalAddCep)">Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="my-container">
+  <ng-template #customLoadingTemplate>
+      <div class="">
+        <br>
+        <br>
+          <h4 class="text-center">Carregando</h4>
+      </div>
+  </ng-template>
+
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+</div>

@@ -1,0 +1,69 @@
+
+<div class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-10">
+        <input type="search" placeholder="Pesquisar" class="form-control">
+      </div>
+      <div class="col-2 text-center">
+        <input type="submit" class="btn btn-info btn-block" value="Pesquisar">
+      </div>
+    </div>
+    <br>
+    <div class="">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Conta</th>
+            <th>Agencia</th>
+            <th>Tipo</th>
+            <th>Nome</th>
+            <th>Saldo</th>
+            <th>CPF</th>
+            <th>Situação</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let conta of contas | paginate: { id: 'contas', itemsPerPage: 6, currentPage: pageAtual }">
+            <td>{{ conta.digitosConta | mask: '00.0000-0' }}</td>
+            <td>{{ conta.digitosAgencia | mask: '0000-0' }}</td>
+            <td>
+              <span *ngIf="conta.tipoConta == 0">
+                Corrente
+              </span>
+              <span *ngIf="conta.tipoConta == 1">
+                Poupança
+              </span>
+            </td>
+            <td>{{ conta.nomeConta }}</td>
+            <td>{{ conta.saldo | currency: 'R$: ' }}</td>
+            <td>{{ conta.cpf | mask: '000.000.000-00' }}</td>
+            <td>
+              <span *ngIf="conta.situacao == 0">Ativada</span>
+              <span *ngIf="conta.situacao == 1">Desativada</span>
+              <span *ngIf="conta.situacao == 2">Bloqueada</span>
+              <span *ngIf="conta.situacao == 3">Analise</span>
+            </td>
+            <td>
+              <div class="btn-group">
+              <button class="btn btn-info btn-sm">Detalhes</button>
+              <button class="bnt btn-secondary btn-sm">Editar</button>
+              <button class="btn btn-danger btn-sm">Excluir</button>
+            </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-center">
+        <pagination-controls
+        id="contas"
+        (pageChange)="pageAtual = $event"
+        previousLabel="Anterior"
+        nextLabel="Proximo"
+      ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

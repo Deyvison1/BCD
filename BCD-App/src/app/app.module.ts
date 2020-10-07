@@ -24,6 +24,9 @@ import { ToastrModule } from "ngx-toastr";
 import { SolicitacaoComponent } from './solicitacao/solicitacao.component';
 import { ContaSComponent } from './solicitacao/conta-s/conta-s.component';
 import { ContaStatusComponent } from './solicitacao/conta-status/conta-status.component';
+import { AdminComponent } from './admin/admin.component';
+import { ContasComponent } from './admin/contas/contas.component';
+import { PessoasComponent } from './admin/pessoas/pessoas.component';
 
 
 @NgModule({
@@ -35,7 +38,10 @@ import { ContaStatusComponent } from './solicitacao/conta-status/conta-status.co
     PessoaComponent,
     SolicitacaoComponent,
     ContaSComponent,
-    ContaStatusComponent
+    ContaStatusComponent,
+    AdminComponent,
+    ContasComponent,
+    PessoasComponent
   ],
   imports: [
     BrowserModule,
