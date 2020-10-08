@@ -15,7 +15,6 @@ namespace BCD.Domain.Entities
         public string Unidade { get; private set; }
         public int IBGE { get; private set; }
         public string GIA { get; private set; }
-        public int PessoaId { get; set; }
-        public Pessoa Pessoa { get; set; }
+        public List<PessoasEnderecos> Pessoas { get; set; }
     }
 }

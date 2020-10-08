@@ -8,6 +8,27 @@ namespace BCD.Repository.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Enderecos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CEP = table.Column<string>(nullable: true),
+                    Logradouro = table.Column<string>(nullable: true),
+                    Complemento = table.Column<string>(nullable: true),
+                    Bairro = table.Column<string>(nullable: true),
+                    Localidade = table.Column<string>(nullable: true),
+                    UF = table.Column<int>(nullable: false),
+                    Unidade = table.Column<string>(nullable: true),
+                    IBGE = table.Column<int>(nullable: false),
+                    GIA = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enderecos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Historicos",
                 columns: table => new
                 {
@@ -73,27 +94,25 @@ namespace BCD.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Enderecos",
+                name: "PessoasEnderecos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CEP = table.Column<string>(nullable: true),
-                    Logradouro = table.Column<string>(nullable: true),
-                    Complemento = table.Column<string>(nullable: true),
-                    Bairro = table.Column<string>(nullable: true),
-                    Localidade = table.Column<string>(nullable: true),
-                    UF = table.Column<int>(nullable: false),
-                    Unidade = table.Column<string>(nullable: true),
-                    IBGE = table.Column<int>(nullable: false),
-                    GIA = table.Column<string>(nullable: true),
-                    PessoaId = table.Column<int>(nullable: false)
+                    PessoaId = table.Column<int>(nullable: false),
+                    EnderecoId = table.Column<int>(nullable: false),
+                    Criacao = table.Column<DateTime>(nullable: false),
+                    Modificado = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Enderecos", x => x.Id);
+                    table.PrimaryKey("PK_PessoasEnderecos", x => new { x.PessoaId, x.EnderecoId });
                     table.ForeignKey(
-                        name: "FK_Enderecos_Pessoas_PessoaId",
+                        name: "FK_PessoasEnderecos_Enderecos_EnderecoId",
+                        column: x => x.EnderecoId,
+                        principalTable: "Enderecos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PessoasEnderecos_Pessoas_PessoaId",
                         column: x => x.PessoaId,
                         principalTable: "Pessoas",
                         principalColumn: "Id",
@@ -167,14 +186,14 @@ namespace BCD.Repository.Migrations
                 column: "PessoaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enderecos_PessoaId",
-                table: "Enderecos",
-                column: "PessoaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_HistoricosContas_ContaId",
                 table: "HistoricosContas",
                 column: "ContaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PessoasEnderecos_EnderecoId",
+                table: "PessoasEnderecos",
+                column: "EnderecoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -183,16 +202,19 @@ namespace BCD.Repository.Migrations
                 name: "ContasCadastradas");
 
             migrationBuilder.DropTable(
-                name: "Enderecos");
+                name: "HistoricosContas");
 
             migrationBuilder.DropTable(
-                name: "HistoricosContas");
+                name: "PessoasEnderecos");
 
             migrationBuilder.DropTable(
                 name: "Contas");
 
             migrationBuilder.DropTable(
                 name: "Historicos");
+
+            migrationBuilder.DropTable(
+                name: "Enderecos");
 
             migrationBuilder.DropTable(
                 name: "Pessoas");

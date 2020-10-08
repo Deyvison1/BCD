@@ -47,13 +47,13 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         {
             var getAllAsync = _context.Contas.OrderByDescending(
                 x => x.Id
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
             return await getAllAsync;
         }
         // OBTER PELO ID
         public async Task<Conta> GetByIdAsync(int id)
         {
-            var getById = _context.Contas.FirstOrDefaultAsync(
+            var getById = _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.Id.Equals(id)
             );
             return await getById;
@@ -63,7 +63,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         {
             var getBySearch = _context.Contas.Where(
                 x => x.NomeConta.ToLower().Contains(nome.ToLower())
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
             return await getBySearch;
         }
         // OBTER LISTA PELO ID DA PESSOA
@@ -71,13 +71,13 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         {
             var conta = _context.Contas.Where(
                 x => x.PessoaId.Equals(idPessoa)
-            ).Include(x => x.Extrato).ToArrayAsync();
+            ).Include(x => x.Extrato).AsNoTracking().ToArrayAsync();
             return await conta;
         }
         // OBTER PELO ID PESSOA
         public async Task<Conta> GetByIdPessoaCorrenteAsync(int idPessoa)
         {
-            var conta = _context.Contas.FirstOrDefaultAsync(
+            var conta = _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.PessoaId.Equals(idPessoa) && x.TipoConta == 0
             );
             return await conta;
@@ -85,7 +85,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         // OBTER POR AGENCIA E CONTA CORRENTE
         public async Task<Conta> GetByAgenciaAndContaCorrente(int agencia, int conta)
         {
-            var getByAgenciaAndContaConrrente = await _context.Contas.FirstOrDefaultAsync(
+            var getByAgenciaAndContaConrrente = await _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
                 && x.TipoConta == 0
             );
@@ -94,7 +94,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         // OBTER POR AGENCIA E CONTA POUPANCA
         public async Task<Conta> GetByAgenciaAndContaPoupanca(int agencia, int conta)
         {
-            var getByAgenciaAndContaPoupanca = await _context.Contas.FirstOrDefaultAsync(
+            var getByAgenciaAndContaPoupanca = await _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.DigitosAgencia.Equals(agencia) && x.DigitosConta.Equals(conta)
                 && x.TipoConta != 0
             );
@@ -117,7 +117,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
 
         public async Task<Conta> GetByIdPessoaAsync(int idPessoa)
         {
-            return await _context.Contas.FirstOrDefaultAsync(
+            return await _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.PessoaId.Equals(idPessoa)
             );
         }
@@ -130,7 +130,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
                 x => x.Extrato
             ).ThenInclude(
                 x => x.Historico
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
         }
 
         public async Task<bool> ExistContaFindByCpf(string cpf, int agencia, int conta)
@@ -149,7 +149,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
             foreach(int item in idConta)
             {
                 // Cada vez que percorrer a lista eu ja busco a conta pelo id
-                var conta = await _context.Contas.FirstOrDefaultAsync(
+                var conta = await _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                     x => x.Id.Equals(item)
                 );
                 // Cada vez que fizer a busca pelo id vou adicionando a resposta a lista
@@ -161,7 +161,7 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
 
         public async Task<Conta> GetStatusContaByCpfAndSenha(string cpf)
         {
-            var conta = await _context.Contas.FirstOrDefaultAsync(
+            var conta = await _context.Contas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.CPF.Equals(cpf)
             );
             return conta;

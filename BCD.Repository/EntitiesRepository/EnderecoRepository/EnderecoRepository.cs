@@ -49,13 +49,13 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
         {
             var getAll = _context.Enderecos.OrderByDescending(
                 x => x.Id
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
             return await getAll;
         }
         // OBTER PELO ID
         public async Task<Endereco> GetByIdAsync(int id)
         {
-            var getById = _context.Enderecos.FirstOrDefaultAsync(
+            var getById = _context.Enderecos.AsNoTracking().FirstOrDefaultAsync(
                 x => x.Id.Equals(id)
             );
             return await getById;
@@ -65,20 +65,20 @@ namespace BCD.Repository.EntitiesRepository.EnderecoRepository
         {
             var getBySearch = _context.Enderecos.Where(
                 x => x.CEP.ToString().Contains(search) || x.Bairro.ToLower().Contains(search.ToLower()) 
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
             return await getBySearch;
         }
 
         public async Task<Endereco> GetByCep(string cep)
         {
-            return await _context.Enderecos.FirstOrDefaultAsync(
+            return await _context.Enderecos.AsNoTracking().FirstOrDefaultAsync(
                 x => x.CEP.Equals(cep)
             );
         }
         // Se retornar algum registro e pq tem esse cep cadastrado ja
         public async Task<int[]> ExisteCepCadastrado(List<string> ceps)
         {
-            var result = _context.Enderecos.Where(
+            var result = _context.Enderecos.AsNoTracking().Where(
                 list => ceps.Contains(list.CEP)
             ).Select(x => x.Id);
             return await result.ToArrayAsync();

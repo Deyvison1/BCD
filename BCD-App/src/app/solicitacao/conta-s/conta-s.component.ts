@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from '@angular/router';
 import { ToastrService } from "ngx-toastr";
 import { Conta } from "src/app/Models/Conta";
 import { Endereco } from "src/app/Models/Endereco";
@@ -23,7 +24,6 @@ export class ContaSComponent implements OnInit {
 
   // VARIAVEIS DE INSTANCIAS
   solicitarConta: SolicitarConta = new SolicitarConta();
-  solicitarConta2: SolicitarConta = new SolicitarConta();
   enderecoInstancia: Endereco = new Endereco();
 
   // LISTAS
@@ -39,7 +39,8 @@ export class ContaSComponent implements OnInit {
     private fb: FormBuilder,
     private enderecoService: EnderecoService,
     private toastr: ToastrService,
-    private contaService: ContaService
+    private contaService: ContaService,
+    private route: Router
   ) {}
 
   ngOnInit() {
@@ -54,6 +55,7 @@ export class ContaSComponent implements OnInit {
       (data) => {
         this.toastr.success('Sucesso na Solicitação!');
         this.form.reset();
+        this.route.navigate(['solicitacao/status']);
       }, err => { console.log(err.error); }
     );
   }

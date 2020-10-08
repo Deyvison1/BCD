@@ -13,13 +13,14 @@ namespace BCD.Repository.Data
         public DbSet<HistoricosContas> HistoricosContas { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<ContaCadastrada> ContasCadastradas { get; set; }
+        public DbSet<PessoasEnderecos> PessoasEnderecos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) 
         {
             base.OnModelCreating(builder);
 
-
-            builder.Entity<HistoricosContas>().HasKey(pe => new { pe.HistoricoId , pe.ContaId });
+            builder.Entity<PessoasEnderecos>().HasKey(pe => new { pe.PessoaId, pe.EnderecoId });
+            builder.Entity<HistoricosContas>().HasKey(hc => new { hc.HistoricoId , hc.ContaId });
         }
     }
 }

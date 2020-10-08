@@ -41,7 +41,8 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         {
             var getAll = _context.Pessoas.OrderByDescending(
                 x => x.Id
-            ).Include(x => x.Enderecos).Include(x => x.Contas)
+            ).Include(enderecos => enderecos.Enderecos).ThenInclude(endereco => endereco.Endereco).
+            Include(x => x.Contas).AsNoTracking()
             .ToArrayAsync();
             return await getAll;
         }
@@ -49,17 +50,20 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         // OBTER POR ID
         public async Task<Pessoa> GetByIdAsync(int id)
         {
-            var getById = _context.Pessoas.FirstOrDefaultAsync(
-                x => x.Id.Equals(id)
+            IQueryable<Pessoa> query = _context.Pessoas.Include(enderecos => enderecos.Enderecos)
+            .ThenInclude(endereco => endereco.Endereco).Include(contas => contas.Contas);
+
+            query = query.AsNoTracking().OrderByDescending(pessoa => pessoa.Id).Where(
+                pessoa => pessoa.Id.Equals(id)
             );
-            return await getById;
+            return await query.FirstOrDefaultAsync();
         }
         // OBTER POR PESQUISA, NOME OU CPF
         public async Task<Pessoa[]> GetBySearchAsync(string search)
         {
             var getBySearch = _context.Pessoas.Where(
                 x => x.Nome.ToLower().Contains(search.ToLower()) || x.CPF.ToString().Contains(search)
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
             return await getBySearch;
         }
 
@@ -72,7 +76,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         {
             var pessoas = _context.Pessoas.Where(
                 x => x.Id.Equals(idPessoa)
-            ).Include(x => x.Enderecos).Include(x => x.Contas).ToArrayAsync();
+            ).Include(x => x.Enderecos).Include(x => x.Contas).AsNoTracking().ToArrayAsync();
             return await pessoas;
         }
 

@@ -31,12 +31,12 @@ namespace BCD.Repository.EntitiesRepository.HistoricosContasRepository
         {
             return await _context.HistoricosContas.OrderByDescending(
                 x => x.DataCriacao
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
         }
 
         public async Task<HistoricosContas> GetByHistoricoIdOrContaId(int id)
         {
-            return await _context.HistoricosContas.FirstOrDefaultAsync(
+            return await _context.HistoricosContas.AsNoTracking().FirstOrDefaultAsync(
                 x => x.HistoricoId.Equals(id) || x.ContaId.Equals(id)
             );
         }

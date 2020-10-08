@@ -16,6 +16,5 @@ namespace BCD.WebApi.Dtos
         public string GIA { get; set; }
         public string DDD { get; set; }
         public string Siafi { get; set; }
-        public int PessoaId { get; set; }
     }
 }

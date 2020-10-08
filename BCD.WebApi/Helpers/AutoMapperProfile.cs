@@ -12,7 +12,13 @@ namespace BCD.WebApi.Helpers
         public AutoMapperProfile()
         {
             //
-            CreateMap<Pessoa, PessoaDto>().ReverseMap();
+            CreateMap<Pessoa, PessoaDto>().ForMember(
+                x => x.Enderecos, opt => {
+                    opt.MapFrom(src => src.Enderecos.Select(
+                        x => x.Endereco
+                    ).ToList());
+                }
+            ).ReverseMap();
             CreateMap<Endereco, EnderecoDto>().ReverseMap();
             //
             CreateMap<Historico, HistoricoDto>().ReverseMap();

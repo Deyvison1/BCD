@@ -83,15 +83,11 @@ namespace BCD.Repository.Migrations
 
                     b.Property<string>("Logradouro");
 
-                    b.Property<int>("PessoaId");
-
                     b.Property<int>("UF");
 
                     b.Property<string>("Unidade");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PessoaId");
 
                     b.ToTable("Enderecos");
                 });
@@ -159,6 +155,23 @@ namespace BCD.Repository.Migrations
                     b.ToTable("Pessoas");
                 });
 
+            modelBuilder.Entity("BCD.Domain.Entities.PessoasEnderecos", b =>
+                {
+                    b.Property<int>("PessoaId");
+
+                    b.Property<int>("EnderecoId");
+
+                    b.Property<DateTime>("Criacao");
+
+                    b.Property<DateTime?>("Modificado");
+
+                    b.HasKey("PessoaId", "EnderecoId");
+
+                    b.HasIndex("EnderecoId");
+
+                    b.ToTable("PessoasEnderecos");
+                });
+
             modelBuilder.Entity("BCD.Domain.Entities.Conta", b =>
                 {
                     b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
@@ -180,14 +193,6 @@ namespace BCD.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("BCD.Domain.Entities.Endereco", b =>
-                {
-                    b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
-                        .WithMany("Enderecos")
-                        .HasForeignKey("PessoaId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("BCD.Domain.Entities.HistoricosContas", b =>
                 {
                     b.HasOne("BCD.Domain.Entities.Conta", "Conta")
@@ -198,6 +203,19 @@ namespace BCD.Repository.Migrations
                     b.HasOne("BCD.Domain.Entities.Historico", "Historico")
                         .WithMany("Contas")
                         .HasForeignKey("HistoricoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BCD.Domain.Entities.PessoasEnderecos", b =>
+                {
+                    b.HasOne("BCD.Domain.Entities.Endereco", "Endereco")
+                        .WithMany("Pessoas")
+                        .HasForeignKey("EnderecoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
+                        .WithMany("Enderecos")
+                        .HasForeignKey("PessoaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

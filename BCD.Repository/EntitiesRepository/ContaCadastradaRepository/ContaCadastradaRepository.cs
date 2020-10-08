@@ -30,14 +30,14 @@ namespace BCD.Repository.EntitiesRepository.ContaCadastradaRepository
 
         public async Task<ContaCadastrada[]> GetAllAsync()
         {
-            return await _context.ContasCadastradas.ToArrayAsync();
+            return await _context.ContasCadastradas.AsNoTracking().ToArrayAsync();
         }
 
         public async Task<ContaCadastrada[]> GetAllByPessoaIdAsync(int pessoaId)
         {
             return await _context.ContasCadastradas.Where(
                 x => x.PessoaId.Equals(pessoaId)
-            ).ToArrayAsync();
+            ).AsNoTracking().ToArrayAsync();
         }
 
         public async Task<bool> SaveChangeAsync()
