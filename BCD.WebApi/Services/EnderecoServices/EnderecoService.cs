@@ -38,12 +38,12 @@ namespace BCD.WebApi.Services.EnderecoServices
             var endereco = await _repo.GetByIdAsync(enderecoDto.Id);
             if(endereco == null) throw new NotFoundException("Nenhum endereco encontrado com esse id!");
 
-            _map.Map(endereco, enderecoDto);
+            _map.Map(enderecoDto,endereco);
             
             _repo.Update(endereco);
             if(await _repo.SaveAsync())
             {
-                return enderecoDto;
+                return _map.Map<EnderecoDto>(endereco);
             }
             throw new ArgumentException("Erro ao persistir dados no banco!");
 

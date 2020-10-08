@@ -121,13 +121,13 @@
             </tab>
             <tab heading="Enderecos">
               <div >
-              <div [formGroup]="formEndereco" class="border border-top-0" style="margin-top: 07px;"
+              <div [formGroup]="formEndereco" class="" style="margin-top: 07px;"
               >
-                    <hr>
                     <div class="row">
-                      <div class="form-group col-3">
+                      <div class="form-group col-4">
                         <label class="h6">Cep</label>
                         <input
+                          [(ngModel)]="endereco.cep"
                           mask="00000-000"
                           type="text"
                           class="form-control text-center"
@@ -135,22 +135,26 @@
                           placeholder="CEP"
                         />
                       </div>
-                      <div class="form-group col-4">
+                      <div class="form-group col-5">
                         <label class="h6">Logradouro</label>
                         <input
+                        readonly
+                        [(ngModel)]="endereco.logradouro"
                           type="text"
                           class="form-control text-center"
                           formControlName="logradouro"
                           placeholder="Logradouro"
                         />
                       </div>
-                      <div class="form-group col-5">
-                        <label class="h6">Bairro</label>
+                      <div class="form-group col-3">
+                        <label class="h6">UF</label>
                         <input
+                          readonly
+                          [(ngModel)]="endereco.uf"
                           type="text"
                           class="form-control text-center"
-                          formControlName="bairro"
-                          placeholder="Bairro"
+                          formControlName="uf"
+                          placeholder="UF"
                         />
                       </div>
                     </div>
@@ -158,6 +162,8 @@
                       <div class="form-group col-4">
                         <label class="h6">Localidade</label>
                         <input
+                          [(ngModel)]="endereco.localidade"
+                          readonly
                           type="text"
                           class="form-control text-center"
                           formControlName="localidade"
@@ -165,19 +171,23 @@
                         />
                       </div>
 
-                      <div class="form-group col-2">
-                        <label class="h6">UF</label>
+                      
+                      <div class="form-group col-5">
+                        <label class="h6">Bairro</label>
                         <input
+                        readonly
+                          [(ngModel)]="endereco.bairro"
                           type="text"
                           class="form-control text-center"
-                          formControlName="uf"
-                          placeholder="UF"
+                          formControlName="bairro"
+                          placeholder="Bairro"
                         />
                       </div>
-
                       <div class="form-group col-3">
                         <label class="h6">IBGE</label>
                         <input
+                          [(ngModel)]="endereco.ibge"
+                          readonly
                           type="text"
                           class="form-control text-center"
                           formControlName="ibge"
@@ -225,7 +235,7 @@
                 <button class="btn btn-secondary" (click)="modalEditar.hide()">Fechar</button>
               </div>
               <div class="col text-right">
-                <button class="btn btn-info" (click)="salvar()">Salvar Alterações</button>
+                <button class="btn btn-info" (click)="salvar(modalEditar)">Salvar Alterações</button>
               </div>
             </div>
           </tabset>

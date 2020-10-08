@@ -33,4 +33,8 @@ export class PessoaService {
   getAllByIdPessoa(idPessoa: number): Observable<Pessoa[]> {
     return this.http.get<Pessoa[]>(`${this.baseUrl}details/${idPessoa}`);
   }
+
+  update(pessoa: Pessoa) {
+    return this.http.put(`${this.baseUrl}`, pessoa);
+  }
 }

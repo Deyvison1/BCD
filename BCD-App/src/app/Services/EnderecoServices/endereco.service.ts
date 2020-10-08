@@ -20,5 +20,9 @@ export class EnderecoService {
   getById(id: number) : Observable<Endereco> {
     return this.http.get<Endereco>(`${this.baseURL}${id}`);
   }
+
+  update(endereco: Endereco) {
+    return this.http.put(`${this.baseURL}`,endereco);
+  }
   
 }

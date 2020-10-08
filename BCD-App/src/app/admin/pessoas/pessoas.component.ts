@@ -18,8 +18,7 @@ export class PessoasComponent implements OnInit {
   // PRIMITIVOS
   pageAtual = 1;
   cep: number;
-  _filtroLista = '';
-
+  _filtroLista = "";
 
   // FORMS
   form: FormGroup;
@@ -39,7 +38,9 @@ export class PessoasComponent implements OnInit {
 
   set filtroLista(value: string) {
     this._filtroLista = value;
-    this.pessoasFiltradas = this._filtroLista? this.filtrarLista(this.filtroLista) : this.pessoas;
+    this.pessoasFiltradas = this._filtroLista
+      ? this.filtrarLista(this.filtroLista)
+      : this.pessoas;
   }
 
   get enderecos(): FormArray {
@@ -58,6 +59,7 @@ export class PessoasComponent implements OnInit {
     this.validation();
     this.getAll();
   }
+
   // FILTRAR -----------------------------------------------------------------------------
   filtrarLista(search: string): Pessoa[] {
     this.loading = true;
@@ -66,7 +68,10 @@ export class PessoasComponent implements OnInit {
         this.pessoasFiltradas = pessoasFiltradas;
         this.loading = false;
         return this.pessoas;
-      }, error => { console.log(error.error); }
+      },
+      (error) => {
+        console.log(error.error);
+      }
     );
     this.loading = false;
     return [];
@@ -77,27 +82,26 @@ export class PessoasComponent implements OnInit {
     template.show();
   }
 
-  removerItemList(id: number) {
-    this.enderecos.removeAt(id);
-  }
-
+  // MODAL EDITAR
   editar(pessoa: Pessoa, template: any) {
     this.abrirModal(template);
 
+    // PEGAR A PESSOA PELO ID
     this.pessoaService.getById(pessoa.id).subscribe(
       (pessoa: Pessoa) => {
         this.pessoa = Object.assign({}, pessoa);
-        
 
+        // PEGAR O ENDERECO PELO ID
         this.enderecoService.getById(pessoa.enderecoId).subscribe(
           (endereco: Endereco) => {
             this.endereco = endereco;
             this.formEndereco.patchValue(this.endereco);
-          }, error => { console.log(error.error); }
+          },
+          (error) => {
+            console.log(error.error);
+          }
         );
         this.form.patchValue(this.pessoa);
-
-        console.log(this.pessoa);
       },
       (error) => {
         console.log(error.errror);
@@ -107,47 +111,96 @@ export class PessoasComponent implements OnInit {
 
   // REQUISICOES GET -----------------------------------------------------------------
   getAll() {
+    this.loading = true;
+
     return this.pessoaService.getAll().subscribe(
       (pessoas: Pessoa[]) => {
         this.pessoas = pessoas;
 
+        this.loading = false;
         this.pessoasFiltradas = this.pessoas;
       },
       (err) => {
+        this.loading = false;
         console.log(err.error);
       }
     );
   }
 
-  // Novo Endereco ----------------------------------------------------------------------------------------
 
+  // Novo Endereco ----------------------------------------------------------------------------------------
   abrirModalNewEndereco(template: any) {
     this.abrirModal(template);
   }
 
   // SALVAR --------------------------------------------------------------------------
-  salvar() {
-    this.pessoa = Object.assign({id: this.pessoa.id}, this.form.value);
-    console.log(this.pessoa);
+  salvar(template: any) {
+    this.loading = true;
+    this.pessoa = Object.assign({ id: this.pessoa.id }, this.form.value);
+
+    this.pessoaService.update(this.pessoa).subscribe(
+      (pessoa: Pessoa) => {
+        this.pessoa = pessoa;
+
+        this.enderecoService.getEnderecoByCep(this.endereco.cep).subscribe(
+          (endereco: Endereco) => {
+
+            if(endereco.cep == null) {
+              this.toastr.error('Cep Invalido');
+              this.loading = false;
+              return ;
+            }
+            this.endereco = Object.assign({ id: this.endereco.id }, endereco);
+
+            this.enderecoService.update(this.endereco).subscribe(
+              (endereco: Endereco) => {
+                this.endereco = endereco;
+    
+    
+                this.toastr.success("Edição com Sucesso!");
+                this.getAll();
+                template.hide();
+                this.loading = false;
+              },
+              (error) => {
+                console.log(error.error);
+                this.loading = false;
+              }
+            );
+          },
+          (err) => {
+            this.loading = false;
+            console.log(err.error);
+          }
+        );
+      },
+      (error) => {
+        this.toastr.error('Cep Invalido!');
+        this.loading = false;
+      }
+    );
   }
+
   // VALIDAÇÃO ------------------------------------------------------------------------
   validation() {
     this.form = this.fb.group({
       id: [],
       nome: [],
       cpf: [],
-      situacao: []
+      situacao: [],
+      enderecoId: [""],
     });
   }
+
   validationEndereco() {
-      this.formEndereco =  this.fb.group({
-        id: [''],
-        cep: [''],
-        logradouro: [''],
-        bairro: [''],
-        localidade: [''],
-        uf: [''],
-        ibge: [''],
-      });
+    this.formEndereco = this.fb.group({
+      id: [""],
+      cep: [""],
+      logradouro: [""],
+      bairro: [""],
+      localidade: [""],
+      uf: [""],
+      ibge: [""],
+    });
   }
 }
