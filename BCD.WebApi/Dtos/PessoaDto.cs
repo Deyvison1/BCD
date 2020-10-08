@@ -15,6 +15,6 @@ namespace BCD.WebApi.Dtos
         // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
         public int Situacao { get; set; }
         public List<ContaDto> Contas { get; set; }
-        public List<EnderecoDto> Enderecos { get; set; }
+        public int EnderecoId { get; set; }
     }
 }

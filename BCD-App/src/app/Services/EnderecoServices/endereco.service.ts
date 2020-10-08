@@ -8,12 +8,17 @@ import { Endereco } from 'src/app/Models/Endereco';
 })
 export class EnderecoService {
 
+  baseURL = 'http://localhost:5000/api/endereco/'
   constructor(
     private http: HttpClient
   ) { }
 
   getEnderecoByCep(cep: number): Observable<Endereco> {
     return this.http.get<Endereco>(`https://viacep.com.br/ws/${cep}/json/`);
+  }
+
+  getById(id: number) : Observable<Endereco> {
+    return this.http.get<Endereco>(`${this.baseURL}${id}`);
   }
   
 }

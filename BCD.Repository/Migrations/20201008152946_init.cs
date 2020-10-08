@@ -59,11 +59,18 @@ namespace BCD.Repository.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Nome = table.Column<string>(nullable: true),
                     CPF = table.Column<string>(nullable: true),
-                    Situacao = table.Column<int>(nullable: false)
+                    Situacao = table.Column<int>(nullable: false),
+                    EnderecoId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pessoas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pessoas_Enderecos_EnderecoId",
+                        column: x => x.EnderecoId,
+                        principalTable: "Enderecos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,32 +94,6 @@ namespace BCD.Repository.Migrations
                     table.PrimaryKey("PK_Contas", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Contas_Pessoas_PessoaId",
-                        column: x => x.PessoaId,
-                        principalTable: "Pessoas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PessoasEnderecos",
-                columns: table => new
-                {
-                    PessoaId = table.Column<int>(nullable: false),
-                    EnderecoId = table.Column<int>(nullable: false),
-                    Criacao = table.Column<DateTime>(nullable: false),
-                    Modificado = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PessoasEnderecos", x => new { x.PessoaId, x.EnderecoId });
-                    table.ForeignKey(
-                        name: "FK_PessoasEnderecos_Enderecos_EnderecoId",
-                        column: x => x.EnderecoId,
-                        principalTable: "Enderecos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PessoasEnderecos_Pessoas_PessoaId",
                         column: x => x.PessoaId,
                         principalTable: "Pessoas",
                         principalColumn: "Id",
@@ -191,8 +172,8 @@ namespace BCD.Repository.Migrations
                 column: "ContaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PessoasEnderecos_EnderecoId",
-                table: "PessoasEnderecos",
+                name: "IX_Pessoas_EnderecoId",
+                table: "Pessoas",
                 column: "EnderecoId");
         }
 
@@ -205,19 +186,16 @@ namespace BCD.Repository.Migrations
                 name: "HistoricosContas");
 
             migrationBuilder.DropTable(
-                name: "PessoasEnderecos");
-
-            migrationBuilder.DropTable(
                 name: "Contas");
 
             migrationBuilder.DropTable(
                 name: "Historicos");
 
             migrationBuilder.DropTable(
-                name: "Enderecos");
+                name: "Pessoas");
 
             migrationBuilder.DropTable(
-                name: "Pessoas");
+                name: "Enderecos");
         }
     }
 }

@@ -23,6 +23,7 @@ export class PessoasComponent implements OnInit {
 
   // FORMS
   form: FormGroup;
+  formEndereco: FormGroup;
 
   // ENTIDADES
   pessoa: Pessoa = new Pessoa();
@@ -53,6 +54,7 @@ export class PessoasComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.validationEndereco();
     this.validation();
     this.getAll();
   }
@@ -85,12 +87,17 @@ export class PessoasComponent implements OnInit {
     this.pessoaService.getById(pessoa.id).subscribe(
       (pessoa: Pessoa) => {
         this.pessoa = Object.assign({}, pessoa);
+        
 
+        this.enderecoService.getById(pessoa.enderecoId).subscribe(
+          (endereco: Endereco) => {
+            this.endereco = endereco;
+            this.formEndereco.patchValue(this.endereco);
+          }, error => { console.log(error.error); }
+        );
         this.form.patchValue(this.pessoa);
 
-        this.pessoa.enderecos.forEach((enderecos) => {
-          this.enderecos.push(this.criarEndereco(enderecos));
-        });
+        console.log(this.pessoa);
       },
       (error) => {
         console.log(error.errror);
@@ -111,40 +118,11 @@ export class PessoasComponent implements OnInit {
       }
     );
   }
-  // Novo Endereco ----------------------------------------------------------------------------------------
-  addConta(conta: Conta) {
-    console.log(conta);
-  }  
 
   // Novo Endereco ----------------------------------------------------------------------------------------
 
   abrirModalNewEndereco(template: any) {
     this.abrirModal(template);
-  }
-
-  addEndereco(template: any) {
-    this.enderecoService.getEnderecoByCep(this.cep).subscribe(
-      (endereco) => {
-        this.enderecos.push(this.criarEndereco(endereco));
-        this.toastr.success('Sucesso Ao Adicionar Novo Cep');
-        template.hide();
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  criarEndereco(endereco: any) {
-    return this.fb.group({
-      id: [endereco.id],
-      cep: [endereco.cep],
-      logradouro: [endereco.logradouro],
-      bairro: [endereco.bairro],
-      localidade: [endereco.localidade],
-      uf: [endereco.uf],
-      ibge: [endereco.ibge],
-    });
   }
 
   // SALVAR --------------------------------------------------------------------------
@@ -158,8 +136,18 @@ export class PessoasComponent implements OnInit {
       id: [],
       nome: [],
       cpf: [],
-      situacao: [],
-      enderecos: this.fb.array([]),
+      situacao: []
     });
+  }
+  validationEndereco() {
+      this.formEndereco =  this.fb.group({
+        id: [''],
+        cep: [''],
+        logradouro: [''],
+        bairro: [''],
+        localidade: [''],
+        uf: [''],
+        ibge: [''],
+      });
   }
 }

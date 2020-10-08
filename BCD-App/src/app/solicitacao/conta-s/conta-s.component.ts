@@ -27,13 +27,8 @@ export class ContaSComponent implements OnInit {
   enderecoInstancia: Endereco = new Endereco();
 
   // LISTAS
-  enderecosCompletos: Endereco[] = [];
   contas: Conta[] = [];
 
-  // FormArray
-  get ceps(): FormArray {
-    return <FormArray>this.form.get("ceps");
-  }
 
   constructor(
     private fb: FormBuilder,
@@ -45,36 +40,25 @@ export class ContaSComponent implements OnInit {
 
   ngOnInit() {
     this.validation();
-    this.deixarUmCepAdd();
   }
 
   solicitar() {
     this.solicitarConta = Object.assign({}, this.form.value);
 
-    this.contaService.addSolicitacao(this.solicitarConta).subscribe(
-      (data) => {
-        this.toastr.success('Sucesso na Solicitação!');
-        this.form.reset();
-        this.route.navigate(['solicitacao/status']);
-      }, err => { console.log(err.error); }
+    this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
+      (endereco: Endereco) => {
+        this.solicitarConta.endereco = endereco;
+        console.log(this.solicitarConta);
+        this.contaService.addSolicitacao(this.solicitarConta).subscribe(
+          (data) => {
+            this.toastr.success('Sucesso na Solicitação!');
+            this.form.reset();
+            this.route.navigate(['solicitacao/status']);
+            console.log(data);
+          }, err => { console.log(err.error); }
+        );
+      }, error => { console.log(error.error); }
     );
-  }
-
-  deixarUmCepAdd() {
-    this.ceps.push(this.criarCep({ id: 0 }));
-  }
-  addEndereco() {
-    this.ceps.push(this.criarCep({ id: 0 }));
-  }
-
-  removerEndereco(id: number) {
-    this.ceps.removeAt(id);
-  }
-
-  criarCep(cep: any) {
-    return this.fb.group({
-      cep: [cep.cep]
-    });
   }
 
   validation() {
@@ -83,7 +67,7 @@ export class ContaSComponent implements OnInit {
       senha: [''],
       nomeConta: [''],
       cpf: [''],
-      ceps: this.fb.array([]),
+      cep: ['']
     });
   }
 }

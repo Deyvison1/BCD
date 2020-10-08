@@ -10,6 +10,7 @@ namespace BCD.Domain.Entities
         public string CPF { get; set; }
         public EnumEstado Situacao { get; set; }
         public List<Conta> Contas { get; set; }
-        public List<PessoasEnderecos> Enderecos { get; set; }
+        public int EnderecoId { get; set; }
+        public Endereco Endereco { get; set; }
     }
 }

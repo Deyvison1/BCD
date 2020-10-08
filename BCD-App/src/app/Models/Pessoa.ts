@@ -8,5 +8,5 @@ export class Pessoa {
         // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
         situacao: number;
         contas: Conta[];
-        enderecos: Endereco[];
+        enderecoId: number;
 }

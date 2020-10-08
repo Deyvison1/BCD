@@ -9,7 +9,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <input class="form-control text-center" formControlName="cpf" type="text" formControlName="cpf" id="" placeholder="CPF" />
+        <input class="form-control text-center" formControlName="cpf" type="text" mask="000.000.000-00" formControlName="cpf" id="" placeholder="CPF" />
         <p></p>
       </div>
     </div>
@@ -28,31 +28,9 @@
     <div class="row">
       <div class="col-10">
         <div id="collapseBasic" [collapse]="isCollapsed">
-          <div formArrayName="ceps" *ngFor="let cep of ceps.controls; let i = index;">
-            <fieldset [formGroupName]="i">
-              <legend>
-                <button class="btn btn-sm btn-warning mb-1" (click)="removerEndereco(i)">remove</button>
-                
-                <div class="row">
-                  <div class="col-10">
-                    <input type="text" class="form-control text-center" placeholder="CEP" formControlName="cep" />
-                  </div>
-                  <div class="col-2 text-center">
-                    <button class="btn btn-info btn-block">
-                      <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                <p></p>
-              </div>
-              </legend>
-            </fieldset>
+          <div>
+            <input type="text" formControlName="cep" class="form-control text-center" placeholder="CEP">
           </div>
-          <div class="text-center">
-          <button class="btn btn-block btn-info" (click)="addEndereco()">
-            Adicionar Endereço
-          </button>
-          <p></p>
-        </div>
         </div>
     </div>
       <div class="col-2">

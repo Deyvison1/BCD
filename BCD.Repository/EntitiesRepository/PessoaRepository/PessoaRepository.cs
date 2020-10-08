@@ -41,7 +41,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         {
             var getAll = _context.Pessoas.OrderByDescending(
                 x => x.Id
-            ).Include(enderecos => enderecos.Enderecos).ThenInclude(endereco => endereco.Endereco).
+            ).
             Include(x => x.Contas).AsNoTracking()
             .ToArrayAsync();
             return await getAll;
@@ -50,8 +50,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         // OBTER POR ID
         public async Task<Pessoa> GetByIdAsync(int id)
         {
-            IQueryable<Pessoa> query = _context.Pessoas.Include(enderecos => enderecos.Enderecos)
-            .ThenInclude(endereco => endereco.Endereco).Include(contas => contas.Contas);
+            IQueryable<Pessoa> query = _context.Pessoas.Include(contas => contas.Contas);
 
             query = query.AsNoTracking().OrderByDescending(pessoa => pessoa.Id).Where(
                 pessoa => pessoa.Id.Equals(id)
@@ -76,7 +75,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         {
             var pessoas = _context.Pessoas.Where(
                 x => x.Id.Equals(idPessoa)
-            ).Include(x => x.Enderecos).Include(x => x.Contas).AsNoTracking().ToArrayAsync();
+            ).Include(x => x.Contas).AsNoTracking().ToArrayAsync();
             return await pessoas;
         }
 
@@ -92,13 +91,12 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
         public async Task<Pessoa> GetAllPessoaByIdAsync(int idPessoa)
         {
             IQueryable<Pessoa> query = _context.Pessoas.
-                Include(x => x.Contas).
-                Include(x => x.Enderecos);
+                Include(x => x.Contas);
 
             query = query.AsNoTracking().
             OrderByDescending(x => x.Id).
             Where(x => x.Id.Equals(idPessoa));
-            return await query.FirstOrDefaultAsync();    
+            return await query.FirstOrDefaultAsync();  
         }
     }
 }
