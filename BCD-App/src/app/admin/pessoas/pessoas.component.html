@@ -35,12 +35,12 @@
             <td>
               <div class="btn-group">
                 <button
-                  class="btn btn-info btn-sm"
+                  class="btn btn-info btn-sm" (click)="details(modalDetalhes, pessoa, endereco)"
                 >
                   Detalhes
                 </button>
                 <button class="bnt btn-secondary btn-sm" (click)="editar(pessoa, modalEditar)">Editar</button>
-                <button class="btn btn-danger btn-sm">Excluir</button>
+                <button class="btn btn-danger btn-sm" (click)="abrirModalService(template)">Excluir</button>
               </div>
             </td>
           </tr>
@@ -59,6 +59,8 @@
   </div>
 </div>
 
+
+<!-- MODAL EDITAR -->
 <div
   bsModal
   #modalEditar="bs-modal"
@@ -245,6 +247,128 @@
   </div>
 </div>
 
+<!-- MODAL DETALHES -->
+<div
+  bsModal
+  #modalDetalhes="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Detalhes {{ pessoa.nome }}
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="modalDetalhes.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <tabset [justified]="true">
+            <tab heading="Pessoa">
+              <table class="table table-striped">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr>
+                    <td>{{ pessoa.nome | titlecase }}</td>
+                    <td>{{ pessoa.cpf | mask: '000.000.000-00' }}</td>
+                    <td>
+                      <button *ngIf="pessoa.situacao == 0" class="btn btn-success">
+                        <i class="fas fa-calendar-check"></i> &nbsp; Ativada
+                      </button>
+                      <button *ngIf="pessoa.situacao == 1" class="btn btn-warning">
+                        <i class="fas fa-exclamation-circle"></i> &nbsp; Desativada
+                      </button>
+                      <button *ngIf="pessoa.situacao == 2" class="btn btn-danger">
+                        <i class="fas fa-calendar-times"></i> &nbsp; Bloqueada
+                      </button>
+                      <button *ngIf="pessoa.situacao == 3" class="btn btn-primary">
+                        <i class="fas fa-clock"></i> &nbsp; Analise
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </tab>
+            <tab heading="Enderecos">
+              <div >
+                <table class="table table-striped">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>CEP</th>
+                      <th>Logradouro</th>
+                      <th>Bairro</th>
+                      <th>Localidade</th>
+                      <th>UF</th>
+                    </tr>
+                  </thead>
+                  <tbody >
+                    <tr >
+                      <td>{{ endereco.cep | mask: '00000-000' }}</td>
+                      <td>{{ endereco.logradouro }}</td>
+                      <td>{{ endereco.bairro }}</td>
+                      <td>{{ endereco.localidade }}</td>
+                      <td>{{ endereco.uf }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </tab>
+            <tab heading="Contas">
+              <div>
+              <table width="100%" class="table table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Conta</th>
+                    <th>Agencia</th>
+                    <th>Nome</th>
+                    <th>Saldo</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let conta of pessoa.contas">
+                    <td>{{ conta.digitosConta | mask: "00.0000-0" }}</td>
+                    <td>{{ conta.digitosAgencia | mask: "0000-0" }}</td>
+                    <td>{{ conta.nomeConta | titlecase }}</td>
+                    <td>{{ conta.saldo | currency: "R$: " }}</td>
+                    <td>
+                      <button class="btn btn-success btn-sm" *ngIf="conta.situacao == 0">Ativada</button>
+                      <button class="btn btn-secondary btn-sm" *ngIf="conta.situacao == 1">Desativada</button>
+                      <button class="btn btn-warning btn-sm" *ngIf="conta.situacao == 2">Bloqueada</button>
+                      <button class="btn btn-info btn-sm" *ngIf="conta.situacao == 3">Analise</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            </tab>
+            <hr />
+            <div class="row">
+              <div class="col text-left">
+                <button class="btn btn-secondary" (click)="modalDetalhes.hide()">Fechar</button>
+              </div>
+            </div>
+          </tabset>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <div class="my-container">
@@ -258,3 +382,13 @@
 
   <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
 </div>
+
+
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Do you want to confirm?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()" >Yes</button>
+    <button type="button" class="btn btn-primary" (click)="decline()" >No</button>
+  </div>
+</ng-template>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, TemplateRef } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { Conta } from "src/app/Models/Conta";
@@ -6,6 +6,8 @@ import { Endereco } from "src/app/Models/Endereco";
 import { Pessoa } from "src/app/Models/Pessoa";
 import { EnderecoService } from "src/app/Services/EnderecoServices/endereco.service";
 import { PessoaService } from "src/app/Services/PessoaServices/pessoa.service";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+
 
 @Component({
   selector: "app-pessoas",
@@ -19,6 +21,9 @@ export class PessoasComponent implements OnInit {
   pageAtual = 1;
   cep: number;
   _filtroLista = "";
+
+  // NGX-BOOTSTRAP
+  modalRef: BsModalRef;
 
   // FORMS
   form: FormGroup;
@@ -51,7 +56,8 @@ export class PessoasComponent implements OnInit {
     private pessoaService: PessoaService,
     private fb: FormBuilder,
     private enderecoService: EnderecoService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: BsModalService 
   ) {}
 
   ngOnInit() {
@@ -82,10 +88,35 @@ export class PessoasComponent implements OnInit {
     template.show();
   }
 
+  abrirModalService(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  confirm() {
+    this.toastr.warning('Vamos Deletar');
+  }
+
+  decline() {
+    this.toastr.info('Voce saiu fora');
+  }
+
+  details(template: any, pessoa: Pessoa) {
+    this.abrirModal(template);
+    this.toastr.info(`Detalhes: ${pessoa.nome.toUpperCase()}`);
+
+    this.enderecoService.getById(pessoa.enderecoId).subscribe(
+      (endereco: Endereco) => {
+        this.endereco = endereco;
+      }, error => { console.log(error.error); }
+    );
+    this.pessoa = pessoa;
+  }
+
   // MODAL EDITAR
   editar(pessoa: Pessoa, template: any) {
     this.abrirModal(template);
 
+    this.toastr.warning(`Modo Edição Para ${pessoa.nome}`);
     // PEGAR A PESSOA PELO ID
     this.pessoaService.getById(pessoa.id).subscribe(
       (pessoa: Pessoa) => {
