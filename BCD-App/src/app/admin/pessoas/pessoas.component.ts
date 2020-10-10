@@ -6,7 +6,6 @@ import { Endereco } from "src/app/Models/Endereco";
 import { Pessoa } from "src/app/Models/Pessoa";
 import { EnderecoService } from "src/app/Services/EnderecoServices/endereco.service";
 import { PessoaService } from "src/app/Services/PessoaServices/pessoa.service";
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -22,8 +21,6 @@ export class PessoasComponent implements OnInit {
   cep: number;
   _filtroLista = "";
 
-  // NGX-BOOTSTRAP
-  modalRef: BsModalRef;
 
   // FORMS
   form: FormGroup;
@@ -48,16 +45,11 @@ export class PessoasComponent implements OnInit {
       : this.pessoas;
   }
 
-  get enderecos(): FormArray {
-    return <FormArray>this.form.get("enderecos");
-  }
-
   constructor(
     private pessoaService: PessoaService,
     private fb: FormBuilder,
     private enderecoService: EnderecoService,
-    private toastr: ToastrService,
-    private modalService: BsModalService 
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -88,18 +80,6 @@ export class PessoasComponent implements OnInit {
     template.show();
   }
 
-  abrirModalService(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
-  }
-
-  confirm() {
-    this.toastr.warning('Vamos Deletar');
-  }
-
-  decline() {
-    this.toastr.info('Voce saiu fora');
-  }
-
   details(template: any, pessoa: Pessoa) {
     this.abrirModal(template);
     this.toastr.info(`Detalhes: ${pessoa.nome.toUpperCase()}`);
@@ -110,6 +90,24 @@ export class PessoasComponent implements OnInit {
       }, error => { console.log(error.error); }
     );
     this.pessoa = pessoa;
+  }
+
+  
+  // DELETAR
+  deletar(template: any, pessoa: Pessoa) {
+    this.abrirModal(template);
+
+    this.pessoa = Object.assign({ id: pessoa.id }, pessoa);
+  }
+
+  confirmDelete(template: any) {
+    this.pessoaService.delete(this.pessoa.id).subscribe(
+      (pessoa: Pessoa) => {
+        this.toastr.success(`Sucesso ao Deletar ${pessoa.nome}`);
+        this.getAll();
+        template.hide();
+      }, error => { console.log(error.error); template.hide(); }
+    );
   }
 
   // MODAL EDITAR

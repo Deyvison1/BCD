@@ -37,4 +37,8 @@ export class PessoaService {
   update(pessoa: Pessoa) {
     return this.http.put(`${this.baseUrl}`, pessoa);
   }
+
+  delete(id: number) {
+    return this.http.delete(`${this.baseUrl}${id}`);
+  }
 }
