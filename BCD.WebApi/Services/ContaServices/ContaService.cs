@@ -148,10 +148,11 @@ namespace BCD.WebApi.Services.ContaServices
         public async Task<ContaDto> Update(ContaDto contaDto)
         {
             var conta = await _repo.GetByIdAsync(contaDto.Id);
+            contaDto.Senha = MD5(contaDto.Senha);
             if (conta == null) throw new NotFoundException("Nenhuma conta encontrada com esse id");
-
+            
             _map.Map(contaDto, conta);
-
+            
             _repo.Update(conta);
             if (await _repo.SaveAsync())
             {

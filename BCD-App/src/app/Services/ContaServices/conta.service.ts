@@ -80,7 +80,7 @@ export class ContaService {
 
   // PUT
   put(conta: Conta) {
-    return this.http.put(`${this.baseUrl}${conta.id}`, conta);
+    return this.http.put(`${this.baseUrl}`, conta);
   }
   
 }

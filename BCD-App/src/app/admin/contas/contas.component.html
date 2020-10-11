@@ -37,8 +37,18 @@
             <td>{{ conta.nomeConta }}</td>
             <td>
               <div class="btn-group">
-                <button class="btn btn-info btn-sm" (click)="detalhes(modalDetalhes, conta)">Detalhes</button>
-                <button class="bnt btn-secondary btn-sm" (click)="editar(modalEdit, conta)">Editar</button>
+                <button
+                  class="btn btn-info btn-sm"
+                  (click)="detalhes(modalDetalhes, conta)"
+                >
+                  Detalhes
+                </button>
+                <button
+                  class="bnt btn-secondary btn-sm"
+                  (click)="editar(modalEdit, conta)"
+                >
+                  Editar
+                </button>
                 <button class="btn btn-danger btn-sm">Excluir</button>
               </div>
             </td>
@@ -58,234 +68,308 @@
   </div>
 </div>
 
+<!-- MODAL LOADING -->
+<div class="my-container">
+  <ng-template #customLoadingTemplate>
+    <div class="">
+      <br />
+      <br />
+      <h4 class="text-center">Carregando</h4>
+    </div>
+  </ng-template>
 
-  <!-- MODAL LOADING -->
-  <div class="my-container">
-    <ng-template #customLoadingTemplate>
-      <div class="">
-        <br />
-        <br />
-        <h4 class="text-center">Carregando</h4>
+  <ngx-loading
+    [show]="loading"
+    [config]="{ backdropBorderRadius: '3px' }"
+    [template]="customLoadingTemplate"
+  ></ngx-loading>
+</div>
+
+<!-- MODAL DETALHES -->
+<div
+  bsModal
+  #modalDetalhes="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Detalhes</h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="modalDetalhes.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-    </ng-template>
-
-    <ngx-loading
-      [show]="loading"
-      [config]="{ backdropBorderRadius: '3px' }"
-      [template]="customLoadingTemplate"
-    ></ngx-loading>
-  </div>
-
-  <!-- MODAL DETALHES -->
-  <div
-    bsModal
-    #modalDetalhes="bs-modal"
-    class="modal fade"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="dialog-sizes-name1"
-  >
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 id="dialog-sizes-name1" class="modal-title pull-left">
-            Detalhes
-          </h4>
-          <button
-            type="button"
-            class="close pull-right"
-            (click)="modalDetalhes.hide()"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <tabset [justified]="true">
-            <tab heading="Contas">
-              <form [formGroup]="form">
-              <div style="margin-top: 10px;">
+      <div class="modal-body">
+        <tabset [justified]="true">
+          <tab heading="Contas">
+            <form [formGroup]="form">
+              <div style="margin-top: 10px">
                 <div class="row">
-                <div class="col form-group">
-                  <label for="agencia">Agencia</label>
-                  <input readonly type="text" placeholder="Agencia" mask="0000-0" formControlName="digitosAgencia" class="form-control text-center">
+                  <div class="col form-group">
+                    <label for="agencia">Agencia</label>
+                    <input
+                      readonly
+                      type="text"
+                      placeholder="Agencia"
+                      mask="0000-0"
+                      formControlName="digitosAgencia"
+                      class="form-control text-center"
+                    />
+                  </div>
+                  <div class="col form-group">
+                    <label for="conta">Conta</label>
+                    <input
+                      readonly
+                      type="text"
+                      placeholder="Conta"
+                      mask="00-0000-0"
+                      formControlName="digitosConta"
+                      class="form-control text-center"
+                    />
+                  </div>
                 </div>
-                <div class="col form-group">
-                  <label for="conta">Conta</label>
-                  <input readonly type="text" placeholder="Conta" mask="00-0000-0" formControlName="digitosConta" class="form-control text-center">
+                <div class="row">
+                  <div class="col form-group">
+                    <label for="tipoConta">Tipo</label>
+                    <select
+                      readonly
+                      class="form-control"
+                      formControlName="tipoConta"
+                    >
+                      <option value="0">Corrente</option>
+                      <option value="1">Poupanca</option>
+                    </select>
+                  </div>
+                  <div class="col form-group">
+                    <label for="nome">Nome</label>
+                    <input
+                      readonly
+                      type="text"
+                      placeholder="Nome"
+                      formControlName="nomeConta"
+                      class="form-control text-center"
+                    />
+                  </div>
+                  <div class="col form-group">
+                    <label for="saldo">Saldo</label>
+                    <input
+                      readonly
+                      type="number"
+                      placeholder="Saldo"
+                      formControlName="saldo"
+                      class="form-control text-center"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col form-group">
-                  <label for="tipoConta">Tipo</label>
-                  <select readonly class="form-control" formControlName="tipoConta">
-                    <option value="0">Corrente</option>
-                    <option value="1">Poupanca</option>
-                  </select>
+                <div class="row">
+                  <div class="col form-group">
+                    <label for="cpf">CPF</label>
+                    <input
+                      readonly
+                      type="text"
+                      placeholder="CPF"
+                      mask="000.000.000-00"
+                      formControlName="cpf"
+                      class="form-control text-center"
+                    />
+                  </div>
+                  <div class="col form-group">
+                    <label for="situacao">Situação</label>
+                    <select
+                      readonly
+                      class="form-control"
+                      formControlName="situacao"
+                    >
+                      <option value="0">Ativada</option>
+                      <option value="1">Desativada</option>
+                      <option value="2">Bloqueada</option>
+                      <option value="3">Analise</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="col form-group">
-                  <label for="nome">Nome</label>
-                  <input readonly type="text" placeholder="Nome" formControlName="nomeConta" class="form-control text-center">
-                </div>
-                <div class="col form-group">
-                  <label for="saldo">Saldo</label>
-                  <input readonly type="number" placeholder="Saldo" formControlName="saldo" class="form-control text-center">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col form-group">
-                  <label for="cpf">CPF</label>
-                  <input readonly type="text" placeholder="CPF" mask="000.000.000-00" formControlName="cpf" class="form-control text-center">
-                </div>
-                <div class="col form-group">
-                  <label for="situacao">Situação</label>
-                  <select readonly class="form-control" formControlName="situacao">
-                    <option value="0">Ativada</option>
-                    <option value="1">Desativada</option>
-                    <option value="2">Bloqueada</option>
-                    <option value="3">Analise</option>
-                  </select>
-                </div>
-            </div>
               </div>
             </form>
-            </tab>
-            <tab heading="Extrato">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Descrição</th>
-                    <th>Tipo</th>
-                    <th>Nome</th>
-                    <th>Conta</th>
-                    <th>Agencia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let historico of conta.extrato">
-                    <td>{{ historico.dataTransacao | date: 'dd/MM/yyyy hh:mm'}}</td>
-                    <td>{{ historico.valor | currency: 'R$: '}}</td>
-                    <td>{{ historico.descricaoTransacao | titlecase}}</td>
-                    <td>
-                      <span *ngIf="historico.tipoConta == 0">Corrente</span>
-                      <span *ngIf="historico.tipoConta == 1">Poupança</span>
-                    </td>
-                    <td>{{ historico.nomeConta | titlecase }}</td>
-                    <td>{{ historico.digitosConta | mask: '00.0000-0' }}</td>
-                    <td>{{ historico.digitosAgencia | mask: '0000-0' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </tab>
-            <hr />
+          </tab>
+          <tab heading="Extrato">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Nome</th>
+                  <th>Conta</th>
+                  <th>Agencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let historico of conta.extrato">
+                  <td>
+                    {{ historico.dataTransacao | date: "dd/MM/yyyy hh:mm" }}
+                  </td>
+                  <td>{{ historico.valor | currency: "R$: " }}</td>
+                  <td>{{ historico.descricaoTransacao | titlecase }}</td>
+                  <td>
+                    <span *ngIf="historico.tipoConta == 0">Corrente</span>
+                    <span *ngIf="historico.tipoConta == 1">Poupança</span>
+                  </td>
+                  <td>{{ historico.nomeConta | titlecase }}</td>
+                  <td>{{ historico.digitosConta | mask: "00.0000-0" }}</td>
+                  <td>{{ historico.digitosAgencia | mask: "0000-0" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </tab>
+          <hr />
+          <div class="row">
+            <div class="col text-left">
+              <button class="btn btn-secondary" (click)="modalDetalhes.hide()">
+                Fechar
+              </button>
+            </div>
+          </div>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div
+  bsModal
+  #modalEdit="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Editar {{ conta.nomeConta | titlecase }}
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="modalEdit.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div style="margin-top: 10px">
             <div class="row">
-              <div class="col text-left">
-                <button
-                  class="btn btn-secondary"
-                  (click)="modalDetalhes.hide()"
-                >
-                  Fechar
-                </button>
+              <div class="col form-group">
+                <label for="agencia">Agencia</label>
+                <input
+                  type="text"
+                  placeholder="Agencia"
+                  mask="0000-0"
+                  formControlName="digitosAgencia"
+                  class="form-control text-center"
+                />
+              </div>
+              <div class="col form-group">
+                <label for="conta">Conta</label>
+                <input
+                  type="text"
+                  placeholder="Conta"
+                  mask="00-0000-0"
+                  formControlName="digitosConta"
+                  class="form-control text-center"
+                />
+              </div>
+
+              <div class="col form-group">
+                <label for="conta">Senha</label>
+                <input
+                  type="password"
+                  placeholder="Senha"
+                  formControlName="senha"
+                  class="form-control text-center"
+                />
               </div>
             </div>
-          </tabset>
+            <div class="row">
+              <div class="col form-group">
+                <label for="tipoConta">Tipo</label>
+                <select class="form-control" formControlName="tipoConta">
+                  <option value="0">Corrente</option>
+                  <option value="1">Poupanca</option>
+                </select>
+              </div>
+              <div class="col form-group">
+                <label for="nome">Nome</label>
+                <input
+                  type="text"
+                  placeholder="Nome"
+                  formControlName="nomeConta"
+                  class="form-control text-center"
+                />
+              </div>
+              <div class="col form-group">
+                <label for="saldo">Saldo</label>
+                <input
+                  type="number"
+                  placeholder="Saldo"
+                  formControlName="saldo"
+                  class="form-control text-center"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col form-group">
+                <label for="cpf">CPF</label>
+                <input
+                  type="text"
+                  placeholder="CPF"
+                  mask="000.000.000-00"
+                  formControlName="cpf"
+                  class="form-control text-center"
+                />
+              </div>
+              <div class="col form-group">
+                <label for="situacao">Situação</label>
+                <select class="form-control" formControlName="situacao">
+                  <option value="0">Ativada</option>
+                  <option value="1">Desativada</option>
+                  <option value="2">Bloqueada</option>
+                  <option value="3">Analise</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+        <hr />
+        <div class="row">
+          <div class="col text-left">
+            <button class="btn btn-secondary" (click)="modalEdit.hide()">
+              Fechar
+            </button>
+          </div>
+
+          <div class="col text-right">
+            <button
+              class="btn btn-primary"
+              (click)="salvarAlteracao(modalEdit)"
+            >
+              Salvar
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-   <!-- MODAL DETALHES -->
-   <div
-   bsModal
-   #modalEdit="bs-modal"
-   class="modal fade"
-   tabindex="-1"
-   role="dialog"
-   aria-labelledby="dialog-sizes-name1"
- >
-   <div class="modal-dialog modal-lg">
-     <div class="modal-content">
-       <div class="modal-header">
-         <h4 id="dialog-sizes-name1" class="modal-title pull-left">
-           Editar {{ conta.nomeConta | titlecase }}
-         </h4>
-         <button
-           type="button"
-           class="close pull-right"
-           (click)="modalEdit.hide()"
-           aria-label="Close"
-         >
-           <span aria-hidden="true">&times;</span>
-         </button>
-       </div>
-       <div class="modal-body">
-             <form [formGroup]="form">
-             <div style="margin-top: 10px;">
-               <div class="row">
-               <div class="col form-group">
-                 <label for="agencia">Agencia</label>
-                 <input type="text" placeholder="Agencia" mask="0000-0" formControlName="digitosAgencia" class="form-control text-center">
-               </div>
-               <div class="col form-group">
-                 <label for="conta">Conta</label>
-                 <input type="text" placeholder="Conta" mask="00-0000-0" formControlName="digitosConta" class="form-control text-center">
-               </div>
-             </div>
-             <div class="row">
-               <div class="col form-group">
-                 <label for="tipoConta">Tipo</label>
-                 <select class="form-control" formControlName="tipoConta">
-                   <option value="0">Corrente</option>
-                   <option value="1">Poupanca</option>
-                 </select>
-               </div>
-               <div class="col form-group">
-                 <label for="nome">Nome</label>
-                 <input type="text" placeholder="Nome" formControlName="nomeConta" class="form-control text-center">
-               </div>
-               <div class="col form-group">
-                 <label for="saldo">Saldo</label>
-                 <input type="number" placeholder="Saldo" formControlName="saldo" class="form-control text-center">
-               </div>
-             </div>
-             <div class="row">
-               <div class="col form-group">
-                 <label for="cpf">CPF</label>
-                 <input type="text" placeholder="CPF" mask="000.000.000-00" formControlName="cpf" class="form-control text-center">
-               </div>
-               <div class="col form-group">
-                 <label for="situacao">Situação</label>
-                 <select class="form-control" formControlName="situacao">
-                   <option value="0">Ativada</option>
-                   <option value="1">Desativada</option>
-                   <option value="2">Bloqueada</option>
-                   <option value="3">Analise</option>
-                 </select>
-               </div>
-           </div>
-             </div>
-           </form>
-           <hr />
-           <div class="row">
-            <div class="col text-left">
-               <button
-                 class="btn btn-secondary"
-                 (click)="modalEdit.hide()"
-               >
-                 Fechar
-               </button>
-             </div>
-
-            <div class="col text-right">
-              <button class="btn btn-primary" (click)="salvarAlteracao(modalEdit)">Salvar</button>
-            </div> 
-           </div>
-       </div>
-     </div>
-   </div>
- </div>
-
-
-
+</div>

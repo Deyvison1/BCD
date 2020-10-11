@@ -12,7 +12,7 @@ namespace BCD.Domain.Entities
         public string NomeConta { get; set; }
         public float Saldo { get; set; }
         public string CPF { get; private set; }
-        public string Senha { get; private set; }
+        public string Senha { get; set; }
         // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
         public EnumEstado Situacao { get; private set; }
         public int PessoaId { get; private set; }

@@ -62,9 +62,17 @@ export class ContasComponent implements OnInit {
   confirmDelete(template: any) {}
 
   salvarAlteracao(template: any) {
+    this.loading = true;
     this.conta = Object.assign({}, this.form.value);
 
-    console.log(this.conta);
+    this.contaService.put(this.conta).subscribe(
+      (conta: Conta) => {
+        this.conta = conta;
+        this.toastr.success('Sucesso no Editar');
+        template.hide();
+        this.loading = false;
+      }, error => { console.log(error.error); this.loading = false; }
+    );
   }
 
   getAll() {
@@ -87,6 +95,7 @@ export class ContasComponent implements OnInit {
       nomeConta: [""],
       saldo: [""],
       pessoaId: [""],
+      senha: [""],
       cpf: [""],
       situacao: [""],
     });
