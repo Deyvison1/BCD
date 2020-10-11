@@ -370,7 +370,7 @@
 </div>
 
 
-
+<!-- MODAL LOADING -->
 <div class="my-container">
   <ng-template #customLoadingTemplate>
       <div class="">
@@ -384,12 +384,13 @@
 </div>
 
 
+<!-- MODAL DELETE -->
 <div class="modal fade" bsModal #modalDelete="bs-modal" [config]="{backdrop: 'static'}"
      tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-static-name" class="modal-title pull-left">Deletar Usuario</h4>
+        <h4 id="dialog-static-name" class="modal-title pull-left">Deletar {{ pessoa.nome | titlecase}}</h4>
         <button type="button" class="close pull-right" aria-label="Close" (click)="modalDelete.hide()">
           <span aria-hidden="true">&times;</span>
         </button>

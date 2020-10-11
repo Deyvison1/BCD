@@ -7,7 +7,6 @@ import { Pessoa } from "src/app/Models/Pessoa";
 import { EnderecoService } from "src/app/Services/EnderecoServices/endereco.service";
 import { PessoaService } from "src/app/Services/PessoaServices/pessoa.service";
 
-
 @Component({
   selector: "app-pessoas",
   templateUrl: "./pessoas.component.html",
@@ -20,7 +19,6 @@ export class PessoasComponent implements OnInit {
   pageAtual = 1;
   cep: number;
   _filtroLista = "";
-
 
   // FORMS
   form: FormGroup;
@@ -87,17 +85,20 @@ export class PessoasComponent implements OnInit {
     this.enderecoService.getById(pessoa.enderecoId).subscribe(
       (endereco: Endereco) => {
         this.endereco = endereco;
-      }, error => { console.log(error.error); }
+      },
+      (error) => {
+        console.log(error.error);
+      }
     );
     this.pessoa = pessoa;
   }
 
-  
   // DELETAR
   deletar(template: any, pessoa: Pessoa) {
     this.abrirModal(template);
 
     this.pessoa = Object.assign({ id: pessoa.id }, pessoa);
+    this.toastr.warning(`Modo Deletar Para ${pessoa.nome}`);
   }
 
   confirmDelete(template: any) {
@@ -106,7 +107,11 @@ export class PessoasComponent implements OnInit {
         this.toastr.success(`Sucesso ao Deletar ${pessoa.nome}`);
         this.getAll();
         template.hide();
-      }, error => { console.log(error.error); template.hide(); }
+      },
+      (error) => {
+        console.log(error.error);
+        template.hide();
+      }
     );
   }
 
@@ -156,7 +161,6 @@ export class PessoasComponent implements OnInit {
     );
   }
 
-
   // Novo Endereco ----------------------------------------------------------------------------------------
   abrirModalNewEndereco(template: any) {
     this.abrirModal(template);
@@ -173,19 +177,17 @@ export class PessoasComponent implements OnInit {
 
         this.enderecoService.getEnderecoByCep(this.endereco.cep).subscribe(
           (endereco: Endereco) => {
-
-            if(endereco.cep == null) {
-              this.toastr.error('Cep Invalido');
+            if (endereco.cep == null) {
+              this.toastr.error("Cep Invalido");
               this.loading = false;
-              return ;
+              return;
             }
             this.endereco = Object.assign({ id: this.endereco.id }, endereco);
 
             this.enderecoService.update(this.endereco).subscribe(
               (endereco: Endereco) => {
                 this.endereco = endereco;
-    
-    
+
                 this.toastr.success("Edição com Sucesso!");
                 this.getAll();
                 template.hide();
@@ -204,7 +206,7 @@ export class PessoasComponent implements OnInit {
         );
       },
       (error) => {
-        this.toastr.error('Cep Invalido!');
+        this.toastr.error("Cep Invalido!");
         this.loading = false;
       }
     );
