@@ -166,9 +166,12 @@ namespace BCD.WebApi.Services.ContaServices
             var conta = await _repo.GetByIdAsync(id);
             if (conta == null) throw new NotFoundException("Nenhuma conta encontrada com esse id");
 
+            var pessoa = await _pessoaService.GetById(conta.PessoaId);
+
             _repo.Delete(conta);
             if (await _repo.SaveAsync())
             {
+                await _enderecoService.Delete(pessoa.EnderecoId);
                 return _map.Map<ContaDto>(conta);
             }
             throw new ArgumentException("Erro ao persistir dados");
@@ -232,13 +235,13 @@ namespace BCD.WebApi.Services.ContaServices
             return contaDto;
         }
         // LISTAR PESQUISA, AGENCIA E CONTA
-        public async Task<ContaDto> GetBySearch(string search)
+        public async Task<ContaDto[]> GetBySearch(string search)
         {
             var conta = await _repo.GetBySearchAsync(search);
 
-            var contaDto = _map.Map<ContaDto>(conta);
+            var contaDto = _map.Map<ContaDto[]>(conta);
 
-            return contaDto;
+            return contaDto.ToArray();
         }
         // VERIFICAR SE EXISTE CONTA COM O CPF INFORMADO
         public async Task<bool> ExistContaFindByCPF(HelperContaDto helperContaDto)

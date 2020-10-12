@@ -375,6 +375,7 @@ export class ContaComponent implements OnInit {
         });
       }, error => {
         console.log(error);
+        this.loading = false;
       }
     );
   }

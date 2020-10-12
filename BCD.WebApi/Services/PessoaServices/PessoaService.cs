@@ -60,9 +60,11 @@ namespace BCD.WebApi.Services.PessoaServices
         {
             var pessoa = await _repo.GetByIdAsync(id);
             if(pessoa == null) throw new NotFoundException("Nenhuma pessoa encontrada com esse id");
-
+            
             _repo.Delete(pessoa);
-            if(await _repo.SaveAsync()) {
+            if(await _repo.SaveAsync()) {          
+                await _enderecoService.Delete(pessoa.EnderecoId);
+                
                 return _map.Map<PessoaDto>(pessoa);
             }
             throw new ArgumentException("Erro ao persistir dados!");

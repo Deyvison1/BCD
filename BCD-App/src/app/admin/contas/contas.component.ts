@@ -22,6 +22,20 @@ export class ContasComponent implements OnInit {
   endereco: Endereco = new Endereco();
   // LIST
   contas: Conta[] = [];
+  contasFiltradas: Conta[] = [];
+
+  _filtroLista = '';
+
+  get filtroLista(): string {
+    return this._filtroLista;
+  }
+
+  set filtroLista(value: string) {
+    this._filtroLista = value;
+    this.contasFiltradas = this._filtroLista
+      ? this.filtrarLista(this.filtroLista)
+      : this.contas;
+  }
 
   constructor(private contaService: ContaService, private fb: FormBuilder,
       private toastr: ToastrService
@@ -31,6 +45,24 @@ export class ContasComponent implements OnInit {
     this.getAll();
     this.validation();
   }
+
+  filtrarLista(search: string): Conta[] {
+    this.loading = true;
+    this.contaService.getBySearch(search).subscribe(
+      (contasFiltradas: Conta[]) => {
+        this.contasFiltradas = contasFiltradas;
+        this.loading = false;
+        return this.contas;
+      },
+      (error) => {
+        this.loading = false;
+        console.log(error.error);
+      }
+    );
+    this.loading = false;
+    return [];
+  }
+
   abrirModal(template: any) {
     template.show();
   }
@@ -45,6 +77,7 @@ export class ContasComponent implements OnInit {
 
   detalhes(template: any, conta: Conta) {
     this.abrirModal(template);
+    this.toastr.info(`Modo Detalhes Para ${conta.nomeConta}`);
 
     this.contaService.getById(conta.id).subscribe(
       (conta: Conta) => {
@@ -52,14 +85,30 @@ export class ContasComponent implements OnInit {
         this.form.patchValue(this.conta);
       },
       (error) => {
-        console.log(error.error);
+        this.toastr.error(error.error);
       }
     );
   }
 
-  delete() {}
+  deletar(template: any, conta: Conta) {
+    this.abrirModal(template);
 
-  confirmDelete(template: any) {}
+    this.conta = Object.assign({  }, conta);
+    this.toastr.warning(`Modo Deletar Para ${conta.nomeConta}`);
+  }
+
+  confirmDelete(template: any) {
+    this.contaService.delete(this.conta.id).subscribe(
+      (conta: Conta) => {
+        this.conta = conta;
+        this.toastr.success(`Sucesso ao Deletar ${this.conta.nomeConta}`);
+        this.getAll();
+        template.hide();
+      }, error => {
+        console.log(error.error);
+      }
+    );
+  }
 
   salvarAlteracao(template: any) {
     this.loading = true;
@@ -69,6 +118,7 @@ export class ContasComponent implements OnInit {
       (conta: Conta) => {
         this.conta = conta;
         this.toastr.success('Sucesso no Editar');
+        this.getAll();
         template.hide();
         this.loading = false;
       }, error => { console.log(error.error); this.loading = false; }
@@ -79,6 +129,8 @@ export class ContasComponent implements OnInit {
     return this.contaService.getAll().subscribe(
       (contas: Conta[]) => {
         this.contas = contas;
+
+        this.contasFiltradas = this.contas;
       },
       (err) => {
         console.log(err.error);

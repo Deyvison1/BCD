@@ -47,6 +47,13 @@ export class ContaSComponent implements OnInit {
 
     this.enderecoService.getEnderecoByCep(this.solicitarConta.cep).subscribe(
       (endereco: Endereco) => {
+        // SE O CEP OU BAIRRO OU UF ESTIVEREM NULL E PQ O CEP E INVALIDO
+        if(endereco.bairro == null || endereco.cep == null || endereco.uf == null) {
+          this.form.reset();
+          this.toastr.error('Cep Invalido');
+          return;
+        }
+
         this.solicitarConta.endereco = endereco;
         console.log(this.solicitarConta);
         this.contaService.addSolicitacao(this.solicitarConta).subscribe(

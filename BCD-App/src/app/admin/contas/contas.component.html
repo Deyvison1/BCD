@@ -1,11 +1,8 @@
 <div class="">
-  <div class="container">
+  <div class="container border shadow p-3 mb-5 bg-white rounded">
     <div class="row">
-      <div class="col-10">
-        <input type="search" placeholder="Pesquisar" class="form-control" />
-      </div>
-      <div class="col-2 text-center">
-        <input type="submit" class="btn btn-info btn-block" value="Pesquisar" />
+      <div class="col-4">
+        <input type="search" [(ngModel)]="filtroLista" placeholder="Pesquisar" class="form-control" />
       </div>
     </div>
     <br />
@@ -23,7 +20,7 @@
         <tbody>
           <tr
             *ngFor="
-              let conta of contas
+              let conta of contasFiltradas
                 | paginate
                   : { id: 'contas', itemsPerPage: 6, currentPage: pageAtual }
             "
@@ -49,7 +46,7 @@
                 >
                   Editar
                 </button>
-                <button class="btn btn-danger btn-sm">Excluir</button>
+                <button class="btn btn-danger btn-sm" (click)="deletar(modalDelete, conta)">Excluir</button>
               </div>
             </td>
           </tr>
@@ -207,8 +204,6 @@
                   <th>Descrição</th>
                   <th>Tipo</th>
                   <th>Nome</th>
-                  <th>Conta</th>
-                  <th>Agencia</th>
                 </tr>
               </thead>
               <tbody>
@@ -223,8 +218,6 @@
                     <span *ngIf="historico.tipoConta == 1">Poupança</span>
                   </td>
                   <td>{{ historico.nomeConta | titlecase }}</td>
-                  <td>{{ historico.digitosConta | mask: "00.0000-0" }}</td>
-                  <td>{{ historico.digitosAgencia | mask: "0000-0" }}</td>
                 </tr>
               </tbody>
             </table>
@@ -371,5 +364,32 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- MODAL DELETE -->
+<div class="modal fade" bsModal #modalDelete="bs-modal" [config]="{backdrop: 'static'}"
+     tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-static-name" class="modal-title pull-left">Deletar {{ conta.nomeConta | titlecase}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalDelete.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4>Nome</h4><h5>{{ conta.nomeConta | titlecase }}</h5><p></p>
+        <h4>CPF</h4><h5>{{ conta.cpf | mask: '000.000.000-00' }}</h5>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="modalDelete.hide()">
+          Não
+        </button>
+        <button class="btn btn-success ml-auto" (click)="confirmDelete(modalDelete)">
+          Sim
+        </button>
+      </div>
   </div>
 </div>

@@ -53,10 +53,13 @@ namespace BCD.Repository.EntitiesRepository.ContaRepository
         // OBTER PELO ID
         public async Task<Conta> GetByIdAsync(int id)
         {
-            var getById = _context.Contas.AsNoTracking().FirstOrDefaultAsync(
-                x => x.Id.Equals(id)
+            IQueryable<Conta> query = _context.Contas.
+            Include(contas => contas.Extrato).ThenInclude(historico => historico.Historico);
+
+            query = query.AsNoTracking().OrderByDescending(conta => conta.Id).Where(
+                conta => conta.Id.Equals(id)
             );
-            return await getById;
+            return await query.FirstOrDefaultAsync();
         }
         // OBTER PELA PESQUISA POR NOME
         public async Task<Conta[]> GetBySearchAsync(string nome)
