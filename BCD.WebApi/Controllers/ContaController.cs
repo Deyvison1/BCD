@@ -172,6 +172,18 @@ namespace BCD.WebApi.Controllers
             }
         }
         // ADICIONAR
+        [HttpPost("poupanca")]
+        public async Task<IActionResult> AddPoupanca(ContaDto contaDto) {
+            try {
+                var contaAdd = await _service.AddPoupanca(contaDto);
+
+                return Created($"/api/conta/{contaAdd.Id}", contaAdd);
+            }catch(ArgumentException e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
+        }
+        // ADICIONAR
+        [HttpPost]
         public async Task<IActionResult> Add(ContaDto contaDto) {
             try {
                 var contaAdd = await _service.Add(contaDto);

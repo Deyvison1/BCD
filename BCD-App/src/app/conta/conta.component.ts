@@ -109,6 +109,7 @@ export class ContaComponent implements OnInit {
 
   abrirModalResgatarValor(template: any) {
     this.abrirModal(template);
+    this.formDeposito.reset();
   }
 
   abrirModalExtrato(template: any) {
@@ -157,6 +158,7 @@ export class ContaComponent implements OnInit {
 
   abrirModalDeposito(template: any) {
     this.abrirModal(template);
+    this.formDeposito.reset();
   }
 
   abrirModalDetalhes(template: any) {
@@ -180,6 +182,7 @@ export class ContaComponent implements OnInit {
 
 
   abrirModalTransferencia(template: any) {
+    this.formDeposito.reset();
     this.abrirModal(template);
 
     this.contaService.getAllContasCadastradas(1).subscribe(
@@ -190,6 +193,30 @@ export class ContaComponent implements OnInit {
       }, error => {
         console.log(error.error);
       }
+    );
+  }
+
+  addPoupanca(template: any) {
+    this.contaService.getById(1).subscribe(
+      (conta: Conta) => {
+        this.conta = Object.assign({}, conta);
+        
+        this.conta.tipoConta = 1;
+        this.conta.id = 0;
+        this.conta.saldo = 0;
+        this.conta.extrato = [];
+        template.show();
+      }, error => { console.log(error.error); }
+    );
+  }
+  gerarPoupanca(template: any) {
+    this.contaService.postPoupanca(this.conta).subscribe(
+      (contaPoupanca: Conta) => {
+        this.conta = contaPoupanca;
+        this.toastr.success('Sucesso ao Adicionar Poupança');
+        this.getAllByIdPessoa();
+        template.hide();
+      }, error => { console.log(error.error); }
     );
   }
 
@@ -383,7 +410,7 @@ export class ContaComponent implements OnInit {
   validationFormNewTransferencia() {
     this.formNewTransferencia = this.fb.group(
       {
-        contaDestino: ['', [Validators.required, Validators.max(99999999), Validators.min(10000000) ] ],
+        contaDestino: ['', [Validators.required, Validators.max(9999999), Validators.min(1000000) ] ],
         agenciaDestino: ['', [Validators.required, Validators.max(99999), Validators.min(10000)] ],
         cpf: ['', Validators.required ],
         nomeConta: [''],

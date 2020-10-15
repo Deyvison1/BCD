@@ -12,7 +12,6 @@
           <tr>
             <th>Nome</th>
             <th>CPF</th>
-            <th>Situação</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -26,12 +25,6 @@
           >
             <td>{{ pessoa.nome | titlecase }}</td>
             <td>{{ pessoa.cpf | mask: "000.000.000-00" }}</td>
-            <td>
-              <span *ngIf="pessoa.situacao == 0">Ativada</span>
-              <span *ngIf="pessoa.situacao == 1">Desativada</span>
-              <span *ngIf="pessoa.situacao == 2">Bloqueada</span>
-              <span *ngIf="pessoa.situacao == 3">Analise</span>
-            </td>
             <td>
               <div class="btn-group">
                 <button
@@ -90,7 +83,7 @@
             <tab heading="Pessoa">
               <div class="" style="margin-top: 10px">
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div class="form-group col">
                     <label class="h6">Nome</label>
                     <input
                       type="text"
@@ -99,7 +92,7 @@
                       placeholder="Nome"
                     />
                   </div>
-                  <div class="form-group col-4">
+                  <div class="form-group col">
                     <label class="h6">CPF</label>
                     <input
                       mask="000.000.000-00"
@@ -108,15 +101,6 @@
                       formControlName="cpf"
                       placeholder="CPF"
                     />
-                  </div>
-                  <div class="form-group col-4">
-                    <label class="h6">Situação</label>
-                    <select class="form-control" formControlName="situacao">
-                      <option value="0">Ativada</option>
-                      <option value="1">Desativada</option>
-                      <option value="2">Bloqueada</option>
-                      <option value="3">Analise</option>
-                    </select>
                   </div>
                 </div>
               </div>
@@ -279,27 +263,12 @@
                   <tr>
                     <th>Nome</th>
                     <th>CPF</th>
-                    <th>Situação</th>
                   </tr>
                 </thead>
                 <tbody >
                   <tr>
                     <td>{{ pessoa.nome | titlecase }}</td>
                     <td>{{ pessoa.cpf | mask: '000.000.000-00' }}</td>
-                    <td>
-                      <button *ngIf="pessoa.situacao == 0" class="btn btn-success">
-                        <i class="fas fa-calendar-check"></i> &nbsp; Ativada
-                      </button>
-                      <button *ngIf="pessoa.situacao == 1" class="btn btn-warning">
-                        <i class="fas fa-exclamation-circle"></i> &nbsp; Desativada
-                      </button>
-                      <button *ngIf="pessoa.situacao == 2" class="btn btn-danger">
-                        <i class="fas fa-calendar-times"></i> &nbsp; Bloqueada
-                      </button>
-                      <button *ngIf="pessoa.situacao == 3" class="btn btn-primary">
-                        <i class="fas fa-clock"></i> &nbsp; Analise
-                      </button>
-                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -347,10 +316,18 @@
                     <td>{{ conta.nomeConta | titlecase }}</td>
                     <td>{{ conta.saldo | currency: "R$: " }}</td>
                     <td>
-                      <button class="btn btn-success btn-sm" *ngIf="conta.situacao == 0">Ativada</button>
-                      <button class="btn btn-secondary btn-sm" *ngIf="conta.situacao == 1">Desativada</button>
-                      <button class="btn btn-warning btn-sm" *ngIf="conta.situacao == 2">Bloqueada</button>
-                      <button class="btn btn-info btn-sm" *ngIf="conta.situacao == 3">Analise</button>
+                      <button *ngIf="conta.situacao == 0" class="btn btn-sm btn-success">
+                        <i class="fas fa-calendar-check"></i> &nbsp; Ativada
+                      </button>
+                      <button *ngIf="conta.situacao == 1" class="btn btn-sm btn-warning">
+                        <i class="fas fa-exclamation-circle"></i> &nbsp; Desativada
+                      </button>
+                      <button *ngIf="conta.situacao == 2" class="btn btn-sm btn-danger">
+                        <i class="fas fa-calendar-times"></i> &nbsp; Bloqueada
+                      </button>
+                      <button *ngIf="conta.situacao == 3" class="btn btn-sm btn-primary">
+                        <i class="fas fa-clock"></i> &nbsp; Analise
+                      </button>
                     </td>
                   </tr>
                 </tbody>

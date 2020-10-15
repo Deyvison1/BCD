@@ -55,6 +55,10 @@
     </div>
     <div class="col border shadow p-3 mb-5 bg-white rounded">
       <h3 style="font-family: Verdana; margin-top: 10px;" class="text-center">
+        <button (click)="addPoupanca(modalAddPoupanca)" *ngIf="contas.length == 1" tooltip="Adicionar Poupanca" class="text-left btn-sm btn btn-primary" >
+          <i class="fa fa-plus-circle"></i>
+        </button>
+        &nbsp;
         Conta Poupanca
       </h3>
       <hr />
@@ -342,7 +346,7 @@
                       style="margin-top: 10px;"
                       formControlName="quantia"
                       required
-                      type="text"
+                      type="number"
                       [ngClass]="{
                         'is-invalid':
                           formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
@@ -435,6 +439,7 @@
                   type="text"
                   class="form-control text-center"
                   placeholder="Agencia"
+                  mask="0000-0"
                   [ngClass]="{
                     'is-invalid':
                       formNewTransferencia.get('agenciaDestino').errors && formNewTransferencia.get('agenciaDestino').touched
@@ -460,6 +465,7 @@
                   maxlength="8"
                   formControlName="contaDestino"
                   type="text"
+                  mask="00.0000-0"
                   class="form-control text-center"
                   placeholder="Conta"
                   [ngClass]="{
@@ -521,7 +527,7 @@
               <div style="margin-top: 05px;">
                 <input
                   formControlName="quantia"
-                  type="text"
+                  type="number"
                   class="form-control text-center"
                   placeholder="Valor"
                   [ngClass]="{
@@ -583,7 +589,6 @@
                 [disabled]="!formNewTransferencia.valid"
                 style="margin-top: 10px;"
                 type="submit"
-                tooltip="Cadastrar"
                 class="btn btn-info btn-block"
                 value="Transferir"
                 (click)="newTransferencia(modalTransferencia)"
@@ -616,7 +621,7 @@
             <div class="form-group">
               <div>
                 <input
-                    type="text"
+                    type="number"
                     [ngClass]="{
                       'is-invalid':
                         formDeposito.get('quantia').errors && formDeposito.get('quantia').touched
@@ -833,6 +838,40 @@
   </div>
 </div>
 
+
+
+<!-- MODAL DELETE -->
+<div class="modal fade" bsModal #modalAddPoupanca="bs-modal" [config]="{backdrop: 'static'}"
+     tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-static-name" class="modal-title pull-left">Gerar Poupança</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalAddPoupanca.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <p class="h4">Gerar Poupança?</p> <br>
+        </div>
+        <div>
+          <p class="h5"><strong>Nome:</strong> {{conta.nomeConta | titlecase}}</p>
+          <p class="h5"><strong>CPF:</strong> {{conta.cpf | mask: '000.000.000-00'}}</p>
+          <br>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="modalAddPoupanca.hide()">
+          Não
+        </button>
+        <button class="btn btn-success ml-auto" (click)="gerarPoupanca(modalAddPoupanca)">
+          Sim
+        </button>
+      </div>
+  </div>
+</div>
+
 <div class="my-container">
   <ng-template #customLoadingTemplate>
       <div class="">
@@ -844,4 +883,5 @@
 
   <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
 </div>
+
 

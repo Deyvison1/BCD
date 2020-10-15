@@ -59,7 +59,6 @@ namespace BCD.Repository.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Nome = table.Column<string>(nullable: true),
                     CPF = table.Column<string>(nullable: true),
-                    Situacao = table.Column<int>(nullable: false),
                     EnderecoId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

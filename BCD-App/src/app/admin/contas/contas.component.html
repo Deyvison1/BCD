@@ -202,7 +202,6 @@
                   <th>Data</th>
                   <th>Valor</th>
                   <th>Descrição</th>
-                  <th>Tipo</th>
                   <th>Nome</th>
                 </tr>
               </thead>
@@ -213,10 +212,6 @@
                   </td>
                   <td>{{ historico.valor | currency: "R$: " }}</td>
                   <td>{{ historico.descricaoTransacao | titlecase }}</td>
-                  <td>
-                    <span *ngIf="historico.tipoConta == 0">Corrente</span>
-                    <span *ngIf="historico.tipoConta == 1">Poupança</span>
-                  </td>
                   <td>{{ historico.nomeConta | titlecase }}</td>
                 </tr>
               </tbody>

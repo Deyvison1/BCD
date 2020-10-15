@@ -73,6 +73,10 @@ export class ContaService {
     return this.http.put(`${this.baseUrl}transferencia`, helperConta);
   }
 
+  // POST POUPANCA
+  postPoupanca(conta: Conta) {
+    return this.http.post(`${this.baseUrl}poupanca`, conta);
+  }
   // POST
   post(conta: Conta) {
     return this.http.post(this.baseUrl, conta);

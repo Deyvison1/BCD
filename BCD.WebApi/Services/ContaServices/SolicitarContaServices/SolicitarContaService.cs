@@ -53,7 +53,6 @@ namespace BCD.WebApi.Services.ContaServices.SolicitarContaServices
             PessoaDto pessoaDto = new PessoaDto
             {
                 Nome = solicitarContaDto.NomeConta,
-                Situacao = 3,
                 CPF = solicitarContaDto.CPF,
                 EnderecoId = enderecoAdicionado.Id
             };

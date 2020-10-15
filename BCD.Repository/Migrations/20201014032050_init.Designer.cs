@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BCD.Repository.Migrations
 {
     [DbContext(typeof(BCDContext))]
-    [Migration("20201008152946_init")]
+    [Migration("20201014032050_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -151,8 +151,6 @@ namespace BCD.Repository.Migrations
                     b.Property<int>("EnderecoId");
 
                     b.Property<string>("Nome");
-
-                    b.Property<int>("Situacao");
 
                     b.HasKey("Id");
 

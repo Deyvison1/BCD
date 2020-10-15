@@ -106,9 +106,27 @@ namespace BCD.WebApi.Services.ContaServices
 
             return contaDto;
         }
+        public async Task<ContaDto> AddPoupanca(ContaDto contaDto) 
+        {
+            bool existeContaPoupanca = await _repo.ExisteContaPoupanca(contaDto.PessoaId);
+
+            if(existeContaPoupanca) 
+            {
+                throw new ArgumentException("Ja existe uma conta poupanca para essa pessoa!");
+            }
+            var conta = _map.Map<Conta>(contaDto);
+
+            _repo.Add(conta);
+
+            if(await _repo.SaveAsync())
+            {
+                return _map.Map<ContaDto>(conta);
+            }
+            throw new ArgumentException("Erro ao persistir dados");
+        }
         // 0 -> Ativada, 1 -> Desativada, 2 -> Bloqueada, 3 -> Analise
 
-        // ADICIONAR CONTA ADMIN
+        // ADICIONAR CONTA
         public async Task<ContaDto> Add(ContaDto contaDto)
         {
             var helperConta = await GerarContaAndAgencia(contaDto.PessoaId);
@@ -148,7 +166,7 @@ namespace BCD.WebApi.Services.ContaServices
         public async Task<ContaDto> Update(ContaDto contaDto)
         {
             var conta = await _repo.GetByIdAsync(contaDto.Id);
-            contaDto.Senha = MD5(contaDto.Senha);
+            //contaDto.Senha = MD5(contaDto.Senha);
             if (conta == null) throw new NotFoundException("Nenhuma conta encontrada com esse id");
             
             _map.Map(contaDto, conta);
