@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using BCD.Domain.Entities.Identity;
 using BCD.Repository.Data;
 using BCD.Repository.EntitiesRepository.ContaCadastradaRepository;
 using BCD.Repository.EntitiesRepository.ContaRepository;
@@ -16,15 +18,21 @@ using BCD.WebApi.Services.ContaServices.SolicitarContaServices;
 using BCD.WebApi.Services.EnderecoServices;
 using BCD.WebApi.Services.HistoricoServices;
 using BCD.WebApi.Services.PessoaServices;
+using BCD.WebApi.Services.UsuarioServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BCD.WebApi
 {
@@ -45,6 +53,7 @@ namespace BCD.WebApi
             services.AddScoped<HistoricoService>();
             services.AddScoped<SolicitarContaService>();
             services.AddScoped<EnderecoService>();
+            services.AddScoped<UsuarioService>();
             services.AddScoped<ContaCadastradaService>();
             services.AddScoped<IHistoricosContasRepository, HistoricosContasRepository>();
             services.AddScoped<IPessoaRepository, PessoaRepository>();
@@ -54,9 +63,47 @@ namespace BCD.WebApi
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 
             services.AddDbContext<BCDContext>(x => x.UseSqlite(Configuration.GetConnectionString("Connection")));
-            services.AddMvc().AddJsonOptions(
+            
+            IdentityBuilder builder = services.AddIdentityCore<Usuario>(options => 
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 4;
+            });
+
+            builder = new IdentityBuilder(builder.UserType, typeof(Papel), builder.Services);
+
+            builder.AddEntityFrameworkStores<BCDContext>();
+            builder.AddRoleValidator<RoleValidator<Papel>>();
+            builder.AddRoleManager<RoleManager<Papel>>();
+            builder.AddSignInManager<SignInManager<Usuario>>();
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => 
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes
+                        (Configuration.GetSection("AppSettings:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    }; 
+                });
+
+            services.AddMvc(
+                opt => {
+                    var politicy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+                    opt.Filters.Add(new AuthorizeFilter(politicy));   
+                }
+            ).AddJsonOptions(
                 x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             ).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
             services.AddAutoMapper();
             services.AddCors();
         }

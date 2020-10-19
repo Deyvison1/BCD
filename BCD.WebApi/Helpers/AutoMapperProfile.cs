@@ -2,6 +2,7 @@ using System.Linq;
 using AutoMapper;
 using BCD.Domain.Entities;
 using BCD.Domain.Entities.Enums;
+using BCD.Domain.Entities.Identity;
 using BCD.WebApi.Dtos;
 using BCD.WebApi.Dtos.EnumsDto;
 
@@ -26,6 +27,8 @@ namespace BCD.WebApi.Helpers
             CreateMap<EnumUF, EnumUFDto>().ReverseMap();
             CreateMap<EnumTipoContaDto, EnumTipoContaDto>().ReverseMap();
             CreateMap<ContaCadastrada, ContaCadastradaDto>().ReverseMap();
+            CreateMap<Usuario, UsuarioDto>().ReverseMap();
+            CreateMap<Usuario, UsuarioLoginDto>().ReverseMap();
         }
     }
 }
