@@ -121,6 +121,7 @@ namespace BCD.WebApi
                 app.UseHsts();
             }
             
+            app.UseAuthentication();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());            
             //app.UseHttpsRedirection();
             app.UseMvc();

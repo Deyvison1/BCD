@@ -24,9 +24,18 @@ namespace BCD.WebApi.Controllers
         }
         // LISTAR TODOS USUARIOS
         [HttpGet("GetUser")]
-        public IActionResult GetUser(UsuarioDto userDto)
+        public async Task<IActionResult> GetUser(UsuarioDto userDto)
         {
-            return Ok(userDto);
+            try 
+            {
+                var usuarios = await _service.GetUser(userDto);
+
+                return Ok(usuarios);
+            }
+            catch(ArgumentException e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
+            }
         }
         // REGISTRAR USUARIO
         [HttpPost("Registrar")]
@@ -55,8 +64,9 @@ namespace BCD.WebApi.Controllers
 
                 return Ok(new {
                     token = _service.GerarToken(usuarioLogado).Result,
-                    usuario = usuarioLogado
-                });
+                    usuario = usuarioLoginDto
+                }
+                );
             }
             catch(UnauthorizedAccessException e) 
             {

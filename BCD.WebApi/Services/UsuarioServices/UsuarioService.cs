@@ -29,9 +29,12 @@ namespace BCD.WebApi.Services.UsuarioServices
             _config = config;
         }
         // LISTAR TODOS USUARIOS
-        public UsuarioDto GetUser(UsuarioDto userDto)
+        public async Task<UsuarioDto[]> GetUser(UsuarioDto userDto)
         {
-            return userDto;
+            var usuarios = await _userManager.Users.ToArrayAsync();
+
+            var usuariosDto = _map.Map<UsuarioDto[]>(usuarios);
+            return usuariosDto;
         }
         // REGISTRAR USUARIO
         public async Task<UsuarioDto> Registrar(UsuarioDto usuarioDto)
@@ -57,11 +60,11 @@ namespace BCD.WebApi.Services.UsuarioServices
 
             if(usuarioLogado.Succeeded) 
             {
-                var appUser = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == usuarioLoginDto.Email.ToUpper());
+                var appUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == usuarioLoginDto.Email);
 
                 var userLoginDto = _map.Map<Usuario>(appUser);
 
-                return userLoginDto; 
+                return userLoginDto;
             }
             throw new UnauthorizedAccessException("Email ou Senha Incorretos!");
         }
