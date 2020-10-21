@@ -5,6 +5,7 @@ namespace BCD.Domain.Entities.Identity
 {
     public class Papel : IdentityRole<int>
     {
-        public List<UsuariosPapeis> Usuarios { get; set; }
+        public string Setor { get; set; }
+        public List<UsuariosPapeis> Usuarios { get; private set; }
     }
 }

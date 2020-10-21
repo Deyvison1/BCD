@@ -153,6 +153,8 @@ namespace BCD.Repository.Migrations
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256);
 
+                    b.Property<string>("Setor");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
@@ -192,6 +194,8 @@ namespace BCD.Repository.Migrations
 
                     b.Property<string>("PasswordHash");
 
+                    b.Property<int>("PessoaId");
+
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
@@ -211,6 +215,8 @@ namespace BCD.Repository.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
+
+                    b.HasIndex("PessoaId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -345,6 +351,14 @@ namespace BCD.Repository.Migrations
                     b.HasOne("BCD.Domain.Entities.Historico", "Historico")
                         .WithMany("Contas")
                         .HasForeignKey("HistoricoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BCD.Domain.Entities.Identity.Usuario", b =>
+                {
+                    b.HasOne("BCD.Domain.Entities.Pessoa", "Pessoa")
+                        .WithMany()
+                        .HasForeignKey("PessoaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

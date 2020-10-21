@@ -29,6 +29,8 @@ namespace BCD.WebApi.Helpers
             CreateMap<ContaCadastrada, ContaCadastradaDto>().ReverseMap();
             CreateMap<Usuario, UsuarioDto>().ReverseMap();
             CreateMap<Usuario, UsuarioLoginDto>().ReverseMap();
+            CreateMap<Papel , PapelDto>().ReverseMap();
+            CreateMap<UsuariosPapeis, UserRolesDto>().ReverseMap();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace BCD.Repository.EntitiesRepository.PessoaRepository
     public class PessoaRepository : IPessoaRepository
     {
         private readonly BCDContext _context;
-
+        
         public PessoaRepository(BCDContext context)
         {
             _context = context;

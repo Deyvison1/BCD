@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCD.Domain.Entities.Identity;
 using BCD.WebApi.Dtos;
+using BCD.WebApi.Services.Exception;
+using BCD.WebApi.Services.GenericServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,10 +22,16 @@ namespace BCD.WebApi.Services.UsuarioServices
         private readonly SignInManager<Usuario> _signInManager;
         private readonly IMapper _map;
         public readonly UserManager<Usuario> _userManager;
+        private readonly RoleManager<Papel> _roleManager;
+        private readonly GenericService _genericService;
+
         public UsuarioService(IConfiguration config, UserManager<Usuario> userManager,
-            SignInManager<Usuario> signInManager, IMapper mapper)
+            SignInManager<Usuario> signInManager, IMapper mapper, RoleManager<Papel> roleManager,
+            GenericService genericService)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
+            _genericService = genericService;
             _signInManager = signInManager;
             _map = mapper;
             _config = config;
@@ -39,17 +47,49 @@ namespace BCD.WebApi.Services.UsuarioServices
         // REGISTRAR USUARIO
         public async Task<UsuarioDto> Registrar(UsuarioDto usuarioDto)
         {
-                var usuario = _map.Map<Usuario>(usuarioDto);
+            // MAPEAMENTO DTO
+            var usuario = _map.Map<Usuario>(usuarioDto);
+            // Criar Usuario
+            var respostaCreateUser = await _userManager.CreateAsync(usuario, usuarioDto.Password);
+            
+            if(!respostaCreateUser.Succeeded)
+            {
+                throw new ArgumentException("Erro no CreateAsync, Usuario");
+            }
+            // Pegar Ultimo Usuario da Tabela
+            var usuarioLast = await _genericService.lastAdd();
+            
+            var papelDtoNew = new PapelDto{ Name = usuarioLast.Papel, NormalizedName = usuarioLast.Papel };
 
-                var resultUsuarioAdd = await _userManager.CreateAsync(usuario, usuarioDto.Password);
-
-                var userToReturn = _map.Map<UsuarioDto>(usuario);
-
-                if(resultUsuarioAdd.Succeeded)
+            // BUSCAR PAPEL PELO NAME ASYNC
+            var roleFindName = await _roleManager.RoleExistsAsync(papelDtoNew.Name);
+            // MEPAMENTO DTO
+            var papelAdd = _map.Map<Papel>(papelDtoNew);
+            if(!roleFindName)
+            {
+                var respostaCreateRole =  await _roleManager.CreateAsync(papelAdd);
+                
+                // VERIFICO SE TEVE SUCESSO AO CRIAR PAPEL
+                if(!respostaCreateRole.Succeeded)
                 {
-                    return userToReturn;
+                    throw new ArgumentException("Erro no CreateAsync, Papel");
                 }
-                throw new ArgumentException($"{resultUsuarioAdd.Errors}");
+            }
+            // CRIAR PAPEL
+            
+            var papelLastDto = await _genericService.lastAddUsersRoles();
+            var papelLast = _map.Map<Papel>(papelLastDto);
+
+            Claim claim = new Claim("Conta", "Ler e Escrever");
+            Claim claim2 = new Claim("Conta", "Ler");
+
+            var respostaAddClaimsAsync = await _roleManager.AddClaimAsync(papelLast , claim);
+            if(!respostaAddClaimsAsync.Succeeded)
+            {
+                throw new ArgumentException("Erro no CreateAsync, Claims");
+            }
+            
+            return usuarioLast;
         }
         // LOGAR USUARIO
         public async Task<Usuario> Login(UsuarioLoginDto usuarioLoginDto)

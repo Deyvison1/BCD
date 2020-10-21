@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCD.Domain.Entities.Identity;
 using BCD.WebApi.Dtos;
+using BCD.WebApi.Services.Exception;
 using BCD.WebApi.Services.UsuarioServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +49,11 @@ namespace BCD.WebApi.Controllers
 
                 return Created("GetUser", usuarioAdd);
             }
-            catch(ArgumentException e) 
+            catch(NotFoundException e)
+            {
+                return this.StatusCode(StatusCodes.Status404NotFound, $"{e.Message}");
+            }
+            catch(ArgumentException e)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"{e.Message}");
             }

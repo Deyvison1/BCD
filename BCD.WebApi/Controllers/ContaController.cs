@@ -5,6 +5,7 @@ using BCD.WebApi.Services.ContaCadastradaServices;
 using BCD.WebApi.Services.ContaServices;
 using BCD.WebApi.Services.ContaServices.SolicitarContaServices;
 using BCD.WebApi.Services.Exception;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,7 @@ namespace BCD.WebApi.Controllers
         }
         // LISTAR CONTAS CADASTRADAS
         [HttpPost("solicitarConta")]
+        [AllowAnonymous]
         public async Task<IActionResult> AddRequest(SolicitarContaDto solicitarContaDto)
         {
             try
