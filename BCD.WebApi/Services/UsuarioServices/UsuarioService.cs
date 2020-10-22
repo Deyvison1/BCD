@@ -56,13 +56,18 @@ namespace BCD.WebApi.Services.UsuarioServices
             {
                 throw new ArgumentException("Erro no CreateAsync, Usuario");
             }
+
             // Pegar Ultimo Usuario da Tabela
-            var usuarioLast = await _genericService.lastAdd();
+            var usuarioLastDto = await _genericService.lastAdd();
+            var usuarioLast = _map.Map<Usuario>(usuarioLastDto);
             
-            var papelDtoNew = new PapelDto{ Name = usuarioLast.Papel, NormalizedName = usuarioLast.Papel };
+            var papelDtoNew = new PapelDto{ 
+                    Name = usuarioDto.Papel, NormalizedName = usuarioDto.Papel,
+                    Setor = usuarioDto.Setor
+                };
 
             // BUSCAR PAPEL PELO NAME ASYNC
-            var roleFindName = await _roleManager.RoleExistsAsync(papelDtoNew.Name);
+            var roleFindName = await _roleManager.RoleExistsAsync(usuarioDto.Papel);
             // MEPAMENTO DTO
             var papelAdd = _map.Map<Papel>(papelDtoNew);
             if(!roleFindName)
@@ -72,24 +77,24 @@ namespace BCD.WebApi.Services.UsuarioServices
                 // VERIFICO SE TEVE SUCESSO AO CRIAR PAPEL
                 if(!respostaCreateRole.Succeeded)
                 {
-                    throw new ArgumentException("Erro no CreateAsync, Papel");
+                    foreach(var resp in respostaCreateRole.Errors)
+                    {
+                        throw new ArgumentException($"Erro no CreateAsync, Papel {resp.Description} \n {resp.Code}");
+                    }
                 }
             }
-            // CRIAR PAPEL
-            
-            var papelLastDto = await _genericService.lastAddUsersRoles();
+            var papelLastDto = await _genericService.lastAddPapel();
             var papelLast = _map.Map<Papel>(papelLastDto);
 
-            Claim claim = new Claim("Conta", "Ler e Escrever");
-            Claim claim2 = new Claim("Conta", "Ler");
-
-            var respostaAddClaimsAsync = await _roleManager.AddClaimAsync(papelLast , claim);
-            if(!respostaAddClaimsAsync.Succeeded)
+            UserRolesDto usuarioPapeisDto = new UserRolesDto
             {
-                throw new ArgumentException("Erro no CreateAsync, Claims");
-            }
+                RoleId = papelLast.Id,
+                UserId = usuarioLast.Id
+            };
             
-            return usuarioLast;
+            await _genericService.addUsersRoles(usuarioPapeisDto);
+
+            return usuarioLastDto;
         }
         // LOGAR USUARIO
         public async Task<Usuario> Login(UsuarioLoginDto usuarioLoginDto)

@@ -56,6 +56,15 @@ namespace BCD.WebApi.Services.GenericServices
 
             return usuarioLastDto;
         }
+        // PEGAR ULTIMO REGISTRO DA TABELA PAPEIS
+        public async Task<PapelDto> lastAddPapel()
+        {
+            var papel = await _repoGeneric.lastAddPapel();
+
+            var papelDto = _map.Map<PapelDto>(papel);
+
+            return papelDto;
+        }
         // PEGAR ULTIMO REGISTRO DA TABELA USUARIOSPAPEIS
         public async Task<UserRolesDto> lastAddUsersRoles()
         {
